@@ -2,8 +2,8 @@ package com.sistema.notas.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
 import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 public class ErrorResponse {
@@ -16,5 +16,6 @@ public class ErrorResponse {
         this.mensaje = mensaje;
         this.status = status;
         this.errorDetail = errorDetail;
+        this.timestamp = LocalDateTime.now();
     }
 }
