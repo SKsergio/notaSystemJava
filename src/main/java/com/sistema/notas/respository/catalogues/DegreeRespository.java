@@ -10,4 +10,6 @@ public interface DegreeRespository extends JpaRepository<Degree,Integer> {
     Optional<Degree> findById(Integer id);
     Optional<Degree> findByName(String name);
     boolean existsByCode(String name);
+
+    Optional<Degree> findByCode(String code);
 }

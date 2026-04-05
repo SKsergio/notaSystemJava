@@ -16,6 +16,6 @@ import org.hibernate.annotations.SQLRestriction;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@SQLDelete(sql = "UPDATE degrees SET active false where id = ?")
+@SQLDelete(sql = "UPDATE degrees SET active = false WHERE id = ?")
 @SQLRestriction("active=true")
 public class Degree extends AbstractCatalogo {}
