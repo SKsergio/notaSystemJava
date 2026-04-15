@@ -2,9 +2,11 @@ package com.sistema.notas.controller.catalogues;
 
 import com.sistema.notas.dto.catalogues.CatalogueRequestDto;
 import com.sistema.notas.dto.catalogues.CatalogueResponseDTO;
+import com.sistema.notas.dto.catalogues.PaginateResponse;
 import com.sistema.notas.entity.catalogues.Degree;
 import com.sistema.notas.service.catalogue.DegreeService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -41,7 +43,7 @@ public class DegreeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
-    @GetMapping
+    @GetMapping("all")
     public ResponseEntity<List<CatalogueResponseDTO>> getAllDegrees() {
 
         List<Degree> degrees = degreeService.findAll();
@@ -54,6 +56,16 @@ public class DegreeController {
                 )).collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    }
+
+    @GetMapping
+    public ResponseEntity<PaginateResponse<CatalogueResponseDTO>> getDegrees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(
+                degreeService.obtenerGradosPaginados(page, size)
+        );
     }
 
     @PatchMapping("/{id}")

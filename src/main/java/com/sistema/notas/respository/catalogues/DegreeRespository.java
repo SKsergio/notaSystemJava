@@ -1,6 +1,8 @@
 package com.sistema.notas.respository.catalogues;
 
 import com.sistema.notas.entity.catalogues.Degree;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -9,6 +11,7 @@ public interface DegreeRespository extends JpaRepository<Degree,Integer> {
     @Override
     Optional<Degree> findById(Integer id);
     Optional<Degree> findByName(String name);
+    Page<Degree> findAll(Pageable pageable);
     boolean existsByCode(String name);
 
     Optional<Degree> findByCode(String code);
