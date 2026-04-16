@@ -26,21 +26,7 @@ public class DegreeController {
 
     @PostMapping
     public ResponseEntity<CatalogueResponseDTO> createDegree(@Validated @RequestBody CatalogueRequestDto degreeDto) {
-        //Convertir a entity
-        Degree degree = new Degree();
-        degree.setName(degreeDto.name());
-        degree.setCode(degreeDto.code());
-
-        //guardar
-        Degree degreeSave = degreeService.save(degree);
-
-        CatalogueResponseDTO responseDTO = new CatalogueResponseDTO(
-                degreeSave.getId(),
-                degreeSave.getName(),
-                degreeSave.getCode(),
-                degreeSave.getCreatedAt()
-        );
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(degreeService.save(degreeDto));
     }
 
     @GetMapping("all")
@@ -73,19 +59,7 @@ public class DegreeController {
             @Validated @RequestBody CatalogueRequestDto degreeDto,
             @PathVariable Integer id
             ) {
-        Degree degree = new Degree();
-        degree.setId(id);
-        degree.setName(degreeDto.name());
-        degree.setCode(degreeDto.code());
-
-        Degree degreeSave = degreeService.update(id,degree);
-        CatalogueResponseDTO responseDTO = new CatalogueResponseDTO(
-                degree.getId(),
-                degree.getName(),
-                degree.getCode(),
-                degreeSave.getCreatedAt()
-        );
-        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(degreeService.update(id, degreeDto));
     }
 
     @DeleteMapping("/{id}")
