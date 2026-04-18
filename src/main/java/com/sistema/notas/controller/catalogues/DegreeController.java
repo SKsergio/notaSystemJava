@@ -7,11 +7,13 @@ import com.sistema.notas.entity.catalogues.Degree;
 import com.sistema.notas.service.catalogue.DegreeService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.query.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 @RequestMapping("api/catalogue/degrees")
 @RequiredArgsConstructor
 public class DegreeController {
-    //inyectamos el servicio
+    // inyectamos el servicio
     private final DegreeService degreeService;
 
     @PostMapping
@@ -29,17 +31,16 @@ public class DegreeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(degreeService.save(degreeDto));
     }
 
+    // or definir el futuro de esta fuuncion
     @GetMapping("all")
     public ResponseEntity<List<CatalogueResponseDTO>> getAllDegrees() {
 
         List<Degree> degrees = degreeService.findAll();
-        List<CatalogueResponseDTO> responseDTO = degrees.stream().
-                map(dg-> new CatalogueResponseDTO(
-                        dg.getId(),
-                        dg.getName(),
-                        dg.getCode(),
-                        dg.getCreatedAt()
-                )).collect(Collectors.toList());
+        List<CatalogueResponseDTO> responseDTO = degrees.stream().map(dg -> new CatalogueResponseDTO(
+                dg.getId(),
+                dg.getName(),
+                dg.getCode(),
+                dg.getCreatedAt())).collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
@@ -47,18 +48,20 @@ public class DegreeController {
     @GetMapping
     public ResponseEntity<PaginateResponse<CatalogueResponseDTO>> getDegrees(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search,
+
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
         return ResponseEntity.ok(
-                degreeService.obtenerGradosPaginados(page, size)
-        );
+                degreeService.obtenerGradosPaginados(page, size, search, fromDate, toDate ));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<CatalogueResponseDTO>UpdateDegree(
+    public ResponseEntity<CatalogueResponseDTO> UpdateDegree(
             @Validated @RequestBody CatalogueRequestDto degreeDto,
-            @PathVariable Integer id
-            ) {
+            @PathVariable Integer id) {
         return ResponseEntity.status(HttpStatus.OK).body(degreeService.update(id, degreeDto));
     }
 
@@ -68,6 +71,7 @@ public class DegreeController {
         return ResponseEntity.noContent().build();
     }
 
+    // cambiar para usar el mapping
     @GetMapping("/{id}")
     public ResponseEntity<CatalogueResponseDTO> getDegree(@PathVariable Integer id) {
         Optional<Degree> degree = degreeService.findById(id);
@@ -80,8 +84,7 @@ public class DegreeController {
                 degreeGet.getId(),
                 degreeGet.getName(),
                 degreeGet.getCode(),
-                degreeGet.getCreatedAt()
-        );
+                degreeGet.getCreatedAt());
 
         return ResponseEntity.status(HttpStatus.OK).body(degreeResponse);
     }

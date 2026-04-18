@@ -12,11 +12,16 @@ import com.sistema.notas.mapper.catalogues.DegreeMapper;
 import com.sistema.notas.respository.catalogues.DegreeRespository;
 import com.sistema.notas.service.catalogue.DegreeService;
 import lombok.RequiredArgsConstructor;
+import com.sistema.notas.specifications.CatalogoSpecification;
+import com.sistema.notas.specifications.DegreeSpecification;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,9 +52,15 @@ public class DegreeServiceImpl implements DegreeService {
     }
 
     @Override
-    public PaginateResponse<CatalogueResponseDTO> obtenerGradosPaginados(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Degree> result = degreeRespository.findAll(pageable);
+    public PaginateResponse<CatalogueResponseDTO> obtenerGradosPaginados(int page, int size, String search, LocalDate  fromDate, LocalDate  toDate ) {
+        Pageable pageable = PageRequest.of(page, size); //paginacin
+
+        //filtros
+        Specification<Degree> filtros = Specification
+                .where(CatalogoSpecification.<Degree>searchContains(search))
+                .and(CatalogoSpecification.<Degree>createdBetween(fromDate, toDate));   
+
+        Page<Degree> result = degreeRespository.findAll(filtros, pageable);
 
         return pageMapper.toPaginateResponse(
             result,
