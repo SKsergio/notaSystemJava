@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface SubjectRepository extends JpaRepository<Subject, Integer> {
     Optional<Subject> findByName(String name);
-    Optional<Subject> findById(Integer id);
     boolean existsByCode(String name);
-
+    Optional<Subject> findById(Integer id);
 }

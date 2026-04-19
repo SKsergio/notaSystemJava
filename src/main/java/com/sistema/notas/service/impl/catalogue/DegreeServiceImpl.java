@@ -1,5 +1,6 @@
 package com.sistema.notas.service.impl.catalogue;
 
+import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.CatalogueRequestDto;
 import com.sistema.notas.dto.catalogues.CatalogueResponseDTO;
 import com.sistema.notas.dto.catalogues.PaginateResponse;
@@ -13,7 +14,6 @@ import com.sistema.notas.respository.catalogues.DegreeRespository;
 import com.sistema.notas.service.catalogue.DegreeService;
 import lombok.RequiredArgsConstructor;
 import com.sistema.notas.specifications.CatalogoSpecification;
-import com.sistema.notas.specifications.DegreeSpecification;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -52,7 +52,7 @@ public class DegreeServiceImpl implements DegreeService {
     }
 
     @Override
-    public PaginateResponse<CatalogueResponseDTO> obtenerGradosPaginados(int page, int size, String search, LocalDate  fromDate, LocalDate  toDate ) {
+    public PaginateResponse<CatalogueResponseDTO> obtenerGradosPaginados(int page, int size, String search, LocalDate  fromDate, LocalDate  toDate) {
         Pageable pageable = PageRequest.of(page, size); //paginacin
 
         //filtros
@@ -93,17 +93,29 @@ public class DegreeServiceImpl implements DegreeService {
         Degree oldDegree = degreeRespository.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("El grado con el id: " + id + " no existe")
         );
+        CatalogueResponseDTO res =  catalogueMapper.toResponse(oldDegree);
+
         degreeRespository.delete(oldDegree);
     }
 
     @Override
-    public List<Degree> findAll() {
-        return degreeRespository.findAll();
+    public List<CatalogSimpleResponseDTO> obtenerGradosParaSelect() {
+        List<Degree> degrees = degreeRespository.findAll();
+
+        // 2. Los mapeamos al DTO ligero
+        return degrees.stream()
+                .map(dg -> new CatalogSimpleResponseDTO(dg.getId(), dg.getName()))
+                .toList();
     }
 
     @Override
-    public Optional<Degree> findById(Integer id) {
-        return  degreeRespository.findById(id);
+    public CatalogueResponseDTO findById(Integer id) {
+
+        Degree degreeFind = degreeRespository.findById(id).orElseThrow(
+                ()-> new ResourceNotFoundException("El grado con el id: " + id + " no existe")
+        );
+
+        return catalogueMapper.toResponse(degreeFind);
     }
 
     @Override

@@ -1,22 +1,24 @@
 package com.sistema.notas.service.catalogue;
 
-import com.sistema.notas.entity.catalogues.Section;
+import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
+import com.sistema.notas.dto.catalogues.CatalogueRequestDto;
+import com.sistema.notas.dto.catalogues.CatalogueResponseDTO;
+import com.sistema.notas.dto.catalogues.PaginateResponse;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface SectionService {
-    //Crear
-    Section save(Section section);
-    //Listar
-    List<Section> listSections();
+    CatalogueResponseDTO save(CatalogueRequestDto section);
 
-    //buscadores
-    Optional<Section> findByName(String name);
-    Optional<Section> findById(Integer id);
+    CatalogueResponseDTO update(Integer id, CatalogueRequestDto section);
 
-    //actualizar
-    Section update(Section section);
-    //eliminar
-    Void delete(Integer id);
+    void delete(Integer id);
+
+    PaginateResponse<CatalogueResponseDTO> obtenerSectionPaginadas(int page, int size, String search,
+            LocalDate fromDate, LocalDate  toDate);
+
+    List<CatalogSimpleResponseDTO> obtenerSectionSelect();
+
+    CatalogueResponseDTO findById(Integer id);
 }

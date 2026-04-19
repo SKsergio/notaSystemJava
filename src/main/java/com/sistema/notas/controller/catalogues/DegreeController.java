@@ -1,5 +1,6 @@
 package com.sistema.notas.controller.catalogues;
 
+import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.CatalogueRequestDto;
 import com.sistema.notas.dto.catalogues.CatalogueResponseDTO;
 import com.sistema.notas.dto.catalogues.PaginateResponse;
@@ -33,16 +34,8 @@ public class DegreeController {
 
     // or definir el futuro de esta fuuncion
     @GetMapping("all")
-    public ResponseEntity<List<CatalogueResponseDTO>> getAllDegrees() {
-
-        List<Degree> degrees = degreeService.findAll();
-        List<CatalogueResponseDTO> responseDTO = degrees.stream().map(dg -> new CatalogueResponseDTO(
-                dg.getId(),
-                dg.getName(),
-                dg.getCode(),
-                dg.getCreatedAt())).collect(Collectors.toList());
-
-        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    public ResponseEntity<List<CatalogSimpleResponseDTO>> getAllDegrees() {
+        return ResponseEntity.status(HttpStatus.OK).body(degreeService.obtenerGradosParaSelect());
     }
 
     @GetMapping
@@ -52,7 +45,6 @@ public class DegreeController {
             @RequestParam(required = false) String search,
 
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
         return ResponseEntity.ok(
                 degreeService.obtenerGradosPaginados(page, size, search, fromDate, toDate ));
@@ -74,18 +66,7 @@ public class DegreeController {
     // cambiar para usar el mapping
     @GetMapping("/{id}")
     public ResponseEntity<CatalogueResponseDTO> getDegree(@PathVariable Integer id) {
-        Optional<Degree> degree = degreeService.findById(id);
-        if (!degree.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Degree degreeGet = degree.get();
-        CatalogueResponseDTO degreeResponse = new CatalogueResponseDTO(
-                degreeGet.getId(),
-                degreeGet.getName(),
-                degreeGet.getCode(),
-                degreeGet.getCreatedAt());
-
-        return ResponseEntity.status(HttpStatus.OK).body(degreeResponse);
+        CatalogueResponseDTO responseDTO = degreeService.findById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 }

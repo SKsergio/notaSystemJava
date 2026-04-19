@@ -1,5 +1,6 @@
 package com.sistema.notas.service.catalogue;
 
+import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.CatalogueRequestDto;
 import com.sistema.notas.dto.catalogues.CatalogueResponseDTO;
 import com.sistema.notas.dto.catalogues.PaginateResponse;
@@ -16,12 +17,12 @@ public interface DegreeService {
 
     void delete(Integer id);
 
-    List<Degree> findAll();
-
     PaginateResponse<CatalogueResponseDTO> obtenerGradosPaginados(int page, int size, String search,
             LocalDate  fromDate, LocalDate  toDate);
 
-    Optional<Degree> findById(Integer id);
+    List<CatalogSimpleResponseDTO> obtenerGradosParaSelect();
+
+    CatalogueResponseDTO findById(Integer id);
 
     Optional<Degree> findByName(String name);
 
