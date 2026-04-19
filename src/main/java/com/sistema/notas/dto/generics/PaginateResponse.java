@@ -1,4 +1,4 @@
-package com.sistema.notas.dto.catalogues;
+package com.sistema.notas.dto.generics;
 
 import java.util.List;
 

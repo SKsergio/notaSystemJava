@@ -1,6 +1,6 @@
 package com.sistema.notas.mapper;
 
-import com.sistema.notas.dto.catalogues.PaginateResponse;
+import com.sistema.notas.dto.generics.PaginateResponse;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;

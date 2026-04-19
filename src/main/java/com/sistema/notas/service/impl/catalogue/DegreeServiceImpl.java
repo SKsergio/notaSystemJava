@@ -3,7 +3,7 @@ package com.sistema.notas.service.impl.catalogue;
 import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.CatalogueRequestDto;
 import com.sistema.notas.dto.catalogues.CatalogueResponseDTO;
-import com.sistema.notas.dto.catalogues.PaginateResponse;
+import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.entity.catalogues.Degree;
 import com.sistema.notas.exceptions.BadRequestException;
 import com.sistema.notas.exceptions.ResourceNotFoundException;
