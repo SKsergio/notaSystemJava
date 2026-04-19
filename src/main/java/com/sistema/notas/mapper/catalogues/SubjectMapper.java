@@ -6,6 +6,7 @@ import com.sistema.notas.entity.catalogues.Subject;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface SubjectMapper {
@@ -17,5 +18,10 @@ public interface SubjectMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Subject toEntity(SubjectRequestDTO requestDTO);
-    Subject toEntity(SubjectResponseDTO requestDTO);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "active", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    Subject updateEntityFromDto(SubjectRequestDTO requestDTO, @MappingTarget Subject subject);
 }

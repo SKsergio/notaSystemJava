@@ -10,12 +10,7 @@ public record CatalogueRequestDto(
 
         @NotBlank(message = "El código es obligatorio")
         @Size(message = "El nombre no puede tener mas de 25 caracteres")
-        String code,
-
-        @NotBlank(message = "La descripcion no puede estar vacia.")
-        @Size(message = "El nombre no puede tener mas de 255 caracteres")
-        String description
-
+        String code
 ){
     public CatalogueRequestDto{
         if (name != null) name = name.trim().toUpperCase();

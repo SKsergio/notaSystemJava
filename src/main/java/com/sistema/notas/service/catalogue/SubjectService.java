@@ -12,7 +12,7 @@ import java.util.List;
 public interface SubjectService {
     SubjectResponseDTO save(SubjectRequestDTO subject);
 
-    SubjectResponseDTO update(SubjectRequestDTO subject);
+    SubjectResponseDTO update(Integer id, SubjectRequestDTO subject);
 
     void delete(Integer id);
 
