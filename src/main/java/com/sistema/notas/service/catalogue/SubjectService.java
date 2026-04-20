@@ -4,7 +4,6 @@ import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.SubjectRequestDTO;
 import com.sistema.notas.dto.catalogues.SubjectResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
-import com.sistema.notas.entity.catalogues.Subject;
 
 import java.time.LocalDate;
 import java.util.List;

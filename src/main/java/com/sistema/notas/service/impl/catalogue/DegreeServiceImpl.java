@@ -93,7 +93,6 @@ public class DegreeServiceImpl implements DegreeService {
         Degree oldDegree = degreeRespository.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("El grado con el id: " + id + " no existe")
         );
-        CatalogueResponseDTO res =  catalogueMapper.toResponse(oldDegree);
 
         degreeRespository.delete(oldDegree);
     }

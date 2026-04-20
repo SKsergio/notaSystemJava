@@ -74,7 +74,6 @@ public class SectionServiceImpl implements SectionService {
                 ()-> new ResourceNotFoundException("La secion con el id: " + id + " no existe")
         );
 
-        CatalogueResponseDTO res = catalogueMapper.toResponse(oldSection);
         sectionRespository.delete(oldSection);
     }
 
