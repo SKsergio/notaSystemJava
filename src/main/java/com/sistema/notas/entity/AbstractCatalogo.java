@@ -10,12 +10,7 @@ import java.time.LocalDateTime;
 
 @MappedSuperclass//sera un molde, o clase abstracta
 @Data
-@EntityListeners(AuditingEntityListener.class)//para que funcionen con las fechas
-public class AbstractCatalogo {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Integer id;
+public class AbstractCatalogo extends AuditableEntity{
 
     @Column(name = "name", length = 100, nullable = false)
     protected String name;
@@ -23,13 +18,4 @@ public class AbstractCatalogo {
     @Column(name = "code", nullable = false, length = 25, unique = true)
     protected String code;
     protected boolean active = true;
-
-    //autitoria
-    @CreatedDate
-    @Column(name = "created_at", updatable = false)
-    protected LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    protected LocalDateTime updatedAt;
 }

@@ -9,8 +9,12 @@ public record SubjectRequestDTO(
         String name,
 
         @NotBlank(message = "El código es obligatorio")
-        @Size(message = "El nombre no puede tener mas de 25 caracteres")
-        String code
+        @Size(message = "El codigo no puede tener mas de 25 caracteres")
+        String code,
+
+        @NotBlank(message = "La descripcion no puede estar vacia.")
+        @Size(message = "El nombre no puede tener mas de 255 caracteres")
+        String description
 ) {
     public SubjectRequestDTO{
         if (name != null) name = name.trim().toUpperCase();
