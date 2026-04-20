@@ -1,12 +1,10 @@
-package com.sistema.notas.service.impl.catalogue;
+package com.sistema.notas.service.catalogue.impl;
 
-import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.PeriodRequestDTO;
 import com.sistema.notas.dto.catalogues.PeriodResponseDTO;
 import com.sistema.notas.dto.catalogues.PeriodSimpleDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.entity.catalogues.Period;
-import com.sistema.notas.entity.catalogues.Subject;
 import com.sistema.notas.exceptions.BadRequestException;
 import com.sistema.notas.exceptions.ResourceNotFoundException;
 import com.sistema.notas.mapper.PageMapper;

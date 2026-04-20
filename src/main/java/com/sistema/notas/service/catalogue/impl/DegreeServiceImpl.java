@@ -1,4 +1,4 @@
-package com.sistema.notas.service.impl.catalogue;
+package com.sistema.notas.service.catalogue.impl;
 
 import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.CatalogueRequestDto;

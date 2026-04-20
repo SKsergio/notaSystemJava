@@ -1,10 +1,9 @@
-package com.sistema.notas.service.impl.catalogue;
+package com.sistema.notas.service.catalogue.impl;
 
 import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.SubjectRequestDTO;
 import com.sistema.notas.dto.catalogues.SubjectResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
-import com.sistema.notas.entity.catalogues.Section;
 import com.sistema.notas.entity.catalogues.Subject;
 import com.sistema.notas.exceptions.BadRequestException;
 import com.sistema.notas.exceptions.ResourceNotFoundException;
@@ -64,7 +63,6 @@ public class SubjectServiceImpl implements SubjectService {
                 ()-> new ResourceNotFoundException("Materia con el id :" + id + " no encontrado")
         );
 
-        SubjectResponseDTO res = subjectMapper.toResponse(subjectoFind);
         subjectRepository.delete(subjectoFind);
     }
 

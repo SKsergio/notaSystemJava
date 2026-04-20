@@ -1,12 +1,10 @@
 package com.sistema.notas.service.catalogue;
 
-import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.PeriodRequestDTO;
 import com.sistema.notas.dto.catalogues.PeriodResponseDTO;
 import com.sistema.notas.dto.catalogues.PeriodSimpleDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
