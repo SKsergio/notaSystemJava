@@ -1,6 +1,5 @@
 package com.sistema.notas.entity.catalogues;
 
-import com.sistema.notas.entity.AbstractCatalogo;
 import com.sistema.notas.entity.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

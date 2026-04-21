@@ -9,7 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.sistema.notas.dto.core.teacher.TeacherFullResponseDTO;
 import com.sistema.notas.dto.core.teacher.TeacherRequestDTO;
 import com.sistema.notas.dto.core.teacher.TeacherResponseDTO;
 import com.sistema.notas.dto.core.teacher.TeacherSimpleResponseDTO;
@@ -23,7 +25,6 @@ import com.sistema.notas.respository.core.TeacherRepository;
 import com.sistema.notas.service.core.TeacherService;
 import com.sistema.notas.specifications.CatalogoSpecification;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -131,11 +132,12 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public TeacherResponseDTO obtenerTeachear(Integer id) {
+    @Transactional(readOnly = true)
+    public TeacherFullResponseDTO obtenerTeachear(Integer id) {
         Teacher teacherFind = teacherRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("No esixte ningun maestro con el id: " + id));
 
-        return teacherMapper.toResponseDTO(teacherFind);
+        return teacherMapper.toFullResponse(teacherFind);
     }
 
 }

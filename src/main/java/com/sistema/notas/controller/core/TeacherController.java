@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import com.sistema.notas.dto.core.teacher.TeacherFullResponseDTO;
 import com.sistema.notas.dto.core.teacher.TeacherRequestDTO;
 import com.sistema.notas.dto.core.teacher.TeacherResponseDTO;
 import com.sistema.notas.dto.core.teacher.TeacherSimpleResponseDTO;
@@ -60,8 +61,8 @@ public class TeacherController {
 
     // cambiar para usar el mapping
     @GetMapping("/{id}")
-    public ResponseEntity<TeacherResponseDTO> getTeacher(@PathVariable Integer id) {
-        TeacherResponseDTO responseDTO = teacherService.obtenerTeachear(id);
+    public ResponseEntity<TeacherFullResponseDTO> getTeacher(@PathVariable Integer id) {
+        TeacherFullResponseDTO responseDTO = teacherService.obtenerTeachear(id);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 }
