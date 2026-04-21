@@ -1,6 +1,6 @@
 package com.sistema.notas.service.catalogue;
 
-import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
+import com.sistema.notas.dto.catalogues.CatalogueSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.CatalogueRequestDto;
 import com.sistema.notas.dto.catalogues.CatalogueResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
@@ -18,7 +18,7 @@ public interface SectionService {
     PaginateResponse<CatalogueResponseDTO> obtenerSectionPaginadas(int page, int size, String search,
             LocalDate fromDate, LocalDate  toDate);
 
-    List<CatalogSimpleResponseDTO> obtenerSectionSelect();
+    List<CatalogueSimpleResponseDTO> obtenerSectionSelect();
 
     CatalogueResponseDTO findById(Integer id);
 }

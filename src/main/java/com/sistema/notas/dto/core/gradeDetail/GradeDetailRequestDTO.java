@@ -19,7 +19,7 @@ public record GradeDetailRequestDTO (
 
         @NotNull(message = "El Tutor asignado es obligatorio.")
         @Positive(message = "El ID del Docente debe ser un número positivo válido.")
-        Integer teacherId,
+        Integer tutorId,
 
         @NotNull(message = "La Sección es obligatoria.")
         @Positive(message = "El ID de la Sección debe ser un número positivo válido.")

@@ -1,6 +1,6 @@
 package com.sistema.notas.controller.catalogues;
 
-import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
+import com.sistema.notas.dto.catalogues.CatalogueSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.CatalogueRequestDto;
 import com.sistema.notas.dto.catalogues.CatalogueResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
@@ -29,7 +29,7 @@ public class DegreeController {
 
     // or definir el futuro de esta fuuncion
     @GetMapping("all")
-    public ResponseEntity<List<CatalogSimpleResponseDTO>> getAllDegrees() {
+    public ResponseEntity<List<CatalogueSimpleResponseDTO>> getAllDegrees() {
         return ResponseEntity.status(HttpStatus.OK).body(degreeService.obtenerGradosParaSelect());
     }
 

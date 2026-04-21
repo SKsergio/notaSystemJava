@@ -1,6 +1,6 @@
 package com.sistema.notas.service.catalogue;
 
-import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
+import com.sistema.notas.dto.catalogues.CatalogueSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.CatalogueRequestDto;
 import com.sistema.notas.dto.catalogues.CatalogueResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
@@ -20,7 +20,7 @@ public interface DegreeService {
     PaginateResponse<CatalogueResponseDTO> obtenerGradosPaginados(int page, int size, String search,
             LocalDate  fromDate, LocalDate  toDate);
 
-    List<CatalogSimpleResponseDTO> obtenerGradosParaSelect();
+    List<CatalogueSimpleResponseDTO> obtenerGradosParaSelect();
 
     CatalogueResponseDTO findById(Integer id);
 

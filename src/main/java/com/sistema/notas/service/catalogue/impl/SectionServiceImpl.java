@@ -1,6 +1,6 @@
 package com.sistema.notas.service.catalogue.impl;
 
-import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
+import com.sistema.notas.dto.catalogues.CatalogueSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.CatalogueRequestDto;
 import com.sistema.notas.dto.catalogues.CatalogueResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
@@ -94,11 +94,11 @@ public class SectionServiceImpl implements SectionService {
     }
 
     @Override
-    public List<CatalogSimpleResponseDTO> obtenerSectionSelect() {
+    public List<CatalogueSimpleResponseDTO> obtenerSectionSelect() {
         List<Section> sections = sectionRespository.findAll();
 
         return sections.stream()
-                .map(sc-> new CatalogSimpleResponseDTO(sc.getId(), sc.getCode()))
+                .map(sc-> new CatalogueSimpleResponseDTO(sc.getId(), sc.getCode()))
                 .toList();
     }
 

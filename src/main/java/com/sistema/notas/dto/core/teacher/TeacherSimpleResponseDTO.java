@@ -1,9 +1,6 @@
 package com.sistema.notas.dto.core.teacher;
 
-import java.time.LocalDateTime;
-
-
-public record TeacherSimpleResposeDTO(
+public record TeacherSimpleResponseDTO(
         Integer id,
         String firstName,
         String firstLastName,
@@ -11,5 +8,5 @@ public record TeacherSimpleResposeDTO(
         String routePhoto,
         int age,
         String dui
-       )  {
+       ) {
 }

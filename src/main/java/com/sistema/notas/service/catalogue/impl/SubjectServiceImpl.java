@@ -1,6 +1,6 @@
 package com.sistema.notas.service.catalogue.impl;
 
-import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
+import com.sistema.notas.dto.catalogues.CatalogueSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.SubjectRequestDTO;
 import com.sistema.notas.dto.catalogues.SubjectResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
@@ -83,11 +83,11 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public List<CatalogSimpleResponseDTO> obtenerSubjectSelect() {
+    public List<CatalogueSimpleResponseDTO> obtenerSubjectSelect() {
         List<Subject> subjects = subjectRepository.findAll();
 
         return subjects.stream()
-                .map(sb -> new CatalogSimpleResponseDTO(sb.getId(), sb.getName()))
+                .map(sb -> new CatalogueSimpleResponseDTO(sb.getId(), sb.getName()))
                 .toList();
     }
 

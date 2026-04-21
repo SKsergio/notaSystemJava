@@ -1,6 +1,6 @@
 package com.sistema.notas.service.catalogue.impl;
 
-import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
+import com.sistema.notas.dto.catalogues.CatalogueSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.CatalogueRequestDto;
 import com.sistema.notas.dto.catalogues.CatalogueResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
@@ -98,12 +98,12 @@ public class DegreeServiceImpl implements DegreeService {
     }
 
     @Override
-    public List<CatalogSimpleResponseDTO> obtenerGradosParaSelect() {
+    public List<CatalogueSimpleResponseDTO> obtenerGradosParaSelect() {
         List<Degree> degrees = degreeRespository.findAll();
 
         // 2. Los mapeamos al DTO ligero
         return degrees.stream()
-                .map(dg -> new CatalogSimpleResponseDTO(dg.getId(), dg.getName()))
+                .map(dg -> new CatalogueSimpleResponseDTO(dg.getId(), dg.getName()))
                 .toList();
     }
 

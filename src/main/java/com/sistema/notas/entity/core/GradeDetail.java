@@ -13,7 +13,7 @@ import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Table(name = "grade_details", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"degree_id", "section_id"})
+        @UniqueConstraint(columnNames = {"degree_id", "section_id", "year"})
 })
 @Getter @Setter
 @NoArgsConstructor

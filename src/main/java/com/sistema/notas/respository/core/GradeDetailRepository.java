@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface GradeDetailRepository extends JpaRepository<GradeDetail, Integer>, JpaSpecificationExecutor<GradeDetail> {
-    boolean existsByDegreeIdAndSectionId(Integer degreeId, Integer sectionId);
+    boolean existsByDegreeIdAndSectionIdAndYear(Integer degreeId, Integer sectionId, Integer year);
+    boolean existsByDegreeIdAndSectionIdAndYearAndIdNot(Integer degreeId, Integer sectionId, Integer year, Integer id);
 }

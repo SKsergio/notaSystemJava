@@ -9,12 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
-import com.sistema.notas.dto.catalogues.CatalogueRequestDto;
-import com.sistema.notas.dto.catalogues.CatalogueResponseDTO;
 import com.sistema.notas.dto.core.teacher.TeacherRequestDTO;
 import com.sistema.notas.dto.core.teacher.TeacherResponseDTO;
-import com.sistema.notas.dto.core.teacher.TeacherSimpleResposeDTO;
+import com.sistema.notas.dto.core.teacher.TeacherSimpleResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.service.core.TeacherService;
 
@@ -32,12 +29,12 @@ public class TeacherController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<List<TeacherSimpleResposeDTO>> getAllTeacher() {
+    public ResponseEntity<List<TeacherSimpleResponseDTO>> getAllTeacher() {
         return ResponseEntity.status(HttpStatus.OK).body(teacherService.listartoSelect());
     }
 
     @GetMapping
-    public ResponseEntity<PaginateResponse<TeacherResponseDTO>> getDegrees(
+    public ResponseEntity<PaginateResponse<TeacherResponseDTO>> getTeachers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String search,
@@ -49,21 +46,21 @@ public class TeacherController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TeacherResponseDTO> UpdateDegree(
+    public ResponseEntity<TeacherResponseDTO> UpdateTeacher(
             @Validated @ModelAttribute TeacherRequestDTO teacherDto,
             @PathVariable Integer id) {
         return ResponseEntity.status(HttpStatus.OK).body(teacherService.update(id, teacherDto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteDegree(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteTeacher(@PathVariable Integer id) {
         teacherService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     // cambiar para usar el mapping
     @GetMapping("/{id}")
-    public ResponseEntity<TeacherResponseDTO> getDegree(@PathVariable Integer id) {
+    public ResponseEntity<TeacherResponseDTO> getTeacher(@PathVariable Integer id) {
         TeacherResponseDTO responseDTO = teacherService.obtenerTeachear(id);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }

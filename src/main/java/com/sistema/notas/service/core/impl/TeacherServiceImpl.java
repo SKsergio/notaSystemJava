@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.sistema.notas.dto.core.teacher.TeacherRequestDTO;
 import com.sistema.notas.dto.core.teacher.TeacherResponseDTO;
-import com.sistema.notas.dto.core.teacher.TeacherSimpleResposeDTO;
+import com.sistema.notas.dto.core.teacher.TeacherSimpleResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.entity.core.Teacher;
 import com.sistema.notas.exceptions.BadRequestException;
@@ -115,11 +115,11 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public List<TeacherSimpleResposeDTO> listartoSelect() {
+    public List<TeacherSimpleResponseDTO> listartoSelect() {
          List<Teacher> teachers = teacherRepository.findAll();
 
         return teachers.stream()
-                .map(tch -> new TeacherSimpleResposeDTO(
+                .map(tch -> new TeacherSimpleResponseDTO(
                     tch.getId(),
                     tch.getFirstName(), 
                     tch.getFirstLastName(),

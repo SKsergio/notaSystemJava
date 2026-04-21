@@ -1,7 +1,6 @@
 package com.sistema.notas.controller.catalogues;
 
-import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
-import com.sistema.notas.dto.catalogues.CatalogueResponseDTO;
+import com.sistema.notas.dto.catalogues.CatalogueSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.SubjectRequestDTO;
 import com.sistema.notas.dto.catalogues.SubjectResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
@@ -41,7 +40,7 @@ public class SubjectController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<List<CatalogSimpleResponseDTO>> getAllSubjects() {
+    public ResponseEntity<List<CatalogueSimpleResponseDTO>> getAllSubjects() {
         return ResponseEntity.status(HttpStatus.OK).body(subjectService.obtenerSubjectSelect());
     }
 
