@@ -2,6 +2,7 @@ package com.sistema.notas.entity.core;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -11,6 +12,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import com.sistema.notas.entity.InstitutionalPerson;
+
+import java.util.List;
 
 @Entity
 @Table(name = "teachers")
@@ -25,4 +28,7 @@ public class Teacher extends InstitutionalPerson{
 
     @Column(name ="dui", nullable = false, length = 10, unique = true)
     private String dui;
+
+    @OneToMany(mappedBy = "tutor")
+    private List<GradeDetail> assignedGrades;
 }
