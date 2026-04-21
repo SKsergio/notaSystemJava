@@ -7,15 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sistema.notas.dto.catalogues.CatalogSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.CatalogueRequestDto;
@@ -39,14 +31,13 @@ public class TeacherController {
         return ResponseEntity.status(HttpStatus.CREATED).body(teacherService.save(teacherDto));
     }
 
-    // or definir el futuro de esta fuuncion
     @GetMapping("all")
     public ResponseEntity<List<TeacherSimpleResposeDTO>> getAllTeacher() {
-        return ResponseEntity.status(HttpStatus.OK).body(teacherService.obtenerTeachear());
+        return ResponseEntity.status(HttpStatus.OK).body(teacherService.listartoSelect());
     }
 
     @GetMapping
-    public ResponseEntity<PaginateResponse<CatalogueResponseDTO>> getDegrees(
+    public ResponseEntity<PaginateResponse<TeacherResponseDTO>> getDegrees(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String search,
@@ -54,26 +45,26 @@ public class TeacherController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
         return ResponseEntity.ok(
-                degreeService.obtenerGradosPaginados(page, size, search, fromDate, toDate ));
+                teacherService.obtenerTeacherPaginados(page, size, search, fromDate, toDate ));
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<CatalogueResponseDTO> UpdateDegree(
-            @Validated @RequestBody CatalogueRequestDto teacherDto,
+    @PutMapping("/{id}")
+    public ResponseEntity<TeacherResponseDTO> UpdateDegree(
+            @Validated @ModelAttribute TeacherRequestDTO teacherDto,
             @PathVariable Integer id) {
-        return ResponseEntity.status(HttpStatus.OK).body(degreeService.update(id, teacherDto));
+        return ResponseEntity.status(HttpStatus.OK).body(teacherService.update(id, teacherDto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDegree(@PathVariable Integer id) {
-        degreeService.delete(id);
+        teacherService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     // cambiar para usar el mapping
     @GetMapping("/{id}")
-    public ResponseEntity<CatalogueResponseDTO> getDegree(@PathVariable Integer id) {
-        CatalogueResponseDTO responseDTO = degreeService.findById(id);
+    public ResponseEntity<TeacherResponseDTO> getDegree(@PathVariable Integer id) {
+        TeacherResponseDTO responseDTO = teacherService.obtenerTeachear(id);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 }

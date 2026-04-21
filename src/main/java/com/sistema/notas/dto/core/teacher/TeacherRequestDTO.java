@@ -17,7 +17,7 @@ public record TeacherRequestDTO(
     @Size(max = 25, message = "El primer nombre no puede tener más de 25 caracteres")
     String firstName,
 
-    // @NotBlank(message = "El segundo nombre es obligatorio")
+     @NotBlank(message = "El segundo nombre es obligatorio")
     @Size(max = 25, message = "El segundo nombre no puede tener más de 25 caracteres")
     String secondName,
 
@@ -25,7 +25,7 @@ public record TeacherRequestDTO(
     @Size(max = 25, message = "El primer apellido no puede tener más de 25 caracteres")
     String firstLastName,
 
-    // @NotBlank(message = "El segundo apellido es obligatorio")
+    @NotBlank(message = "El segundo apellido es obligatorio")
     @Size(max = 25, message = "El segundo apellido no puede tener más de 25 caracteres")
     String secondLastName,
 
@@ -39,12 +39,13 @@ public record TeacherRequestDTO(
 
     @NotBlank(message = "El correo electrónico es obligatorio")
     @Email(message = "El formato del correo electrónico no es válido")
+    @Size(max= 50, message = "El email excede la cantidad de caracteres")
     String email,
 
     @NotNull(message = "El género es obligatorio")
     GenderEnum gender,
 
-    @NotBlank(message = "La foto es obligatoria")
+    @NotNull(message = "La foto es obligatoria")
     MultipartFile photo,
 
     // Usamos @NotNull y @Past para fechas

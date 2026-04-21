@@ -56,6 +56,10 @@ public class TeacherServiceImpl implements TeacherService {
             throw new BadRequestException("Ya hay un maestro Registrado con el correo: " + teacher.email());
         }
 
+        if (teacherRepository.existsByDui(teacher.dui())) {
+            throw new BadRequestException("Ya hay un maestro Registrado con este Dui: " + teacher.dui());
+        }
+
         Teacher entity = teacherMapper.toEntity(teacher);
 
         // aca ira el procesaminto de la foto, llamdno al servicio de imagnes
@@ -77,6 +81,11 @@ public class TeacherServiceImpl implements TeacherService {
         if (teacherRepository.existsByEmailAndIdNot(teacher.email(), id)) {
             throw new BadRequestException("El correo " + teacher.email() + " ya está siendo usado por otro docente.");
         }
+
+        if (teacherRepository.existsByDuiAndIdNot(teacher.dui(), id)) {
+            throw new BadRequestException("El DUI " + teacher.dui() + " ya está siendo usado por otro docente.");
+        }
+        teacherMapper.updateEntityFromDTO(teacher, teacherFind);
 
         return teacherMapper.toResponseDTO(teacherFind);
     }

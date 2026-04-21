@@ -8,4 +8,9 @@ public interface TeacherRepository extends JpaRepository<Teacher, Integer>, JpaS
     boolean existsByEmail(String email);
 
     boolean existsByEmailAndIdNot(String email, Integer id);
+
+    boolean existsByDui(String dui);
+
+    boolean existsByDuiAndIdNot(String dui, Integer id);
+
 }
