@@ -1,6 +1,6 @@
 package com.sistema.notas.entity;
 
-import java.beans.Transient;
+import jakarta.persistence.Transient; 
 import java.time.LocalDate;
 
 import com.sistema.notas.entity.enums.GenderEnum;
@@ -54,4 +54,14 @@ public class InstitutionalPerson extends AuditableEntity{
         }
         return Period.between(this.birthDate, LocalDate.now()).getYears(); 
     }
+
+    @Transient
+    public String getfullName() {
+        if (this.firstName == null && this.firstLastName == null) {
+            return null; 
+        }
+        String completeName = this.firstName + " " + this.firstLastName;
+        return completeName; 
+    }
+    
 }

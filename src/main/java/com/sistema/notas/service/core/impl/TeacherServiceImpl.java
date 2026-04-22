@@ -122,8 +122,7 @@ public class TeacherServiceImpl implements TeacherService {
         return teachers.stream()
                 .map(tch -> new TeacherSimpleResponseDTO(
                     tch.getId(),
-                    tch.getFirstName(), 
-                    tch.getFirstLastName(),
+                    tch.getfullName(), 
                     tch.getEmail(),
                     tch.getRoutePhoto(),
                     tch.getAge(),

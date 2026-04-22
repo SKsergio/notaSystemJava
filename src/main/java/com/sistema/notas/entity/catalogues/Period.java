@@ -24,6 +24,9 @@ public class Period extends AuditableEntity {
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
+    @Column(name = "status", nullable = false)
+    private Integer status;
+
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 }

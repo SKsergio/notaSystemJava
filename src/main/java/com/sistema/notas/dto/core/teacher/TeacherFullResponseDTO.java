@@ -6,10 +6,10 @@ import com.sistema.notas.dto.core.gradeDetail.GradeDetailAssignedDTO;
 
 public record TeacherFullResponseDTO(
         Integer id,
-        String firstName,
-        String firstLastName,
+        // String firstName,
+        String fullName,
         String email,
         String dui,
-        String age,
+        int age,
         List<GradeDetailAssignedDTO> assignedGrades 
 ) {}

@@ -9,7 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.SQLRestriction; 
+
 
 @Entity
 @Table(name = "grade_details", uniqueConstraints = {
@@ -43,4 +44,14 @@ public class GradeDetail extends AuditableEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "section_id", nullable = false)
     private Section section;
+
+    @Transient
+    public String getFullName() {
+        if (this.degree == null || this.section == null || this.year == null) {
+            return null;
+        }
+        
+        return this.degree.getName() + " - " + this.section.getName() + " - " + this.year;
+    }
+    
 }

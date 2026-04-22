@@ -22,7 +22,7 @@ public interface GradeDetailMapper {
     // 1. DE ENTIDAD A RESPONSE (Salida de datos - Aplanamiento)
     @Mapping(source = "section.name", target = "sectionName")
     @Mapping(source = "degree.name", target = "degreeName")
-    @Mapping(source = "tutor.firstName", target = "tutorName")
+    @Mapping(source = "tutor.fullName", target = "tutorName")
     GradeDetailResponseDTO toResponse(GradeDetail entity);
 
     // 2. DE REQUEST A ENTIDAD (Entrada de datos)
@@ -54,7 +54,7 @@ public interface GradeDetailMapper {
     default TeacherSimpleResponseDTO mapTeacherToSimpleDTO(Teacher tutor) {
         if (tutor == null)
             return null;
-        return new TeacherSimpleResponseDTO(tutor.getId(), tutor.getFirstName(), tutor.getFirstLastName(),
+        return new TeacherSimpleResponseDTO(tutor.getId(), tutor.getfullName(),
                 tutor.getEmail(), tutor.getRoutePhoto(), tutor.getAge(), tutor.getDui());
     }
 }
