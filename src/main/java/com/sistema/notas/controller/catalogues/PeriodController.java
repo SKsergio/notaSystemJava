@@ -37,7 +37,7 @@ public class PeriodController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<List<PeriodSimpleDTO>> getAllPeriods() {
+    public ResponseEntity<List<PeriodSimpleResponseDto>> getAllPeriods() {
         return ResponseEntity.status(HttpStatus.OK).body(periodService.listartoSelects());
     }
 

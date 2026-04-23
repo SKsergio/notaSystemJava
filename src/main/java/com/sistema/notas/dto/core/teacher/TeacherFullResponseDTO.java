@@ -2,6 +2,7 @@ package com.sistema.notas.dto.core.teacher;
 
 import java.util.List;
 
+import com.sistema.notas.dto.core.course.CourseSimpleResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailAssignedDTO;
 
 public record TeacherFullResponseDTO(
@@ -11,5 +12,6 @@ public record TeacherFullResponseDTO(
         String email,
         String dui,
         int age,
-        List<GradeDetailAssignedDTO> assignedGrades 
+        List<GradeDetailAssignedDTO> assignedGrades,
+        List<CourseSimpleResponseDTO> assignedCourses
 ) {}

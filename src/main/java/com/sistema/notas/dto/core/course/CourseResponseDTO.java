@@ -8,6 +8,8 @@ public record CourseResponseDTO(
     String gradeDetailName,
     String subjectName,
     Integer totalStudents,
-    int year
+    Integer status,
+    int year,
+    Double valorityUnity
 ) {
 } 

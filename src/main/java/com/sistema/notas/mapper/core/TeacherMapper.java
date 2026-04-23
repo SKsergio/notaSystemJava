@@ -6,10 +6,12 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
+import com.sistema.notas.dto.core.course.CourseSimpleResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailAssignedDTO;
 import com.sistema.notas.dto.core.teacher.TeacherFullResponseDTO;
 import com.sistema.notas.dto.core.teacher.TeacherRequestDTO;
 import com.sistema.notas.dto.core.teacher.TeacherResponseDTO;
+import com.sistema.notas.entity.core.Course;
 import com.sistema.notas.entity.core.GradeDetail;
 import com.sistema.notas.entity.core.Teacher;
 
@@ -31,4 +33,7 @@ public interface TeacherMapper {
     @Mapping(source = "section.name", target = "sectionName")
     @Mapping(source = "degree.name", target = "degreeName")
     GradeDetailAssignedDTO toAssignedDTO(GradeDetail gradeDetail);
+
+    @Mapping(source = "gradeDetail.year", target = "year") 
+    CourseSimpleResponseDTO toCourseSimpleDTO(Course course);
 }

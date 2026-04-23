@@ -81,13 +81,6 @@ public class CourseServiceImpl implements CourseService {
         entity.setPeriod(period);
         entity.setGradeDetail(gradeDetail);
 
-        //ARMAR CODIGO Y NOMBRE
-        String generatedCode = subject.getCode() + "-" + gradeDetail.getDegree().getCode();
-        entity.setCode(generatedCode.toUpperCase());
-        
-        // String generatedName = subject.getName() + " - " + gradeDetail.getDegree().getName();
-        // entity.setName(generatedName);
-
         Course saved = coursesRespository.save(entity);
         return courseMapper.toResponseDTO(saved);
     }
@@ -124,8 +117,6 @@ public class CourseServiceImpl implements CourseService {
         courseFind.setPeriod(period);
         courseFind.setGradeDetail(gradeDetail);
 
-        String generatedCode = subject.getCode() + "-" + gradeDetail.getDegree().getCode();
-        courseFind.setCode(generatedCode.toUpperCase());
 
         courseMapper.updateEntityFromDTO(courseDto, courseFind);
         return courseMapper.toResponseDTO(courseFind);
@@ -165,7 +156,8 @@ public class CourseServiceImpl implements CourseService {
                 co.getId(),
                 co.getName(),
                 co.getCode(),
-                co.getGradeDetail().getYear()
+                co.getGradeDetail().getYear(),
+                co.getStatus()
             )).toList();
     }
 

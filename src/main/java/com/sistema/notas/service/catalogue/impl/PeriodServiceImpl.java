@@ -2,7 +2,7 @@ package com.sistema.notas.service.catalogue.impl;
 
 import com.sistema.notas.dto.catalogues.PeriodRequestDTO;
 import com.sistema.notas.dto.catalogues.PeriodResponseDTO;
-import com.sistema.notas.dto.catalogues.PeriodSimpleDTO;
+import com.sistema.notas.dto.catalogues.PeriodSimpleResponseDto;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.entity.catalogues.Period;
 import com.sistema.notas.exceptions.BadRequestException;
@@ -43,6 +43,7 @@ public class PeriodServiceImpl implements PeriodService {
         }
 
         Period entity = periodMapper.toEntity(period);
+        entity.setStatus(1);
         Period saved = periodRespository.save(entity);
         return periodMapper.toResponseDTO(saved);
 
@@ -93,11 +94,11 @@ public class PeriodServiceImpl implements PeriodService {
     }
 
     @Override
-    public List<PeriodSimpleDTO> listartoSelects() {
+    public List<PeriodSimpleResponseDto> listartoSelects() {
         List<Period> periods = periodRespository.findAll();
 
         return periods.stream()
-                .map(per -> new PeriodSimpleDTO(per.getId(), per.getStartDate(), per.getEndDate()))
+                .map(per -> new PeriodSimpleResponseDto(per.getId(), per.getStartDate(), per.getEndDate()))
                 .toList();
     }
 

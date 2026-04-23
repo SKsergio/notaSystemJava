@@ -12,11 +12,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.beans.Transient;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-import com.sistema.notas.entity.AbstractCatalogo;
 import com.sistema.notas.entity.AuditableEntity;
 import com.sistema.notas.entity.catalogues.Period;
 import com.sistema.notas.entity.catalogues.Subject;
@@ -33,7 +33,7 @@ import com.sistema.notas.entity.catalogues.Subject;
 @EqualsAndHashCode(callSuper = true)
 @SQLDelete(sql = "UPDATE courses SET active = false WHERE id = ?")
 @SQLRestriction("active = true")
-public class Course extends AbstractCatalogo{
+public class Course extends AuditableEntity{
     @Column(name = "valoraty_unity")
     private double valorityUnity;
 
@@ -60,6 +60,25 @@ public class Course extends AbstractCatalogo{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "period_id", nullable = false)
     private Period period;
+
+
+    @Transient
+    public String getName() {
+        if (this.subject == null || this.gradeDetail.getSection() == null) {
+            return null;
+        }
+        
+        return  this.subject.getName() + " - " + this.gradeDetail.getSection().getCode() + " (" + this.gradeDetail.getYear() + ")";
+    }
+
+    @Transient
+    public String getCode() {
+        if (this.gradeDetail.getDegree() == null || this.subject == null) {
+            return null;
+        }
+        
+        return (this.subject.getCode() + "-" + this.gradeDetail.getDegree().getCode()).toUpperCase();
+    }
 }
 
 

@@ -1,17 +1,13 @@
 package com.sistema.notas.dto.core.course;
 
-import jakarta.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 
 public record CourseRequestDTO(
-        @NotBlank(message = "El nombre del curso es obligatorio") 
-        @Size(max = 50, message = "El nombre del curso es demasiado largo") 
-        String name,
-
+        @JsonProperty("valorityUnity")
         @NotNull(message = "La unidad Valorativa obligatoria") 
-        Integer valoraty_unity,
+        Double valorityUnity,
 
         @NotNull(message = "El Detalle de grado es obligatorio.")
         @Positive(message = "El ID del Detalle Grado debe ser un número positivo válido.")

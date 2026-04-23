@@ -31,4 +31,7 @@ public class Teacher extends InstitutionalPerson{
 
     @OneToMany(mappedBy = "tutor")
     private List<GradeDetail> assignedGrades;
+
+    @OneToMany(mappedBy = "teacher")
+    private List<Course> assignedCourses;
 }

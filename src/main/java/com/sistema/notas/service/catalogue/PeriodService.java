@@ -2,7 +2,7 @@ package com.sistema.notas.service.catalogue;
 
 import com.sistema.notas.dto.catalogues.PeriodRequestDTO;
 import com.sistema.notas.dto.catalogues.PeriodResponseDTO;
-import com.sistema.notas.dto.catalogues.PeriodSimpleDTO;
+import com.sistema.notas.dto.catalogues.PeriodSimpleResponseDto;
 import com.sistema.notas.dto.generics.PaginateResponse;
 
 import java.time.LocalDate;
@@ -17,7 +17,7 @@ public interface PeriodService {
 
     PaginateResponse<PeriodResponseDTO> obtenerPeriodsPaginados(int page, int size, LocalDate fromDate, LocalDate  toDate);
 
-    List<PeriodSimpleDTO> listartoSelects();
+    List<PeriodSimpleResponseDto> listartoSelects();
 
     PeriodResponseDTO obtenerPeriod(Integer id);
 }
