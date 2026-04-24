@@ -23,6 +23,7 @@ import com.sistema.notas.mapper.PageMapper;
 import com.sistema.notas.mapper.core.TeacherMapper;
 import com.sistema.notas.respository.core.TeacherRepository;
 import com.sistema.notas.service.core.TeacherService;
+import com.sistema.notas.service.fileStorage.FileStorageService;
 import com.sistema.notas.specifications.CatalogoSpecification;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,9 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository teacherRepository;
     private final PageMapper pageMapper;
     private final TeacherMapper teacherMapper;
+    
+    //servicio de imagenes
+    private final FileStorageService fileStorageService;
 
     // los trabajaremos despues
     @Override
@@ -65,8 +69,8 @@ public class TeacherServiceImpl implements TeacherService {
 
         // aca ira el procesaminto de la foto, llamdno al servicio de imagnes
         if (teacher.photo() != null && !teacher.photo().isEmpty()) {
-            String nuevaRuta = "ruta/a/la/nueva/foto.jpg";
-            entity.setRoutePhoto(nuevaRuta);
+            String fileName = fileStorageService.storeFile(teacher.photo());
+            entity.setRoutePhoto(fileName);
         }
 
         Teacher saved = teacherRepository.save(entity);
@@ -86,7 +90,21 @@ public class TeacherServiceImpl implements TeacherService {
         if (teacherRepository.existsByDuiAndIdNot(teacher.dui(), id)) {
             throw new BadRequestException("El DUI " + teacher.dui() + " ya está siendo usado por otro docente.");
         }
+
         teacherMapper.updateEntityFromDTO(teacher, teacherFind);
+
+        if (teacher.photo() != null && !teacher.photo().isEmpty()) {
+            //obtener nombre de la antigua
+            String oldNamePhoto = teacherFind.getRoutePhoto();
+
+            //bueva foto
+            String fileName = fileStorageService.storeFile(teacher.photo());
+            teacherFind.setRoutePhoto(fileName);
+
+            if (oldNamePhoto != null && !oldNamePhoto.isEmpty()) {
+                fileStorageService.delteFile(oldNamePhoto);
+            }
+        }
 
         return teacherMapper.toResponseDTO(teacherFind);
     }

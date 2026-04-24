@@ -12,6 +12,7 @@ public record TeacherFullResponseDTO(
         String email,
         String dui,
         int age,
+        String routePhoto,
         List<GradeDetailAssignedDTO> assignedGrades,
         List<CourseSimpleResponseDTO> assignedCourses
 ) {}
