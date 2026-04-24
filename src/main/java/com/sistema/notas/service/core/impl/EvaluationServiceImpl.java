@@ -25,6 +25,7 @@ import com.sistema.notas.respository.core.EvaluationsRepository;
 import com.sistema.notas.service.core.EvaluationService;
 import com.sistema.notas.specifications.CatalogoSpecification;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -58,6 +59,7 @@ public class EvaluationServiceImpl implements EvaluationService {
     }
 
     @Override
+    @Transactional
     public EvaluationsResponseDTO update(Integer id, EvaluationRequestDTO evaluationDTO) {
         Evaluation evaluationFind = evaluationsRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("No existe ninguna evaluación con el id: " + id));
