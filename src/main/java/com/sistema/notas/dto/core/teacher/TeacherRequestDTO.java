@@ -17,7 +17,7 @@ public record TeacherRequestDTO(
     @Size(max = 25, message = "El primer nombre no puede tener más de 25 caracteres")
     String firstName,
 
-     @NotBlank(message = "El segundo nombre es obligatorio")
+    @NotBlank(message = "El segundo nombre es obligatorio")
     @Size(max = 25, message = "El segundo nombre no puede tener más de 25 caracteres")
     String secondName,
 

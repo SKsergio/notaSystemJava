@@ -21,10 +21,6 @@ import com.sistema.notas.dto.core.student.StudentFullResponseDTO;
 import com.sistema.notas.dto.core.student.StudentRequestDTO;
 import com.sistema.notas.dto.core.student.StudentResponseDTO;
 import com.sistema.notas.dto.core.student.StudentSimpleResponseDTO;
-import com.sistema.notas.dto.core.teacher.TeacherFullResponseDTO;
-import com.sistema.notas.dto.core.teacher.TeacherRequestDTO;
-import com.sistema.notas.dto.core.teacher.TeacherResponseDTO;
-import com.sistema.notas.dto.core.teacher.TeacherSimpleResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.service.core.StudentService;
 
