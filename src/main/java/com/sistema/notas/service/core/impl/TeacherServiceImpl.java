@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sistema.notas.dto.core.teacher.TeacherFullResponseDTO;
 import com.sistema.notas.dto.core.teacher.TeacherRequestDTO;
+import com.sistema.notas.dto.core.teacher.TeacherRequestUpdateDTO;
 import com.sistema.notas.dto.core.teacher.TeacherResponseDTO;
+import com.sistema.notas.dto.core.teacher.TeacherResponseEditDTO;
 import com.sistema.notas.dto.core.teacher.TeacherSimpleResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.entity.core.Teacher;
@@ -79,7 +81,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     @Transactional
-    public TeacherResponseDTO update(Integer id, TeacherRequestDTO teacher) {
+    public TeacherResponseDTO update(Integer id, TeacherRequestUpdateDTO teacher) {
         Teacher teacherFind = teacherRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("No esixte ningun maestro con el id: " + id));
 
@@ -155,6 +157,14 @@ public class TeacherServiceImpl implements TeacherService {
                 () -> new ResourceNotFoundException("No esixte ningun maestro con el id: " + id));
 
         return teacherMapper.toFullResponse(teacherFind);
+    }
+
+    @Override
+    public TeacherResponseEditDTO obtenerTeacherEdit(Integer id) {
+        Teacher teacherFind = teacherRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("No esixte ningun maestro con el id: " + id));
+
+        return teacherMapper.toResponseEditDTO(teacherFind);
     }
 
 }

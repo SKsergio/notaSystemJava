@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.sistema.notas.dto.core.teacher.TeacherFullResponseDTO;
 import com.sistema.notas.dto.core.teacher.TeacherRequestDTO;
+import com.sistema.notas.dto.core.teacher.TeacherRequestUpdateDTO;
 import com.sistema.notas.dto.core.teacher.TeacherResponseDTO;
+import com.sistema.notas.dto.core.teacher.TeacherResponseEditDTO;
 import com.sistema.notas.dto.core.teacher.TeacherSimpleResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 
@@ -20,9 +22,10 @@ public interface TeacherService {
 
     //crud basico
     TeacherResponseDTO save(TeacherRequestDTO teacher);
-    TeacherResponseDTO update(Integer id, TeacherRequestDTO teaccher);
+    TeacherResponseDTO update(Integer id, TeacherRequestUpdateDTO teacher);
     void delete(Integer id);
     PaginateResponse<TeacherResponseDTO> obtenerTeacherPaginados(int page, int size, String search ,LocalDate fromDate, LocalDate  toDate);
     List<TeacherSimpleResponseDTO> listartoSelect();
     TeacherFullResponseDTO obtenerTeachear(Integer id);
+    TeacherResponseEditDTO obtenerTeacherEdit(Integer id);
 }
