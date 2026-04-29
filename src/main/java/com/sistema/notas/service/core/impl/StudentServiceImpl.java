@@ -22,6 +22,7 @@ import com.sistema.notas.respository.core.StudentRepository;
 import com.sistema.notas.service.core.StudentService;
 import com.sistema.notas.service.fileStorage.FileStorageService;
 import com.sistema.notas.specifications.CatalogoSpecification;
+import com.sistema.notas.specifications.StudentSpecification;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -93,7 +94,7 @@ public class StudentServiceImpl implements StudentService {
         Pageable pagable = PageRequest.of(page, size);
 
         Specification<Student> filtros = Specification
-                .where(CatalogoSpecification.<Student>searchContains(search))
+                .where(StudentSpecification.search(search))
                 .and(CatalogoSpecification.<Student>createdBetween(startDate, endDate));
 
         Page<Student> students = studentRepository.findAll(filtros, pagable);

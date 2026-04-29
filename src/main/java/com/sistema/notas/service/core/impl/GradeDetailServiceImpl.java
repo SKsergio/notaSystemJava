@@ -28,6 +28,7 @@ import com.sistema.notas.respository.core.GradeDetailRepository;
 import com.sistema.notas.respository.core.TeacherRepository;
 import com.sistema.notas.service.core.GradeDetailService;
 import com.sistema.notas.specifications.CatalogoSpecification;
+import com.sistema.notas.specifications.GradeDetailSpecification;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -121,7 +122,7 @@ public class GradeDetailServiceImpl implements GradeDetailService {
         Pageable pageable = PageRequest.of(page, size);
 
         Specification<GradeDetail> filtros = Specification
-                .where(CatalogoSpecification.<GradeDetail>searchContains(search))
+                .where(GradeDetailSpecification.search(search))
                 .and(CatalogoSpecification.<GradeDetail>createdBetween(fromDate, toDate));
 
         Page<GradeDetail> gradesDetail = gradeDetailRepository.findAll(filtros, pageable);
