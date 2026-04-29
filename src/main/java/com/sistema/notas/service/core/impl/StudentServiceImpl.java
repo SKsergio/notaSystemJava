@@ -9,9 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.sistema.notas.dto.core.student.StudentEditRequestDTO;
 import com.sistema.notas.dto.core.student.StudentFullResponseDTO;
 import com.sistema.notas.dto.core.student.StudentRequestDTO;
 import com.sistema.notas.dto.core.student.StudentResponseDTO;
+import com.sistema.notas.dto.core.student.StudentResponseEditDTO;
 import com.sistema.notas.dto.core.student.StudentSimpleResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.entity.core.Student;
@@ -55,7 +57,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Transactional
-    public StudentResponseDTO update(Integer id, StudentRequestDTO studentRequestDTO) {
+    public StudentResponseDTO update(Integer id, StudentEditRequestDTO studentRequestDTO) {
         Student studentFind = studentRepository.findById(id).orElseThrow(
                 () -> new BadRequestException("No se encontró el estudiante con id: " + id));
 
@@ -123,6 +125,14 @@ public class StudentServiceImpl implements StudentService {
                 () -> new BadRequestException("No se encontró el estudiante con id: " + id));
 
         return studentMapper.toFullResponse(studentFind);
+    }
+
+    @Override
+    public StudentResponseEditDTO obtenerStudentEdit(Integer id) {
+        Student studentFind = studentRepository.findById(id).orElseThrow(
+                () -> new BadRequestException("No se encontró el estudiante con id: " + id));
+
+        return studentMapper.toResponseEditDto(studentFind);
     }
 
 }

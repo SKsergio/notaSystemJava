@@ -3,9 +3,11 @@ package com.sistema.notas.service.core;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.sistema.notas.dto.core.student.StudentEditRequestDTO;
 import com.sistema.notas.dto.core.student.StudentFullResponseDTO;
 import com.sistema.notas.dto.core.student.StudentRequestDTO;
 import com.sistema.notas.dto.core.student.StudentResponseDTO;
+import com.sistema.notas.dto.core.student.StudentResponseEditDTO;
 import com.sistema.notas.dto.core.student.StudentSimpleResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 
@@ -21,9 +23,10 @@ public interface StudentService {
 
     //generar boleta de notas
     StudentResponseDTO save(StudentRequestDTO studentRequestDTO);
-    StudentResponseDTO update(Integer id, StudentRequestDTO studentRequestDTO);
+    StudentResponseDTO update(Integer id, StudentEditRequestDTO studentRequestDTO);
     void delete(Integer id);
     PaginateResponse<StudentResponseDTO> obtenerStudentPaginados(int page, int size, String search, LocalDate startDate, LocalDate endDate);
     List<StudentSimpleResponseDTO> listartoSelect();
     StudentFullResponseDTO obtenerStudent(Integer id);
+    StudentResponseEditDTO obtenerStudentEdit(Integer id);
 }

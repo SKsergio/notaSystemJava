@@ -5,9 +5,11 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
+import com.sistema.notas.dto.core.student.StudentEditRequestDTO;
 import com.sistema.notas.dto.core.student.StudentFullResponseDTO;
 import com.sistema.notas.dto.core.student.StudentRequestDTO;
 import com.sistema.notas.dto.core.student.StudentResponseDTO;
+import com.sistema.notas.dto.core.student.StudentResponseEditDTO;
 import com.sistema.notas.entity.core.Student;
 
 import org.mapstruct.Mapper;
@@ -26,8 +28,13 @@ public interface StudentMapper {
     Student toEntity(StudentRequestDTO responseDTO);
 
     @Mapping(target = "routePhoto", ignore = true)
-    Student updateEntityFromDTO(StudentRequestDTO responseDTO, @MappingTarget Student student);
+    Student updateEntityFromDTO(StudentEditRequestDTO responseDTO, @MappingTarget Student student);
 
+    //response edit
+    @Mapping(source = "routePhoto", target = "routePhoto", qualifiedByName = "mapPhotoUrl")
+    StudentResponseEditDTO toResponseEditDto(Student student);
+
+    //full response
     @Mapping(source = "routePhoto", target = "routePhoto", qualifiedByName = "mapPhotoUrl")
     StudentFullResponseDTO toFullResponse(Student student);
 
