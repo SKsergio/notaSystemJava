@@ -31,6 +31,9 @@ import com.sistema.notas.respository.core.GradeDetailRepository;
 import com.sistema.notas.respository.core.TeacherRepository;
 import com.sistema.notas.service.core.CourseService;
 import com.sistema.notas.specifications.CatalogoSpecification;
+import com.sistema.notas.specifications.CourseSpecification;
+import com.sistema.notas.specifications.CatalogoSpecification;
+import org.springframework.data.jpa.domain.Specification;
 
 import lombok.RequiredArgsConstructor;
 
@@ -132,12 +135,11 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public PaginateResponse<CourseResponseDTO> obtenerCoursePaginados(int page, int size, String search,
-            LocalDate fromDate, LocalDate toDate) {
+                                                                      LocalDate fromDate, LocalDate toDate) {
         Pageable pagable = PageRequest.of(page, size);
 
-        //cambiar los specifications
         Specification<Course> filtros = Specification
-                .where(CatalogoSpecification.<Course>searchContains(search))
+                .where(CourseSpecification.search(search))
                 .and(CatalogoSpecification.<Course>createdBetween(fromDate, toDate));
 
         Page<Course> courses = coursesRespository.findAll(filtros, pagable);
