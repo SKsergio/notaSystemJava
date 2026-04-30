@@ -3,6 +3,7 @@ package com.sistema.notas.service.core;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.sistema.notas.dto.core.gradeDetail.GradeDetailEditResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailFullResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailRequestDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailResponseDTO;
@@ -21,4 +22,5 @@ public interface GradeDetailService {
     PaginateResponse<GradeDetailResponseDTO> obtenerGradaDetailPaginados(int page, int size, String search ,LocalDate fromDate, LocalDate  toDate);
     List<GradeDetailSimpleResponseDTO> listarToSelects();
     GradeDetailFullResponseDTO obtenerOneGradeDetail(Integer id);
+    GradeDetailEditResponseDTO obtenerOneGradeDetailEdit(Integer id);
 }

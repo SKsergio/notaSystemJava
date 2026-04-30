@@ -76,7 +76,7 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("edit/{id}")
     public ResponseEntity<StudentResponseEditDTO> getStudentEdit(@PathVariable Integer id) {
         StudentResponseEditDTO responseDTO = studentService.obtenerStudentEdit(id);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);

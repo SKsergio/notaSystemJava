@@ -1,6 +1,7 @@
 package com.sistema.notas.mapper.core;
 
 import com.sistema.notas.dto.catalogues.CatalogueSimpleResponseDTO;
+import com.sistema.notas.dto.core.gradeDetail.GradeDetailEditResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailFullResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailRequestDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailResponseDTO;
@@ -36,6 +37,12 @@ public interface GradeDetailMapper {
     @Mapping(target = "section", ignore = true)
     @Mapping(target = "tutor", ignore = true)
     void updateEntityFromDTO(GradeDetailRequestDTO requestDTO, @MappingTarget GradeDetail gradeDetail);
+
+
+    @Mapping(source = "section.id", target = "sectionId")
+    @Mapping(source = "degree.id", target = "tutorId")
+    @Mapping(source = "tutor.id", target = "degreeId")
+    GradeDetailEditResponseDTO toEditResponseDTO(GradeDetail entity);
 
     GradeDetailFullResponseDTO toFullResponseDTO(GradeDetail entity);
 

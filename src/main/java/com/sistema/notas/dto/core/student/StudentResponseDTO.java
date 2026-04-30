@@ -9,6 +9,7 @@ public record StudentResponseDTO(
         Integer id,
         String fullName,
         String address,
+        String carnet,
         String phoneNumber,
         String email,
         GenderEnum gender,

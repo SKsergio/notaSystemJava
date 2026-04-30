@@ -114,6 +114,7 @@ public class StudentServiceImpl implements StudentService {
                 .map(st -> new StudentSimpleResponseDTO(
                         st.getId(),
                         st.getfullName(),
+                        st.getCarnet(),
                         st.getEmail(),
                         st.getRoutePhoto(),
                         st.getAge()))

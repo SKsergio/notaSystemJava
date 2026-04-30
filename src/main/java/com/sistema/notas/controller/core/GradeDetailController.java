@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sistema.notas.dto.core.gradeDetail.GradeDetailEditResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailFullResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailRequestDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailResponseDTO;
@@ -74,6 +75,12 @@ public class GradeDetailController {
     @GetMapping("/{id}")
     public ResponseEntity<GradeDetailFullResponseDTO> getGradeDetail(@PathVariable Integer id) {
         GradeDetailFullResponseDTO responseDTO = gradeDetailService.obtenerOneGradeDetail(id);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    }
+
+    @GetMapping("edit/{id}")
+    public ResponseEntity<GradeDetailEditResponseDTO> getGradeDetailEdit(@PathVariable Integer id) {
+        GradeDetailEditResponseDTO responseDTO = gradeDetailService.obtenerOneGradeDetailEdit(id);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 }

@@ -11,6 +11,7 @@ import com.sistema.notas.mapper.PageMapper;
 import com.sistema.notas.mapper.catalogues.CatalogueMapper;
 import com.sistema.notas.mapper.catalogues.DegreeMapper;
 import com.sistema.notas.respository.catalogues.DegreeRespository;
+import com.sistema.notas.respository.core.GradeDetailRepository;
 import com.sistema.notas.service.catalogue.DegreeService;
 import lombok.RequiredArgsConstructor;
 import com.sistema.notas.specifications.CatalogoSpecification;
@@ -34,6 +35,9 @@ public class DegreeServiceImpl implements DegreeService {
     private final PageMapper pageMapper;
     private final DegreeMapper degreeMapper;
     private final CatalogueMapper catalogueMapper;
+
+    //ralaciones
+    private final GradeDetailRepository gradeDetailRepository;
 
     @Override
     public CatalogueResponseDTO save(CatalogueRequestDto request) {
@@ -94,6 +98,10 @@ public class DegreeServiceImpl implements DegreeService {
                 ()-> new ResourceNotFoundException("El grado con el id: " + id + " no existe")
         );
 
+        if (gradeDetailRepository.existsByDegreeId(id)) {
+            throw new BadRequestException("No se puede eliminar el Grado porque tiene Detalles de Grado asignados y activos.");
+        }
+
         degreeRespository.delete(oldDegree);
     }
 
@@ -109,10 +117,11 @@ public class DegreeServiceImpl implements DegreeService {
 
     @Override
     public CatalogueResponseDTO findById(Integer id) {
-
         Degree degreeFind = degreeRespository.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("El grado con el id: " + id + " no existe")
         );
+
+        
 
         return catalogueMapper.toResponse(degreeFind);
     }

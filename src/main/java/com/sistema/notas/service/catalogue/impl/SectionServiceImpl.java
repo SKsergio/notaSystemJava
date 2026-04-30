@@ -11,6 +11,7 @@ import com.sistema.notas.mapper.PageMapper;
 import com.sistema.notas.mapper.catalogues.CatalogueMapper;
 import com.sistema.notas.mapper.catalogues.SectionMapper;
 import com.sistema.notas.respository.catalogues.SectionRespository;
+import com.sistema.notas.respository.core.GradeDetailRepository;
 import com.sistema.notas.service.catalogue.SectionService;
 import com.sistema.notas.specifications.CatalogoSpecification;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,8 @@ public class SectionServiceImpl implements SectionService {
     private final PageMapper pageMapper;
     private final SectionMapper sectionMapper;
 
+    //RELACIONES
+    private final GradeDetailRepository gradeDetailRepository;
 
     @Override
     public CatalogueResponseDTO save(CatalogueRequestDto section) {
@@ -73,6 +76,10 @@ public class SectionServiceImpl implements SectionService {
         Section oldSection = sectionRespository.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("La secion con el id: " + id + " no existe")
         );
+
+        if (gradeDetailRepository.existsBySectionId(id)) {
+            throw new BadRequestException("No se puede eliminar la Sección porque tiene Detalles de Grado asignados y activos.");
+        }
 
         sectionRespository.delete(oldSection);
     }

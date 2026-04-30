@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.sistema.notas.dto.core.gradeDetail.GradeDetailEditResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailFullResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailRequestDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailResponseDTO;
@@ -151,6 +152,14 @@ public class GradeDetailServiceImpl implements GradeDetailService {
                 () -> new ResourceNotFoundException("No existe ningun detalle de grado con el id: " + id));
 
         return gradeDetailMapper.toFullResponseDTO(gradeDetailFind);
+    }
+
+    @Override
+    public GradeDetailEditResponseDTO obtenerOneGradeDetailEdit(Integer id) {
+         GradeDetail gradeDetailFind = gradeDetailRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("No existe ningun detalle de grado con el id: " + id));
+
+        return gradeDetailMapper.toEditResponseDTO(gradeDetailFind);
     }
 
 }

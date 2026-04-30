@@ -11,6 +11,7 @@ public record StudentResponseEditDTO(
     String firstLastName,
     String secondLastName,
     String address,
+    String carnet,
     String phoneNumber,
     String email,
     GenderEnum gender,

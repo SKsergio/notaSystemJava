@@ -27,6 +27,10 @@ public record StudentEditRequestDTO(
     @Size(max = 25, message = "El segundo apellido no puede tener más de 25 caracteres")
     String secondLastName,
 
+    @NotBlank(message = "El carnet es obligatorio")
+    @Size(max = 10, message = "El carnet no puede tener más de 10 caracteres")
+    String carnet,
+
     @NotBlank(message = "La dirección es obligatoria")
     @Size(max = 255, message = "La dirección excede el límite de caracteres")
     String address,

@@ -10,6 +10,7 @@ import com.sistema.notas.exceptions.ResourceNotFoundException;
 import com.sistema.notas.mapper.PageMapper;
 import com.sistema.notas.mapper.catalogues.SubjectMapper;
 import com.sistema.notas.respository.catalogues.SubjectRepository;
+import com.sistema.notas.respository.core.CoursesRespository;
 import com.sistema.notas.service.catalogue.SubjectService;
 import com.sistema.notas.specifications.CatalogoSpecification;
 import jakarta.transaction.Transactional;
@@ -32,6 +33,8 @@ public class SubjectServiceImpl implements SubjectService {
     private final SubjectMapper subjectMapper;
     private final PageMapper pageMapper;
 
+    //realaciones
+    private final CoursesRespository coursesRespository;
 
     @Override
     public SubjectResponseDTO save(SubjectRequestDTO subject) {
@@ -62,6 +65,10 @@ public class SubjectServiceImpl implements SubjectService {
         Subject subjectoFind = subjectRepository.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("Materia con el id :" + id + " no encontrado")
         );
+
+        if (coursesRespository.existsBySubjectId(id)) {
+            throw new BadRequestException("No se puede eliminar la Materia porque tiene Cursos asignados y activos.");
+        }
 
         subjectRepository.delete(subjectoFind);
     }

@@ -4,10 +4,9 @@ import com.sistema.notas.entity.enums.GenderEnum;
 
 public record StudentFullResponseDTO(
         Integer id,
-        // String firstName,
         String fullName,
+        String carnet,
         String email,
-        String dui,
         int age,
         String routePhoto,
         GenderEnum gender,
