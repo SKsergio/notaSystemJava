@@ -16,7 +16,6 @@ public interface EvaluationService {
     PaginateResponse<EvaluationsResponseDTO> obtenerEvaluations(int page, int size, String search ,LocalDate fromDate, LocalDate  toDate);
     List<EvaluationSimpleResponse> listarToSelects();
     EvaluationFullResponseDTO obtenerOneEvaluation(Integer id);
-
     //abrir y cerrar evaluaciones
     EvaluationsResponseDTO openEvaluation(Integer id);
     EvaluationsResponseDTO closeEvaluation(Integer id);

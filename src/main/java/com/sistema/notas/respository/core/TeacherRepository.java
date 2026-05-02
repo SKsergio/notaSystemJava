@@ -1,4 +1,6 @@
 package com.sistema.notas.respository.core;
+import com.sistema.notas.dto.core.teacher.TeacherResponseDTO;
+import com.sistema.notas.dto.generics.PaginateResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.sistema.notas.entity.core.Teacher;
