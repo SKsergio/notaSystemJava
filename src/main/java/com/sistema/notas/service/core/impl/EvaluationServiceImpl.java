@@ -24,6 +24,7 @@ import com.sistema.notas.respository.core.CoursesRespository;
 import com.sistema.notas.respository.core.EvaluationsRepository;
 import com.sistema.notas.service.core.EvaluationService;
 import com.sistema.notas.specifications.CatalogoSpecification;
+import com.sistema.notas.specifications.EvaluationSpecification;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -87,11 +88,11 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     @Override
     public PaginateResponse<EvaluationsResponseDTO> obtenerEvaluations(int page, int size, String search,
-            LocalDate fromDate, LocalDate toDate) {
+                                                                       LocalDate fromDate, LocalDate toDate) {
         Pageable pageable = PageRequest.of(page, size);
 
         Specification<Evaluation> filtros = Specification
-                .where(CatalogoSpecification.<Evaluation>searchContains(search))
+                .where(EvaluationSpecification.search(search))
                 .and(CatalogoSpecification.<Evaluation>createdBetween(fromDate, toDate));
 
         Page<Evaluation> evaluations = evaluationsRepository.findAll(filtros, pageable);

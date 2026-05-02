@@ -1,7 +1,6 @@
 package com.sistema.notas.dto.core.student;
 
 import com.sistema.notas.entity.enums.GenderEnum;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +10,7 @@ import java.time.LocalDate;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public record StudentRequestDTO(
+public record StudentEditRequestDTO(
     @NotBlank(message = "El primer nombre es obligatorio")
     @Size(max = 25, message = "El primer nombre no puede tener más de 25 caracteres")
     String firstName,
@@ -48,7 +47,6 @@ public record StudentRequestDTO(
     @NotNull(message = "El género es obligatorio")
     GenderEnum gender,
 
-    @NotNull(message = "La foto es obligatoria")
     MultipartFile photo,
 
     // Usamos @NotNull y @Past para fechas
@@ -57,3 +55,4 @@ public record StudentRequestDTO(
     LocalDate birthDate
 ) {
 }
+

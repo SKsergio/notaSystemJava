@@ -29,4 +29,9 @@ public interface CoursesRespository extends JpaRepository<Course, Integer>, JpaS
     List<Course> findByGradeDetailId(Integer gradeDetailId);
     List<Course> findByTeacherId(Integer teacherId);
     List<Course> findByStatus(Integer status);
+
+    boolean existsByGradeDetailId(Integer gradeDetailId);
+    boolean existsByPeriodId(Integer periodId);
+    boolean existsBySubjectId(Integer subjectId);
+
 }

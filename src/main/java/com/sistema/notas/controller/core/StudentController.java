@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sistema.notas.dto.core.student.StudentEditRequestDTO;
 import com.sistema.notas.dto.core.student.StudentFullResponseDTO;
 import com.sistema.notas.dto.core.student.StudentRequestDTO;
 import com.sistema.notas.dto.core.student.StudentResponseDTO;
+import com.sistema.notas.dto.core.student.StudentResponseEditDTO;
 import com.sistema.notas.dto.core.student.StudentSimpleResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.service.core.StudentService;
@@ -56,7 +58,7 @@ public class StudentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<StudentResponseDTO> updateStudent(
-            @Validated @ModelAttribute StudentRequestDTO studentDto,
+            @Validated @ModelAttribute StudentEditRequestDTO studentDto,
             @PathVariable Integer id) {
         return ResponseEntity.status(HttpStatus.OK).body(studentService.update(id, studentDto));
     }
@@ -71,6 +73,12 @@ public class StudentController {
     @GetMapping("/{id}")
     public ResponseEntity<StudentFullResponseDTO> getStudent(@PathVariable Integer id) {
         StudentFullResponseDTO responseDTO = studentService.obtenerStudent(id);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    }
+
+    @GetMapping("edit/{id}")
+    public ResponseEntity<StudentResponseEditDTO> getStudentEdit(@PathVariable Integer id) {
+        StudentResponseEditDTO responseDTO = studentService.obtenerStudentEdit(id);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 }

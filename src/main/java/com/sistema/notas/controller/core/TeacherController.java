@@ -11,12 +11,17 @@ import org.springframework.web.bind.annotation.*;
 
 import com.sistema.notas.dto.core.teacher.TeacherFullResponseDTO;
 import com.sistema.notas.dto.core.teacher.TeacherRequestDTO;
+import com.sistema.notas.dto.core.teacher.TeacherRequestUpdateDTO;
 import com.sistema.notas.dto.core.teacher.TeacherResponseDTO;
+import com.sistema.notas.dto.core.teacher.TeacherResponseEditDTO;
 import com.sistema.notas.dto.core.teacher.TeacherSimpleResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.service.core.TeacherService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -48,7 +53,7 @@ public class TeacherController {
 
     @PutMapping("/{id}")
     public ResponseEntity<TeacherResponseDTO> UpdateTeacher(
-            @Validated @ModelAttribute TeacherRequestDTO teacherDto,
+            @Validated @ModelAttribute TeacherRequestUpdateDTO teacherDto,
             @PathVariable Integer id) {
         return ResponseEntity.status(HttpStatus.OK).body(teacherService.update(id, teacherDto));
     }
@@ -65,4 +70,13 @@ public class TeacherController {
         TeacherFullResponseDTO responseDTO = teacherService.obtenerTeachear(id);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
+
+    //obtene objeto para precargar
+    @GetMapping("/edit/{id}")
+    public ResponseEntity<TeacherResponseEditDTO> getEditResponse(@PathVariable Integer id) {
+        TeacherResponseEditDTO responseEditDTO = teacherService.obtenerTeacherEdit(id);
+        return ResponseEntity.status(HttpStatus.OK).body(responseEditDTO);
+    }
+    
 }
+

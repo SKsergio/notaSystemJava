@@ -1,4 +1,4 @@
-package com.sistema.notas.dto.core.student;
+package com.sistema.notas.dto.core.teacher;
 
 import com.sistema.notas.entity.enums.GenderEnum;
 
@@ -11,7 +11,8 @@ import java.time.LocalDate;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public record StudentRequestDTO(
+public record TeacherRequestUpdateDTO(
+    
     @NotBlank(message = "El primer nombre es obligatorio")
     @Size(max = 25, message = "El primer nombre no puede tener más de 25 caracteres")
     String firstName,
@@ -27,10 +28,6 @@ public record StudentRequestDTO(
     @NotBlank(message = "El segundo apellido es obligatorio")
     @Size(max = 25, message = "El segundo apellido no puede tener más de 25 caracteres")
     String secondLastName,
-
-    @NotBlank(message = "El carnet es obligatorio")
-    @Size(max = 10, message = "El carnet no puede tener más de 10 caracteres")
-    String carnet,
 
     @NotBlank(message = "La dirección es obligatoria")
     @Size(max = 255, message = "La dirección excede el límite de caracteres")
@@ -48,12 +45,19 @@ public record StudentRequestDTO(
     @NotNull(message = "El género es obligatorio")
     GenderEnum gender,
 
-    @NotNull(message = "La foto es obligatoria")
     MultipartFile photo,
 
     // Usamos @NotNull y @Past para fechas
     @NotNull(message = "La fecha de nacimiento es obligatoria")
     @Past(message = "La fecha de nacimiento debe ser en el pasado")
-    LocalDate birthDate
+    LocalDate birthDate,
+
+    @NotBlank(message = "El campo de especialidad es obligatorio")
+    @Size(max = 20, message = "La especialidad es demasiado larga")
+    String speciality,
+
+    @NotBlank(message = "El dui no puede venir vacio")
+    @Size(max = 9, message = "El dui no cumple con el formato requerido")
+    String dui
 ) {
 }

@@ -10,6 +10,7 @@ import com.sistema.notas.exceptions.ResourceNotFoundException;
 import com.sistema.notas.mapper.PageMapper;
 import com.sistema.notas.mapper.catalogues.PeriodMapper;
 import com.sistema.notas.respository.catalogues.PeriodRespository;
+import com.sistema.notas.respository.core.CoursesRespository;
 import com.sistema.notas.service.catalogue.PeriodService;
 import com.sistema.notas.specifications.CatalogoSpecification;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,9 @@ public class PeriodServiceImpl implements PeriodService {
     private final PeriodRespository periodRespository;
     private final PeriodMapper periodMapper;
     private final PageMapper pageMapper;
+
+    //ralaciones
+    private final CoursesRespository coursesRespository;
 
     @Override
     public PeriodResponseDTO save(PeriodRequestDTO period) {
@@ -74,6 +78,10 @@ public class PeriodServiceImpl implements PeriodService {
        Period periodFind = periodRespository.findById(id).orElseThrow(
                ()->new ResourceNotFoundException("Periodo con el id: " + id + " no existe.")
        );
+
+       if (coursesRespository.existsByPeriodId(id)) {
+            throw new BadRequestException("No se puede eliminar el Periodo porque tiene Cursos asignados y activos.");
+       }
 
        periodRespository.delete(periodFind);
     }

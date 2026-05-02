@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.sistema.notas.dto.core.gradeDetail.GradeDetailEditResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailFullResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailRequestDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailResponseDTO;
@@ -28,6 +29,7 @@ import com.sistema.notas.respository.core.GradeDetailRepository;
 import com.sistema.notas.respository.core.TeacherRepository;
 import com.sistema.notas.service.core.GradeDetailService;
 import com.sistema.notas.specifications.CatalogoSpecification;
+import com.sistema.notas.specifications.GradeDetailSpecification;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -121,7 +123,7 @@ public class GradeDetailServiceImpl implements GradeDetailService {
         Pageable pageable = PageRequest.of(page, size);
 
         Specification<GradeDetail> filtros = Specification
-                .where(CatalogoSpecification.<GradeDetail>searchContains(search))
+                .where(GradeDetailSpecification.search(search))
                 .and(CatalogoSpecification.<GradeDetail>createdBetween(fromDate, toDate));
 
         Page<GradeDetail> gradesDetail = gradeDetailRepository.findAll(filtros, pageable);
@@ -150,6 +152,14 @@ public class GradeDetailServiceImpl implements GradeDetailService {
                 () -> new ResourceNotFoundException("No existe ningun detalle de grado con el id: " + id));
 
         return gradeDetailMapper.toFullResponseDTO(gradeDetailFind);
+    }
+
+    @Override
+    public GradeDetailEditResponseDTO obtenerOneGradeDetailEdit(Integer id) {
+         GradeDetail gradeDetailFind = gradeDetailRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("No existe ningun detalle de grado con el id: " + id));
+
+        return gradeDetailMapper.toEditResponseDTO(gradeDetailFind);
     }
 
 }

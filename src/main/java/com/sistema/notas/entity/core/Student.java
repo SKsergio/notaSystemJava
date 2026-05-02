@@ -5,6 +5,7 @@ import org.hibernate.annotations.SQLRestriction;
 
 import com.sistema.notas.entity.InstitutionalPerson;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
@@ -20,4 +21,8 @@ import lombok.Setter;
 @SQLDelete(sql = "UPDATE students SET active = false WHERE id = ?")
 @SQLRestriction("active = true")
 public class Student extends InstitutionalPerson{
+    @Column(name ="carnet", nullable = false, length = 10, unique = true)
+    private String carnet;
 }
+
+

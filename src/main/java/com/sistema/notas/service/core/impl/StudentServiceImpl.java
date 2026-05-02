@@ -9,9 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.sistema.notas.dto.core.student.StudentEditRequestDTO;
 import com.sistema.notas.dto.core.student.StudentFullResponseDTO;
 import com.sistema.notas.dto.core.student.StudentRequestDTO;
 import com.sistema.notas.dto.core.student.StudentResponseDTO;
+import com.sistema.notas.dto.core.student.StudentResponseEditDTO;
 import com.sistema.notas.dto.core.student.StudentSimpleResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.entity.core.Student;
@@ -22,6 +24,7 @@ import com.sistema.notas.respository.core.StudentRepository;
 import com.sistema.notas.service.core.StudentService;
 import com.sistema.notas.service.fileStorage.FileStorageService;
 import com.sistema.notas.specifications.CatalogoSpecification;
+import com.sistema.notas.specifications.StudentSpecification;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +58,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Transactional
-    public StudentResponseDTO update(Integer id, StudentRequestDTO studentRequestDTO) {
+    public StudentResponseDTO update(Integer id, StudentEditRequestDTO studentRequestDTO) {
         Student studentFind = studentRepository.findById(id).orElseThrow(
                 () -> new BadRequestException("No se encontró el estudiante con id: " + id));
 
@@ -93,7 +96,7 @@ public class StudentServiceImpl implements StudentService {
         Pageable pagable = PageRequest.of(page, size);
 
         Specification<Student> filtros = Specification
-                .where(CatalogoSpecification.<Student>searchContains(search))
+                .where(StudentSpecification.search(search))
                 .and(CatalogoSpecification.<Student>createdBetween(startDate, endDate));
 
         Page<Student> students = studentRepository.findAll(filtros, pagable);
@@ -111,6 +114,7 @@ public class StudentServiceImpl implements StudentService {
                 .map(st -> new StudentSimpleResponseDTO(
                         st.getId(),
                         st.getfullName(),
+                        st.getCarnet(),
                         st.getEmail(),
                         st.getRoutePhoto(),
                         st.getAge()))
@@ -123,6 +127,14 @@ public class StudentServiceImpl implements StudentService {
                 () -> new BadRequestException("No se encontró el estudiante con id: " + id));
 
         return studentMapper.toFullResponse(studentFind);
+    }
+
+    @Override
+    public StudentResponseEditDTO obtenerStudentEdit(Integer id) {
+        Student studentFind = studentRepository.findById(id).orElseThrow(
+                () -> new BadRequestException("No se encontró el estudiante con id: " + id));
+
+        return studentMapper.toResponseEditDto(studentFind);
     }
 
 }

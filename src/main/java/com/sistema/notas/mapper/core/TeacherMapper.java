@@ -11,7 +11,9 @@ import com.sistema.notas.dto.core.course.CourseSimpleResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailAssignedDTO;
 import com.sistema.notas.dto.core.teacher.TeacherFullResponseDTO;
 import com.sistema.notas.dto.core.teacher.TeacherRequestDTO;
+import com.sistema.notas.dto.core.teacher.TeacherRequestUpdateDTO;
 import com.sistema.notas.dto.core.teacher.TeacherResponseDTO;
+import com.sistema.notas.dto.core.teacher.TeacherResponseEditDTO;
 import com.sistema.notas.entity.core.Course;
 import com.sistema.notas.entity.core.GradeDetail;
 import com.sistema.notas.entity.core.Teacher;
@@ -21,15 +23,22 @@ import com.sistema.notas.entity.core.Teacher;
     unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface TeacherMapper {
+    //teacher responseDTO
     @Mapping(source = "routePhoto", target = "routePhoto", qualifiedByName = "mapPhotoUrl")
     TeacherResponseDTO toResponseDTO(Teacher teacher);
 
+    //a entidad
     @Mapping(target = "routePhoto", ignore = true)
     Teacher toEntity(TeacherRequestDTO requestDTO);
 
+    //actualizar entidad existente
     @Mapping(target = "routePhoto", ignore = true)
-    Teacher updateEntityFromDTO(TeacherRequestDTO requestDTO, @MappingTarget Teacher teacher);
+    Teacher updateEntityFromDTO(TeacherRequestUpdateDTO requestDTO, @MappingTarget Teacher teacher);
 
+    @Mapping(source = "routePhoto", target = "routePhoto", qualifiedByName = "mapPhotoUrl")
+    TeacherResponseEditDTO toResponseEditDTO(Teacher teacher);
+
+    //response full
     @Mapping(source = "routePhoto", target = "routePhoto", qualifiedByName = "mapPhotoUrl")
     TeacherFullResponseDTO toFullResponse(Teacher entity);
 
