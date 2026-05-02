@@ -140,6 +140,7 @@ public class GradeDetailServiceImpl implements GradeDetailService {
         return gradeDetails.stream()
                 .map(gdt -> new GradeDetailSimpleResponseDTO(
                         gdt.getId(),
+                        gdt.getFullName(),
                         gdt.getSection().getName(),
                         gdt.getDegree().getName(),
                         gdt.getTutor().getFirstName()))

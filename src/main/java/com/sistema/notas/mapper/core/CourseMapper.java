@@ -40,6 +40,10 @@ public interface CourseMapper {
     Course toEntity(CourseRequestDTO requestDTO);
 
     //DE ENTITY A REQUEST DE EDICION
+    @Mapping(source = "subject.id", target = "subjectId")
+    @Mapping(source = "gradeDetail.id", target = "gradeDetailId")
+    @Mapping(source = "period.id", target = "periodId")
+    @Mapping(source = "teacher.id", target = "teacherId")
     CourseEditResponseDTO toEditResponseDTO(Course entity);
 
     // DE REQUEST A ENTITY
@@ -76,6 +80,7 @@ public interface CourseMapper {
             return null;
         return new GradeDetailSimpleResponseDTO(
                 gradeDetail.getId(),
+                gradeDetail.getFullName(),
                 gradeDetail.getSection().getName(), 
                 gradeDetail.getDegree().getName(),
                 gradeDetail.getTutor().getfullName()
