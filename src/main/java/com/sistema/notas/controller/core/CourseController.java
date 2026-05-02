@@ -3,6 +3,7 @@ package com.sistema.notas.controller.core;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.sistema.notas.dto.core.course.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sistema.notas.dto.core.course.CourseFullResponseDTO;
-import com.sistema.notas.dto.core.course.CourseRequestDTO;
-import com.sistema.notas.dto.core.course.CourseResponseDTO;
-import com.sistema.notas.dto.core.course.CourseSimpleResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.service.core.CourseService;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -73,6 +70,12 @@ public class CourseController {
     @GetMapping("/{id}")
     public ResponseEntity<CourseFullResponseDTO> getOneCourse(@PathVariable Integer id) {
         CourseFullResponseDTO responseDTO = courseService.obtenerOneCourse(id);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    }
+
+    @GetMapping("/edit/{id}")
+    public ResponseEntity<CourseEditResponseDTO> getOneEditCourse(@PathVariable Integer id) {
+        CourseEditResponseDTO responseDTO = courseService.obtenerOneCourseEdit(id);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 }

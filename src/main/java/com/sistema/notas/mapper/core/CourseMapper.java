@@ -1,5 +1,6 @@
 package com.sistema.notas.mapper.core;
 
+import com.sistema.notas.dto.core.course.CourseEditResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -37,6 +38,9 @@ public interface CourseMapper {
     @Mapping(target = "period", ignore = true)
     @Mapping(target = "gradeDetail", ignore = true)
     Course toEntity(CourseRequestDTO requestDTO);
+
+    //DE ENTITY A REQUEST DE EDICION
+    CourseEditResponseDTO toEditResponseDTO(Course entity);
 
     // DE REQUEST A ENTITY
     @Mapping(target = "subject", ignore = true)

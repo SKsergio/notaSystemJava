@@ -3,6 +3,7 @@ package com.sistema.notas.service.core.impl;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.sistema.notas.dto.core.course.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,10 +11,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sistema.notas.dto.core.course.CourseFullResponseDTO;
-import com.sistema.notas.dto.core.course.CourseRequestDTO;
-import com.sistema.notas.dto.core.course.CourseResponseDTO;
-import com.sistema.notas.dto.core.course.CourseSimpleResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.entity.catalogues.Period;
 import com.sistema.notas.entity.catalogues.Subject;
@@ -159,6 +156,7 @@ public class CourseServiceImpl implements CourseService {
                 co.getName(),
                 co.getCode(),
                 co.getGradeDetail().getYear(),
+                co.getTotalStudents(),
                 co.getStatus()
             )).toList();
     }
@@ -169,6 +167,14 @@ public class CourseServiceImpl implements CourseService {
             () -> new ResourceNotFoundException("No existe ningun curso con el id: " + id));
 
         return courseMapper.toFullResponseDTO(courseFind);
+    }
+
+    @Override
+    public CourseEditResponseDTO obtenerOneCourseEdit(Integer id) {
+        Course courseFind = coursesRespository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("No existe ningun curso con el id: " + id));
+
+        return courseMapper.toEditResponseDTO(courseFind);
     }
 
 }

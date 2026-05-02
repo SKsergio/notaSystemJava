@@ -79,6 +79,15 @@ public class Course extends AuditableEntity{
         
         return (this.subject.getCode() + "-" + this.gradeDetail.getDegree().getCode()).toUpperCase();
     }
+
+    @Transient
+    public Integer getTotalStudents() {
+//        if (this.gradeDetail.getDegree() == null || this.subject == null) {
+//            return null;
+//        }
+
+        return 0;
+    }
 }
 
 

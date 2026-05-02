@@ -37,6 +37,7 @@ public interface EvaluationsMapper {
             course.getName(),
             course.getCode(),
             course.getStatus(),
+            course.getTotalStudents(),
             course.getGradeDetail().getYear()
         );
     }

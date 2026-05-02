@@ -5,7 +5,7 @@ public record CourseSimpleResponseDTO(
     String name,
     String code,
     Integer status,
-    // Integer totalStudents, luego
+    Integer totalStudents,
     int year
 ) {
 }

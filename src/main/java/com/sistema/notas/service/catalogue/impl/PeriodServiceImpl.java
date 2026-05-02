@@ -42,7 +42,7 @@ public class PeriodServiceImpl implements PeriodService {
             throw new BadRequestException("La fecha de inicio no puede ser posterior a la fecha de fin.");
         }
 
-        if (periodRespository.existsOverlappingPeriod(period.endDate(), period.startDate())){
+        if (periodRespository.existsOverlappingPeriod(period.startDate(), period.endDate())){
             throw new BadRequestException("Las fechas indicadas se cruzan con un periodo escolar ya existente.");
         }
 
@@ -64,7 +64,7 @@ public class PeriodServiceImpl implements PeriodService {
             throw new BadRequestException("La fecha de inicio no puede ser posterior a la fecha de fin.");
         }
 
-        if (periodRespository.existsOverlappingPeriodForUpdate(period.endDate(), period.startDate(), id)){
+        if (periodRespository.existsOverlappingPeriodForUpdate(period.startDate(), period.endDate(), id)){
             throw new BadRequestException("Ya existe un periodo establecido para estas fechas");
         }
 

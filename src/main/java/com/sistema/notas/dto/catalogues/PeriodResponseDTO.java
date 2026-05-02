@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public record PeriodResponseDTO(
         Integer id,
         LocalDateTime createdAt,
+        Integer status,
         LocalDate startDate,
         LocalDate endDate
 ) {}
