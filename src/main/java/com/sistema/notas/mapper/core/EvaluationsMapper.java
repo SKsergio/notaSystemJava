@@ -1,5 +1,6 @@
 package com.sistema.notas.mapper.core;
 
+import com.sistema.notas.dto.core.evaluations.EvaluationEditResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
@@ -18,6 +19,10 @@ public interface EvaluationsMapper {
     //de entidad a response
     @Mapping(source = "course.name", target = "courseName")
     EvaluationsResponseDTO toResponseDTO(Evaluation entity);
+
+    //de entidad a editResponse
+    @Mapping(source = "course.id", target = "courseId")
+    EvaluationEditResponse toEditResponseDTO(Evaluation entity);
 
     //de request a entidad
     @Mapping(target = "course", ignore = true)

@@ -11,6 +11,5 @@ public record EvaluationsResponseDTO(
     LocalDate endDate,
     Integer status,
     Long daysRemaning
-) {
-    
+){
 }

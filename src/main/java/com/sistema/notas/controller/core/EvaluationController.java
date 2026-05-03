@@ -1,13 +1,10 @@
 package com.sistema.notas.controller.core;
 
+import com.sistema.notas.dto.core.evaluations.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sistema.notas.dto.core.evaluations.EvaluationFullResponseDTO;
-import com.sistema.notas.dto.core.evaluations.EvaluationRequestDTO;
-import com.sistema.notas.dto.core.evaluations.EvaluationSimpleResponse;
-import com.sistema.notas.dto.core.evaluations.EvaluationsResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.service.core.EvaluationService;
 
@@ -73,6 +70,12 @@ public class EvaluationController {
     @GetMapping("/{id}")
     public ResponseEntity<EvaluationFullResponseDTO> getOne(@PathVariable Integer id) {
         EvaluationFullResponseDTO responseDTO = evaluationService.obtenerOneEvaluation(id);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    }
+
+    @GetMapping("/edit/{id}")
+    public ResponseEntity<EvaluationEditResponse> getOneEdit(@PathVariable Integer id) {
+        EvaluationEditResponse responseDTO = evaluationService.obtenerEditResponse(id);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 

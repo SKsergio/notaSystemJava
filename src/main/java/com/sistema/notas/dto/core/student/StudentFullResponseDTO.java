@@ -2,6 +2,8 @@ package com.sistema.notas.dto.core.student;
 
 import com.sistema.notas.entity.enums.GenderEnum;
 
+import java.time.LocalDate;
+
 public record StudentFullResponseDTO(
         Integer id,
         String fullName,
@@ -11,7 +13,8 @@ public record StudentFullResponseDTO(
         String routePhoto,
         GenderEnum gender,
         String address,
-        String phoneNumber
+        String phoneNumber,
+        LocalDate birthDate
         // grade details current
         // cum global(calculado en base a sus calificaciones)
         // historial de cursos con sus calificaciones

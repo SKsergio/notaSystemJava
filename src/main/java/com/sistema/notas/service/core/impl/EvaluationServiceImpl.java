@@ -3,16 +3,13 @@ package com.sistema.notas.service.core.impl;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.sistema.notas.dto.core.evaluations.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.sistema.notas.dto.core.evaluations.EvaluationFullResponseDTO;
-import com.sistema.notas.dto.core.evaluations.EvaluationRequestDTO;
-import com.sistema.notas.dto.core.evaluations.EvaluationSimpleResponse;
-import com.sistema.notas.dto.core.evaluations.EvaluationsResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.entity.core.Course;
 import com.sistema.notas.entity.core.Evaluation;
@@ -139,6 +136,14 @@ public class EvaluationServiceImpl implements EvaluationService {
 
         evaluationFind.setStatus(3);//CERRADO
         return evaluationsMapper.toResponseDTO(evaluationFind);
+    }
+
+    @Override
+    public EvaluationEditResponse obtenerEditResponse(Integer id) {
+        Evaluation evaluationFind = evaluationsRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("No existe ninguna evaluación con el id: " + id));
+
+        return evaluationsMapper.toEditResponseDTO(evaluationFind);
     }
 
 }

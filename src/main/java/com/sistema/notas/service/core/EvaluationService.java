@@ -3,10 +3,7 @@ package com.sistema.notas.service.core;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.sistema.notas.dto.core.evaluations.EvaluationFullResponseDTO;
-import com.sistema.notas.dto.core.evaluations.EvaluationRequestDTO;
-import com.sistema.notas.dto.core.evaluations.EvaluationSimpleResponse;
-import com.sistema.notas.dto.core.evaluations.EvaluationsResponseDTO;
+import com.sistema.notas.dto.core.evaluations.*;
 import com.sistema.notas.dto.generics.PaginateResponse;
 
 public interface EvaluationService {
@@ -19,4 +16,6 @@ public interface EvaluationService {
     //abrir y cerrar evaluaciones
     EvaluationsResponseDTO openEvaluation(Integer id);
     EvaluationsResponseDTO closeEvaluation(Integer id);
+    //obtener para edicion
+    EvaluationEditResponse obtenerEditResponse(Integer id);
 }
