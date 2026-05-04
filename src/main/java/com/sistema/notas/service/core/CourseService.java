@@ -21,4 +21,5 @@ public interface CourseService {
     CourseFullResponseDTO obtenerOneCourse(Integer id);
     CourseEditResponseDTO obtenerOneCourseEdit(Integer id);
     CourseResponseDTO changeCourseStatus(Integer id, StatusEnum newState);
+    AvailablePercentageResponseDTO obtenerAvailablePercentage(Integer id);
 }

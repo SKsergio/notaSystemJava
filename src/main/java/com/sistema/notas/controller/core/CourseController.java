@@ -88,4 +88,11 @@ public class CourseController {
 
         return ResponseEntity.ok(courseService.changeCourseStatus(id, newState));
     }
+
+    @GetMapping("/percentage/{id}")
+    public ResponseEntity<AvailablePercentageResponseDTO> getPercentage(@PathVariable Integer id) {
+        AvailablePercentageResponseDTO responseDTO = courseService.obtenerAvailablePercentage(id);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    }
+
 }

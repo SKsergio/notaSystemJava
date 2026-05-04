@@ -48,11 +48,16 @@ public class EvaluationServiceImpl implements EvaluationService {
                 .orElseThrow(
                         () -> new ResourceNotFoundException("No existe el curso con ID: " + evaluationDTO.courseId()));
 
+        Double currentAccumulated = evaluationsRepository.getAccumulatedPercentage(evaluationDTO.courseId(), null);
+        if (currentAccumulated + evaluationDTO.percentage() > 100.0) {
+            double remaining = 100.0 - currentAccumulated;
+            throw new IllegalArgumentException("No se puede editar la evaluación. El curso solo tiene un " + remaining + "% disponible.");
+        }
+
         Evaluation evaluation = evaluationsMapper.toEntity(evaluationDTO);
-
         evaluation.setCourse(course);
-
         Evaluation saved = evaluationsRepository.save(evaluation);
+
         return evaluationsMapper.toResponseDTO(saved);
     }
 
@@ -69,6 +74,12 @@ public class EvaluationServiceImpl implements EvaluationService {
         Course course = coursesRespository.findById(evaluationDTO.courseId())
                 .orElseThrow(
                         () -> new ResourceNotFoundException("No existe el curso con ID: " + evaluationDTO.courseId()));
+
+        Double currentAccumulated = evaluationsRepository.getAccumulatedPercentage(evaluationDTO.courseId(), id);
+        if (currentAccumulated + evaluationDTO.percentage() > 100.0) {
+            double remaining = 100.0 - currentAccumulated;
+            throw new IllegalArgumentException("No se puede crear la evaluación. El curso solo tiene un " + remaining + "% disponible.");
+        }
 
         evaluationFind.setCourse(course);
         evaluationsMapper.updateEntityFromDTO(evaluationDTO, evaluationFind);

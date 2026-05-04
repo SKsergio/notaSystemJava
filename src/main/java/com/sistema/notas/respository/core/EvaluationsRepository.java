@@ -15,9 +15,7 @@ public interface EvaluationsRepository
         extends JpaRepository<Evaluation, Integer>, JpaSpecificationExecutor<Evaluation> {
 
     List<Evaluation> findByCourseId(Integer courseId);
-
     boolean existsByName(String name);
-
     List<Evaluation> findByStatus(Integer status);
 
     // evaluaciones de periodos
@@ -35,4 +33,7 @@ public interface EvaluationsRepository
     @Query("UPDATE Evaluation e SET e.status = :newState WHERE e.course.id = :courseId AND e.status != :newState")
     void updateEvaluationStatusByCourseId(@Param("courseId") Integer courseId, @Param("newState") StatusEnum newState);
 
+
+    @Query("SELECT COALESCE(SUM(e.percentage), 0.0) FROM Evaluation e WHERE e.course.id = :courseId AND (:excludeEvaluationId IS NULL OR e.id != :excludeEvaluationId)")
+    Double getAccumulatedPercentage(@Param("courseId") Integer courseId, @Param("excludeEvaluationId") Integer excludeEvaluationId);
 }

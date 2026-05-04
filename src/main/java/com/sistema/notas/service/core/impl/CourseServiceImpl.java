@@ -198,4 +198,17 @@ public class CourseServiceImpl implements CourseService {
         return courseMapper.toResponseDTO(courseFind);
     }
 
+    @Override
+    public AvailablePercentageResponseDTO obtenerAvailablePercentage(Integer id) {
+        if (!coursesRespository.existsById(id)) {
+            throw new ResourceNotFoundException("No existe el curso con ID: " + id);
+        }
+
+        Double currentAccumulated = evaluationsRepository.getAccumulatedPercentage(id, null);
+        double remaining = 100.0 - currentAccumulated;
+        remaining = Math.max(0.0, remaining);
+
+        return new AvailablePercentageResponseDTO(remaining);
+    }
+
 }
