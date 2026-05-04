@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sistema.notas.dto.core.course.*;
 import com.sistema.notas.dto.generics.PaginateResponse;
+import com.sistema.notas.entity.enums.StatusEnum;
 
 public interface CourseService {
     //funcion para aprobarCurso por alumno
@@ -19,4 +20,5 @@ public interface CourseService {
     List<CourseSimpleResponseDTO> listarToSelects();
     CourseFullResponseDTO obtenerOneCourse(Integer id);
     CourseEditResponseDTO obtenerOneCourseEdit(Integer id);
+    CourseResponseDTO changeCourseStatus(Integer id, StatusEnum newState);
 }

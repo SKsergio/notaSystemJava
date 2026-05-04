@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.sistema.notas.dto.core.course.*;
+import com.sistema.notas.entity.enums.StatusEnum;
+import com.sistema.notas.respository.core.EvaluationsRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,6 +50,8 @@ public class CourseServiceImpl implements CourseService {
     private final PeriodRespository periodRespository;
     private final SubjectRepository subjectRepository;
     private final GradeDetailRepository gradeDetailRepository;
+    //cerrar en cascada
+    private final EvaluationsRepository  evaluationsRepository;
 
     @Override
     public CourseResponseDTO save(CourseRequestDTO courseDto) {
@@ -75,7 +79,7 @@ public class CourseServiceImpl implements CourseService {
 
         Course entity = courseMapper.toEntity(courseDto);
 
-        entity.setStatus(1);//aca hare un enum :C
+        //entity.setStatus(1);//aca hare un enum :C
         entity.setSubject(subject);
         entity.setTeacher(teacher);
         entity.setPeriod(period);
@@ -154,10 +158,8 @@ public class CourseServiceImpl implements CourseService {
             .map(co-> new CourseSimpleResponseDTO(
                 co.getId(),
                 co.getName(),
-                co.getCode(),
-                co.getGradeDetail().getYear(),
-                co.getTotalStudents(),
-                co.getStatus()
+                co.getCode(), co.getStatus(), co.getTotalStudents(),
+                co.getGradeDetail().getYear()
             )).toList();
     }
 
@@ -175,6 +177,25 @@ public class CourseServiceImpl implements CourseService {
                 () -> new ResourceNotFoundException("No existe ningun curso con el id: " + id));
 
         return courseMapper.toEditResponseDTO(courseFind);
+    }
+
+    @Transactional
+    @Override
+    public CourseResponseDTO changeCourseStatus(Integer id, StatusEnum newState) {
+
+        Course courseFind = coursesRespository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("No existe ningún curso con el id: " + id));
+
+        if (courseFind.getStatus() == newState) {
+            return courseMapper.toResponseDTO(courseFind);
+        }
+
+        // Cascada: Actualizamos todas las evaluaciones de este curso al nuevo estado
+        evaluationsRepository.updateEvaluationStatusByCourseId(id, newState);
+
+        courseFind.setStatus(newState);
+        coursesRespository.save(courseFind);
+        return courseMapper.toResponseDTO(courseFind);
     }
 
 }

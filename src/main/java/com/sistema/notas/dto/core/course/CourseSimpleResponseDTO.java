@@ -1,10 +1,12 @@
 package com.sistema.notas.dto.core.course;
 
+import com.sistema.notas.entity.enums.StatusEnum;
+
 public record CourseSimpleResponseDTO(
     Integer id,
     String name,
     String code,
-    Integer status,
+    StatusEnum status,
     Integer totalStudents,
     int year
 ) {

@@ -1,14 +1,9 @@
 package com.sistema.notas.entity.core;
 
 import com.sistema.notas.entity.AuditableEntity;
-import jakarta.persistence.FetchType;
+import com.sistema.notas.entity.enums.StatusEnum;
+import jakarta.persistence.*;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,8 +31,9 @@ public class Evaluation extends AuditableEntity{
     @Column(name = "percentage", nullable = false)
     private double percentage;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private Integer status;
+    private StatusEnum status = StatusEnum.OPEN;
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;

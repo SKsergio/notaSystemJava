@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.sistema.notas.dto.core.course.*;
+import com.sistema.notas.entity.enums.StatusEnum;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,5 +78,14 @@ public class CourseController {
     public ResponseEntity<CourseEditResponseDTO> getOneEditCourse(@PathVariable Integer id) {
         CourseEditResponseDTO responseDTO = courseService.obtenerOneCourseEdit(id);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    }
+
+    // Ejemplo conceptual en el controlador
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<CourseResponseDTO> changeStatus(
+            @PathVariable Integer id,
+            @RequestParam StatusEnum newState) {
+
+        return ResponseEntity.ok(courseService.changeCourseStatus(id, newState));
     }
 }

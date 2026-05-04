@@ -3,6 +3,7 @@ package com.sistema.notas.entity.core;
 import com.sistema.notas.entity.AuditableEntity;
 import com.sistema.notas.entity.catalogues.Degree;
 import com.sistema.notas.entity.catalogues.Section;
+import com.sistema.notas.entity.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -44,6 +45,10 @@ public class GradeDetail extends AuditableEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "section_id", nullable = false)
     private Section section;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private StatusEnum status = StatusEnum.OPEN;
 
     @Transient
     public String getFullName() {

@@ -1,12 +1,7 @@
 package com.sistema.notas.entity.core;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import com.sistema.notas.entity.enums.StatusEnum;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,8 +33,9 @@ public class Course extends AuditableEntity{
     private double valorityUnity;
 
     //no se enviara del fronted
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private Integer status;
+    private StatusEnum status = StatusEnum.OPEN;
 
     //muchos cursos pertenecen a un grado
     @ManyToOne(fetch = FetchType.LAZY)

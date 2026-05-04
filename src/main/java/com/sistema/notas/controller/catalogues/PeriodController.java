@@ -2,6 +2,7 @@ package com.sistema.notas.controller.catalogues;
 
 import com.sistema.notas.dto.catalogues.*;
 import com.sistema.notas.dto.generics.PaginateResponse;
+import com.sistema.notas.entity.enums.StatusEnum;
 import com.sistema.notas.service.catalogue.PeriodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -59,5 +60,13 @@ public class PeriodController {
     public ResponseEntity<PeriodResponseDTO> getPeriods(@PathVariable Integer id) {
         PeriodResponseDTO responseDTO = periodService.obtenerPeriod(id);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    }
+
+    @PatchMapping("/{id}/statys")
+    public ResponseEntity<PeriodResponseDTO> changeStatus(
+            @PathVariable Integer id,
+            @RequestParam StatusEnum newState) {
+
+        return ResponseEntity.ok(periodService.changePeriodStatus(id, newState));
     }
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.sistema.notas.dto.core.evaluations.*;
+import com.sistema.notas.entity.enums.StatusEnum;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -50,7 +51,6 @@ public class EvaluationServiceImpl implements EvaluationService {
         Evaluation evaluation = evaluationsMapper.toEntity(evaluationDTO);
 
         evaluation.setCourse(course);
-        evaluation.setStatus(1);
 
         Evaluation saved = evaluationsRepository.save(evaluation);
         return evaluationsMapper.toResponseDTO(saved);
@@ -119,27 +119,23 @@ public class EvaluationServiceImpl implements EvaluationService {
                 () -> new ResourceNotFoundException("No existe ninguna evaluación con el id: " + id));
         return evaluationsMapper.toFullResponseDTO(evaluationFind);
     }
-    
+
+    @Transactional
     @Override
-    public EvaluationsResponseDTO openEvaluation(Integer id) {
+    public EvaluationsResponseDTO changeEvaluationStatus(Integer id, StatusEnum status) {
         Evaluation evaluationFind = evaluationsRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("No existe ninguna evaluación con el id: " + id));
 
-        evaluationFind.setStatus(2);//abierto
-        return evaluationsMapper.toResponseDTO(evaluationFind);
-    }
-
-    @Override
-    public EvaluationsResponseDTO closeEvaluation(Integer id) {
-         Evaluation evaluationFind = evaluationsRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("No existe ninguna evaluación con el id: " + id));
-
-        evaluationFind.setStatus(3);//CERRADO
+        if (evaluationFind.getStatus().equals(status)) {
+            return evaluationsMapper.toResponseDTO(evaluationFind);
+        }
+        evaluationFind.setStatus(status);
         return evaluationsMapper.toResponseDTO(evaluationFind);
     }
 
     @Override
     public EvaluationEditResponse obtenerEditResponse(Integer id) {
+
         Evaluation evaluationFind = evaluationsRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("No existe ninguna evaluación con el id: " + id));
 

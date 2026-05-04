@@ -1,5 +1,7 @@
 package com.sistema.notas.dto.core.evaluations;
 
+import com.sistema.notas.entity.enums.StatusEnum;
+
 import java.time.LocalDate;
 
 public record EvaluationsResponseDTO(
@@ -9,7 +11,7 @@ public record EvaluationsResponseDTO(
     String courseName,
     Double percentage,
     LocalDate endDate,
-    Integer status,
+    StatusEnum status,
     Long daysRemaning
 ){
 }

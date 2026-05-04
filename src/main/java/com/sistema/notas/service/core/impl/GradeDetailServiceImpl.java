@@ -3,6 +3,10 @@ package com.sistema.notas.service.core.impl;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.sistema.notas.entity.enums.EnrollmentStatus;
+import com.sistema.notas.respository.core.*;
+import org.springframework.transaction.annotation.Transactional;
+import com.sistema.notas.entity.enums.StatusEnum;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,13 +29,10 @@ import com.sistema.notas.mapper.PageMapper;
 import com.sistema.notas.mapper.core.GradeDetailMapper;
 import com.sistema.notas.respository.catalogues.DegreeRespository;
 import com.sistema.notas.respository.catalogues.SectionRespository;
-import com.sistema.notas.respository.core.GradeDetailRepository;
-import com.sistema.notas.respository.core.TeacherRepository;
 import com.sistema.notas.service.core.GradeDetailService;
 import com.sistema.notas.specifications.CatalogoSpecification;
 import com.sistema.notas.specifications.GradeDetailSpecification;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -45,6 +46,9 @@ public class GradeDetailServiceImpl implements GradeDetailService {
     private final DegreeRespository degreeRespository;
     private final SectionRespository sectionRespository;
     private final TeacherRepository teacherRepository;
+    private final EvaluationsRepository evaluationsRepository;
+    private final CoursesRespository coursesRespository;
+    private final DegreeEnrollmentRepository  degreeEnrollmentRepository;
 
     @Override
     public GradeDetailResponseDTO save(GradeDetailRequestDTO gradeDetail) {
@@ -140,6 +144,7 @@ public class GradeDetailServiceImpl implements GradeDetailService {
         return gradeDetails.stream()
                 .map(gdt -> new GradeDetailSimpleResponseDTO(
                         gdt.getId(),
+                        gdt.getStatus(),
                         gdt.getFullName(),
                         gdt.getSection().getName(),
                         gdt.getDegree().getName(),
@@ -161,6 +166,30 @@ public class GradeDetailServiceImpl implements GradeDetailService {
                 () -> new ResourceNotFoundException("No existe ningun detalle de grado con el id: " + id));
 
         return gradeDetailMapper.toEditResponseDTO(gradeDetailFind);
+    }
+
+    @Transactional
+    @Override
+    public GradeDetailResponseDTO changeGradeDetailStatus(Integer id, StatusEnum status) {
+
+        GradeDetail gradeFind = gradeDetailRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("No existe ningun detalle de grado con el id: " + id));
+
+        if (gradeFind.getStatus().equals(status)) {
+            return gradeDetailMapper.toResponse(gradeFind);
+        }
+
+        //completar grados
+        if (status.equals(StatusEnum.CLOSED)) {
+            degreeEnrollmentRepository.finalizeEnrollmentsByGradeDetail(id, EnrollmentStatus.ACTIVE, EnrollmentStatus.COMPLETED);
+        }
+
+        evaluationsRepository.updateEvaluationStatusByGradeDetailId(id, status);
+        coursesRespository.updateCourseStatusByGradeDetailId(id, status);
+        gradeFind.setStatus(status);
+        gradeDetailRepository.save(gradeFind);
+
+        return gradeDetailMapper.toResponse(gradeFind);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.sistema.notas.controller.core;
 
+import com.sistema.notas.entity.enums.StatusEnum;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -82,5 +83,13 @@ public class GradeDetailController {
     public ResponseEntity<GradeDetailEditResponseDTO> getGradeDetailEdit(@PathVariable Integer id) {
         GradeDetailEditResponseDTO responseDTO = gradeDetailService.obtenerOneGradeDetailEdit(id);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<GradeDetailResponseDTO> updateGradeDetailStatus(
+            @PathVariable Integer id,
+            @RequestParam StatusEnum status
+            ){
+        return ResponseEntity.ok(gradeDetailService.changeGradeDetailStatus(id, status));
     }
 }

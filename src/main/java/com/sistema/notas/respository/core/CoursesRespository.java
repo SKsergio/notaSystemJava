@@ -2,8 +2,10 @@ package com.sistema.notas.respository.core;
 
 import java.util.List;
 
+import com.sistema.notas.entity.enums.StatusEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -25,6 +27,14 @@ public interface CoursesRespository extends JpaRepository<Course, Integer>, JpaS
             @Param("periodId") Integer periodId,
             @Param("courseId") Integer courseId
     );
+
+    @Modifying
+    @Query("UPDATE Course c SET c.status = :newState WHERE c.gradeDetail.id = :gradeDetailId AND c.status != :newState")
+    void updateCourseStatusByGradeDetailId(@Param("gradeDetailId") Integer gradeDetailId, @Param("newState") StatusEnum newState);
+
+    @Modifying
+    @Query("UPDATE Course c SET c.status = :newState WHERE c.period.id = :periodId AND c.status != :newState")
+    void updateCourseStatusByPeriodId(@Param("periodId") Integer periodId, @Param("newState") StatusEnum newState);
 
     List<Course> findByGradeDetailId(Integer gradeDetailId);
     List<Course> findByTeacherId(Integer teacherId);

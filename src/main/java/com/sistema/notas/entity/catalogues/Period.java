@@ -1,9 +1,9 @@
 package com.sistema.notas.entity.catalogues;
 
 import com.sistema.notas.entity.AuditableEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.sistema.notas.entity.enums.GenderEnum;
+import com.sistema.notas.entity.enums.StatusEnum;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,8 +24,10 @@ public class Period extends AuditableEntity {
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private Integer status;
+    private StatusEnum status = StatusEnum.OPEN;
 
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;

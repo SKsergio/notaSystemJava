@@ -4,6 +4,7 @@ import com.sistema.notas.dto.catalogues.CatalogueSimpleResponseDTO;
 import com.sistema.notas.dto.catalogues.PeriodSimpleResponseDto;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailSimpleResponseDTO;
 import com.sistema.notas.dto.core.teacher.TeacherSimpleResponseDTO;
+import com.sistema.notas.entity.enums.StatusEnum;
 
 public record CourseFullResponseDTO(
     Integer id,
@@ -14,7 +15,7 @@ public record CourseFullResponseDTO(
     CatalogueSimpleResponseDTO subject,
     PeriodSimpleResponseDto period,
     Integer totalStudents,
-    Integer status,
+    StatusEnum status,
     int year,
     Double valorityUnity
 ) {

@@ -80,6 +80,7 @@ public interface CourseMapper {
             return null;
         return new GradeDetailSimpleResponseDTO(
                 gradeDetail.getId(),
+                gradeDetail.getStatus(),
                 gradeDetail.getFullName(),
                 gradeDetail.getSection().getName(), 
                 gradeDetail.getDegree().getName(),
