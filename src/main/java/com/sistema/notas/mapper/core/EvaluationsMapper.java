@@ -20,7 +20,7 @@ public interface EvaluationsMapper {
     @Mapping(source = "course.name", target = "courseName")
     EvaluationsResponseDTO toResponseDTO(Evaluation entity);
 
-    //de entidad a editResponse
+    //de entidad a editResponse para editar
     @Mapping(source = "course.id", target = "courseId")
     EvaluationEditResponse toEditResponseDTO(Evaluation entity);
 
