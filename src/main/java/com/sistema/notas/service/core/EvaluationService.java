@@ -3,7 +3,6 @@ package com.sistema.notas.service.core;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.sistema.notas.dto.core.course.CourseResponseDTO;
 import com.sistema.notas.dto.core.evaluations.*;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.entity.enums.StatusEnum;

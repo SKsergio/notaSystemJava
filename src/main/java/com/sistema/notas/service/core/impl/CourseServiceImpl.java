@@ -31,8 +31,6 @@ import com.sistema.notas.respository.core.TeacherRepository;
 import com.sistema.notas.service.core.CourseService;
 import com.sistema.notas.specifications.CatalogoSpecification;
 import com.sistema.notas.specifications.CourseSpecification;
-import com.sistema.notas.specifications.CatalogoSpecification;
-import org.springframework.data.jpa.domain.Specification;
 
 import lombok.RequiredArgsConstructor;
 

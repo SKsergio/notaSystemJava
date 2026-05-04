@@ -1,8 +1,6 @@
 package com.sistema.notas.respository.core;
 
-import com.sistema.notas.dto.catalogues.PeriodResponseDTO;
 import com.sistema.notas.entity.core.GradeDetail;
-import com.sistema.notas.entity.enums.StatusEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

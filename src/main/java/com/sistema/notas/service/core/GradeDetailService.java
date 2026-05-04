@@ -3,7 +3,6 @@ package com.sistema.notas.service.core;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.sistema.notas.dto.catalogues.PeriodResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailEditResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailFullResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailRequestDTO;
