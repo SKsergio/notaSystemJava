@@ -3,6 +3,15 @@ package com.sistema.notas.service.core.impl;
 import java.time.LocalDate;
 import java.util.List;
 
+
+import com.sistema.notas.entity.catalogues.Degree;
+import com.sistema.notas.entity.core.Course;
+import com.sistema.notas.specifications.CatalogoSpecification;
+import com.sistema.notas.specifications.CourseSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +28,7 @@ import com.sistema.notas.entity.core.Student;
 import com.sistema.notas.entity.enums.EnrollmentStatus;
 import com.sistema.notas.entity.enums.StatusEnum;
 import com.sistema.notas.exceptions.BadRequestException;
+import com.sistema.notas.exceptions.ResourceNotFoundException;
 import com.sistema.notas.mapper.PageMapper;
 import com.sistema.notas.mapper.core.EvaluationDetailMapper;
 import com.sistema.notas.mapper.core.EvaluationsMapper;
@@ -46,8 +56,7 @@ public class EvaluationDetailServiceImpl implements EvaluationDetailService{
     @Transactional
     @Override
     public EvaluationDetailResponseDTO save(EvaluationDetailRequestDTO requestDTO) {
-
-        //validar que exista la evaluacion 
+        //validar que exista la evaluacion
        Evaluation evaluation =  evaluationsRepository.findById(requestDTO.evaluationId())
             .orElseThrow(() -> new BadRequestException("Evaluación no encontrada con ID: " + requestDTO.evaluationId()));
 
@@ -61,7 +70,7 @@ public class EvaluationDetailServiceImpl implements EvaluationDetailService{
             .orElseThrow(() -> new BadRequestException("Estudiante no encontrado con ID: " + requestDTO.studentId()));
 
 
-        //validar que el estudiante 
+        //validar que no exista una calificacion esa evaluacion y ese estudiante
         if (evaluationDetailRepository.existsByStudentIdAndEvaluationId(requestDTO.studentId(), requestDTO.evaluationId())) {
             throw new BadRequestException("El estudiante ya tiene una calificación registrada para esta evaluación.");
         }
@@ -82,23 +91,47 @@ public class EvaluationDetailServiceImpl implements EvaluationDetailService{
         return evaluationDetailMapper.toResponseDTO(savedDetail);
     }
 
+    @Transactional
     @Override
     public EvaluationDetailResponseDTO update(Integer id, EvaluationDetailEditRequestDTO requestDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+
+        EvaluationDetail evaluationFind = evaluationDetailRepository.findById(id).orElseThrow(
+                ()-> new ResourceNotFoundException("No existe ningun registro de nota con el id: " + id));
+
+        if (evaluationFind.getEvaluation().getStatus() == StatusEnum.CLOSED) {
+            throw new BadRequestException("No se pueden modificar calificaciones de una evaluación que ya está cerrada.");
+        }
+
+        evaluationDetailMapper.updateEntityFromDTO(requestDTO, evaluationFind);
+
+        EvaluationDetail savedDetail = evaluationDetailRepository.save(evaluationFind);
+
+        return evaluationDetailMapper.toResponseDTO(savedDetail);
     }
 
     @Override
     public void delete(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+        EvaluationDetail evaluationFind = evaluationDetailRepository.findById(id).orElseThrow(
+                ()-> new ResourceNotFoundException("No existe ningun registro de nota con el id: " + id));
+
+        evaluationDetailRepository.delete(evaluationFind);
     }
 
     @Override
     public PaginateResponse<EvaluationDetailResponseDTO> getDetailsPaginated(int page, int size, String search,
             LocalDate fromDate, LocalDate toDate) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDetailsPaginated'");
+
+        Pageable pagable = PageRequest.of(page, size);
+
+        Specification<EvaluationDetail> filtros = Specification
+                .where(CatalogoSpecification.<EvaluationDetail>searchContains(search))
+                .and(CatalogoSpecification.<EvaluationDetail>createdBetween(fromDate, toDate));
+
+        Page<EvaluationDetail> evaluations = evaluationDetailRepository.findAll(filtros, pagable);
+
+        return pageMapper.toPaginateResponse(
+                evaluations,
+                evaluationDetailMapper::toResponseDTO);
     }
 
     @Override
