@@ -5,7 +5,7 @@ import com.sistema.notas.entity.enums.EnrollmentStatus;
 public record DegreeEnrollmentSimpleResponseDTO(
         Integer id,
         String studentName,
-        String DegreeName,
+        String degreeName,
         EnrollmentStatus status
 ) {
 }
