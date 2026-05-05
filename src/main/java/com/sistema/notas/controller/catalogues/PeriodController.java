@@ -2,8 +2,10 @@ package com.sistema.notas.controller.catalogues;
 
 import com.sistema.notas.dto.catalogues.*;
 import com.sistema.notas.dto.generics.PaginateResponse;
-import com.sistema.notas.entity.enums.StatusEnum;
+import com.sistema.notas.dto.generics.StatusUpdateRequestDTO;
 import com.sistema.notas.service.catalogue.PeriodService;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -62,11 +64,11 @@ public class PeriodController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
-    @PatchMapping("/{id}/statys")
+    @PatchMapping("/status/{id}")
     public ResponseEntity<PeriodResponseDTO> changeStatus(
             @PathVariable Integer id,
-            @RequestParam StatusEnum newState) {
+            @Valid @RequestBody StatusUpdateRequestDTO statusUpdateDto) {
 
-        return ResponseEntity.ok(periodService.changePeriodStatus(id, newState));
+        return ResponseEntity.ok(periodService.changePeriodStatus(id, statusUpdateDto.newStatus()));
     }
 }

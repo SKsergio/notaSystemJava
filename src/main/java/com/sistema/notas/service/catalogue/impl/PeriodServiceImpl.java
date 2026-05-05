@@ -137,6 +137,8 @@ public class PeriodServiceImpl implements PeriodService {
         //cascade de nivel 2
         coursesRespository.updateCourseStatusByPeriodId(id, newState);
 
+        periodFind.setStatus(newState);
+        periodRespository.save(periodFind);
         return periodMapper.toResponseDTO(periodFind);
     }
 }

@@ -51,7 +51,8 @@ public class EvaluationServiceImpl implements EvaluationService {
         Double currentAccumulated = evaluationsRepository.getAccumulatedPercentage(evaluationDTO.courseId(), null);
         if (currentAccumulated + evaluationDTO.percentage() > 100.0) {
             double remaining = 100.0 - currentAccumulated;
-            throw new IllegalArgumentException("No se puede editar la evaluación. El curso solo tiene un " + remaining + "% disponible.");
+            throw new IllegalArgumentException(
+                    "No se puede editar la evaluación. El curso solo tiene un " + remaining + "% disponible.");
         }
 
         Evaluation evaluation = evaluationsMapper.toEntity(evaluationDTO);
@@ -78,7 +79,8 @@ public class EvaluationServiceImpl implements EvaluationService {
         Double currentAccumulated = evaluationsRepository.getAccumulatedPercentage(evaluationDTO.courseId(), id);
         if (currentAccumulated + evaluationDTO.percentage() > 100.0) {
             double remaining = 100.0 - currentAccumulated;
-            throw new IllegalArgumentException("No se puede crear la evaluación. El curso solo tiene un " + remaining + "% disponible.");
+            throw new IllegalArgumentException(
+                    "No se puede crear la evaluación. El curso solo tiene un " + remaining + "% disponible.");
         }
 
         evaluationFind.setCourse(course);
@@ -96,7 +98,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     @Override
     public PaginateResponse<EvaluationsResponseDTO> obtenerEvaluations(int page, int size, String search,
-                                                                       LocalDate fromDate, LocalDate toDate) {
+            LocalDate fromDate, LocalDate toDate) {
         Pageable pageable = PageRequest.of(page, size);
 
         Specification<Evaluation> filtros = Specification
@@ -126,7 +128,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     @Override
     public EvaluationFullResponseDTO obtenerOneEvaluation(Integer id) {
-         Evaluation evaluationFind = evaluationsRepository.findById(id).orElseThrow(
+        Evaluation evaluationFind = evaluationsRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("No existe ninguna evaluación con el id: " + id));
         return evaluationsMapper.toFullResponseDTO(evaluationFind);
     }

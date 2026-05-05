@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.sistema.notas.dto.core.course.*;
+import com.sistema.notas.dto.core.evaluations.EvaluationsResponseDTO;
 import com.sistema.notas.entity.enums.StatusEnum;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sistema.notas.dto.generics.PaginateResponse;
+import com.sistema.notas.dto.generics.StatusUpdateRequestDTO;
 import com.sistema.notas.service.core.CourseService;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -81,12 +83,12 @@ public class CourseController {
     }
 
     // Ejemplo conceptual en el controlador
-    @PatchMapping("/{id}/status")
+    @PatchMapping("status/{id}")
     public ResponseEntity<CourseResponseDTO> changeStatus(
             @PathVariable Integer id,
-            @RequestParam StatusEnum newState) {
+             @Valid @RequestBody StatusUpdateRequestDTO statusUpdateDto) {
 
-        return ResponseEntity.ok(courseService.changeCourseStatus(id, newState));
+        return ResponseEntity.ok(courseService.changeCourseStatus(id, statusUpdateDto.newStatus()));
     }
 
     @GetMapping("/percentage/{id}")

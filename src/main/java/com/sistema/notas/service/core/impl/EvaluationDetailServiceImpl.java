@@ -3,11 +3,9 @@ package com.sistema.notas.service.core.impl;
 import java.time.LocalDate;
 import java.util.List;
 
-
-import com.sistema.notas.entity.catalogues.Degree;
-import com.sistema.notas.entity.core.Course;
 import com.sistema.notas.specifications.CatalogoSpecification;
-import com.sistema.notas.specifications.CourseSpecification;
+import com.sistema.notas.specifications.EvaluationDetailSpecification;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +29,6 @@ import com.sistema.notas.exceptions.BadRequestException;
 import com.sistema.notas.exceptions.ResourceNotFoundException;
 import com.sistema.notas.mapper.PageMapper;
 import com.sistema.notas.mapper.core.EvaluationDetailMapper;
-import com.sistema.notas.mapper.core.EvaluationsMapper;
 import com.sistema.notas.respository.core.CourseRegistrationRepository;
 import com.sistema.notas.respository.core.EvaluationDetailRepository;
 import com.sistema.notas.respository.core.EvaluationsRepository;
@@ -42,13 +39,13 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class EvaluationDetailServiceImpl implements EvaluationDetailService{
+public class EvaluationDetailServiceImpl implements EvaluationDetailService {
 
     private final EvaluationDetailRepository evaluationDetailRepository;
     private final EvaluationDetailMapper evaluationDetailMapper;
     private final PageMapper pageMapper;
 
-    //ralaciones
+    // ralaciones
     private final EvaluationsRepository evaluationsRepository;
     private final StudentRepository studentRepository;
     private final CourseRegistrationRepository courseRegistrationRepository;
@@ -56,31 +53,32 @@ public class EvaluationDetailServiceImpl implements EvaluationDetailService{
     @Transactional
     @Override
     public EvaluationDetailResponseDTO save(EvaluationDetailRequestDTO requestDTO) {
-        //validar que exista la evaluacion
-       Evaluation evaluation =  evaluationsRepository.findById(requestDTO.evaluationId())
-            .orElseThrow(() -> new BadRequestException("Evaluación no encontrada con ID: " + requestDTO.evaluationId()));
+        // validar que exista la evaluacion
+        Evaluation evaluation = evaluationsRepository.findById(requestDTO.evaluationId())
+                .orElseThrow(
+                        () -> new BadRequestException("Evaluación no encontrada con ID: " + requestDTO.evaluationId()));
 
-            //validar que la evaluacion este abierta
+        // validar que la evaluacion este abierta
         if (evaluation.getStatus() == StatusEnum.CLOSED) {
             throw new BadRequestException("No se pueden agregar calificaciones a una evaluación cerrada.");
         }
 
-        //validar que el estudiante exista
+        // validar que el estudiante exista
         Student student = studentRepository.findById(requestDTO.studentId())
-            .orElseThrow(() -> new BadRequestException("Estudiante no encontrado con ID: " + requestDTO.studentId()));
+                .orElseThrow(
+                        () -> new BadRequestException("Estudiante no encontrado con ID: " + requestDTO.studentId()));
 
-
-        //validar que no exista una calificacion esa evaluacion y ese estudiante
-        if (evaluationDetailRepository.existsByStudentIdAndEvaluationId(requestDTO.studentId(), requestDTO.evaluationId())) {
+        // validar que no exista una calificacion esa evaluacion y ese estudiante
+        if (evaluationDetailRepository.existsByStudentIdAndEvaluationId(requestDTO.studentId(),
+                requestDTO.evaluationId())) {
             throw new BadRequestException("El estudiante ya tiene una calificación registrada para esta evaluación.");
         }
 
-        //validar que el estudiante este inscrito en el curso de la evaluacion
+        // validar que el estudiante este inscrito en el curso de la evaluacion
         boolean isEnrolled = courseRegistrationRepository.existsByStudentIdAndCourseIdAndStatus(
-            student.getId(), evaluation.getCourse().getId(), EnrollmentStatus.ACTIVE
-        );
+                student.getId(), evaluation.getCourse().getId(), EnrollmentStatus.ACTIVE);
 
-        if(!isEnrolled){
+        if (!isEnrolled) {
             throw new BadRequestException("El estudiante no está inscrito en el curso de la evaluación.");
         }
 
@@ -96,10 +94,11 @@ public class EvaluationDetailServiceImpl implements EvaluationDetailService{
     public EvaluationDetailResponseDTO update(Integer id, EvaluationDetailEditRequestDTO requestDTO) {
 
         EvaluationDetail evaluationFind = evaluationDetailRepository.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("No existe ningun registro de nota con el id: " + id));
+                () -> new ResourceNotFoundException("No existe ningun registro de nota con el id: " + id));
 
         if (evaluationFind.getEvaluation().getStatus() == StatusEnum.CLOSED) {
-            throw new BadRequestException("No se pueden modificar calificaciones de una evaluación que ya está cerrada.");
+            throw new BadRequestException(
+                    "No se pueden modificar calificaciones de una evaluación que ya está cerrada.");
         }
 
         evaluationDetailMapper.updateEntityFromDTO(requestDTO, evaluationFind);
@@ -112,7 +111,7 @@ public class EvaluationDetailServiceImpl implements EvaluationDetailService{
     @Override
     public void delete(Integer id) {
         EvaluationDetail evaluationFind = evaluationDetailRepository.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException("No existe ningun registro de nota con el id: " + id));
+                () -> new ResourceNotFoundException("No existe ningun registro de nota con el id: " + id));
 
         evaluationDetailRepository.delete(evaluationFind);
     }
@@ -124,7 +123,7 @@ public class EvaluationDetailServiceImpl implements EvaluationDetailService{
         Pageable pagable = PageRequest.of(page, size);
 
         Specification<EvaluationDetail> filtros = Specification
-                .where(CatalogoSpecification.<EvaluationDetail>searchContains(search))
+                .where(EvaluationDetailSpecification.search(search))
                 .and(CatalogoSpecification.<EvaluationDetail>createdBetween(fromDate, toDate));
 
         Page<EvaluationDetail> evaluations = evaluationDetailRepository.findAll(filtros, pagable);
@@ -136,32 +135,41 @@ public class EvaluationDetailServiceImpl implements EvaluationDetailService{
 
     @Override
     public EvaluationDetailFullResponseDTO getOneDetail(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getOneDetail'");
+        EvaluationDetail evaluationFind = evaluationDetailRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("No existe ningun registro de nota con el id: " + id));
+        return evaluationDetailMapper.toFullResponseDTO(evaluationFind);
     }
 
     @Override
     public EvaluationDetailEditResponseDTO getOneDetailEdit(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getOneDetailEdit'");
+        EvaluationDetail evaluationFind = evaluationDetailRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("No existe ningun registro de nota con el id: " + id));
+        return evaluationDetailMapper.toEditResponseDTO(evaluationFind);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<EvaluationDetailSimpleResponseDTO> getGradesByEvaluation(Integer evaluationId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getGradesByEvaluation'");
+        List<EvaluationDetail> evaluationDetails = evaluationDetailRepository.findByEvaluationIdWithStudent(evaluationId);
+        return evaluationDetails.stream()
+                .map(evaluationDetailMapper::toSimpleResponseDTO)
+                .toList();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<EvaluationDetailResponseDTO> getGradesByStudentAndCourse(Integer studentId, Integer courseId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getGradesByStudentAndCourse'");
+        List<EvaluationDetail> evaluationDetails = evaluationDetailRepository.findByStudentAndCourse(studentId, courseId);
+        
+        return evaluationDetails.stream()
+                .map(evaluationDetailMapper::toResponseDTO)
+                .toList();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Double getCurrentStudentAverage(Integer studentId, Integer courseId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCurrentStudentAverage'");
+        return evaluationDetailRepository.calculateCurrentAverageByStudentAndCourse(studentId, courseId);
     }
-    
+
 }

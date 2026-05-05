@@ -1,12 +1,12 @@
 package com.sistema.notas.controller.core;
 
 import com.sistema.notas.dto.core.evaluations.*;
-import com.sistema.notas.entity.enums.StatusEnum;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sistema.notas.dto.generics.PaginateResponse;
+import com.sistema.notas.dto.generics.StatusUpdateRequestDTO;
 import com.sistema.notas.service.core.EvaluationService;
 
 import jakarta.validation.Valid;
@@ -80,10 +80,11 @@ public class EvaluationController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
-    //CAMBIAR ESTADOS
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<EvaluationsResponseDTO> openEvaluation(@PathVariable Integer id, @RequestParam StatusEnum status) {
-        return ResponseEntity.status(HttpStatus.OK).body(evaluationService.changeEvaluationStatus(id, status));
+    // CAMBIAR ESTADOS
+    @PatchMapping("/status/{id}")
+    public ResponseEntity<EvaluationsResponseDTO> openEvaluation(@PathVariable Integer id,
+            @Valid @RequestBody StatusUpdateRequestDTO statusUpdateDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(evaluationService.changeEvaluationStatus(id, statusUpdateDto.newStatus()));
     }
 
 }

@@ -5,11 +5,13 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
-
+import com.sistema.notas.entity.core.Student;
+import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailEditRequestDTO;
 import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailEditResponseDTO;
 import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailFullResponseDTO;
 import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailRequestDTO;
 import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailResponseDTO;
+import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailSimpleResponseDTO;
 import com.sistema.notas.dto.core.evaluations.EvaluationsResponseDTO;
 import com.sistema.notas.dto.core.student.StudentSimpleResponseDTO;
 import com.sistema.notas.entity.core.Evaluation;
@@ -29,12 +31,18 @@ public interface EvaluationDetailMapper {
     @Mapping(target = "student", ignore = true)
     EvaluationDetail toEntity(EvaluationDetailRequestDTO requestDTO);
 
+    //simple Response
+    @Mapping(source = "student.id", target = "studentId")
+    @Mapping(source = "evaluation.id", target = "evaluationId")
+    EvaluationDetailSimpleResponseDTO toSimpleResponseDTO(EvaluationDetail entity);
+
     //de request a entidad para edicion
     EvaluationDetailEditResponseDTO toEditResponseDTO(EvaluationDetail entity);
 
     //actulizar entidad existente
-    EvaluationDetail updateEntityFromDTO(EvaluationDetailRequestDTO requestDTO, @MappingTarget EvaluationDetail evaluationDetail);
+    EvaluationDetail updateEntityFromDTO(EvaluationDetailEditRequestDTO requestDTO, @MappingTarget EvaluationDetail evaluationDetail);
 
+    //full response DTO
     EvaluationDetailFullResponseDTO toFullResponseDTO(EvaluationDetail entity);
 
     default EvaluationsResponseDTO mapEvaluationtoDto(Evaluation evaluation){
@@ -52,7 +60,7 @@ public interface EvaluationDetailMapper {
         );
     }
 
-    default StudentSimpleResponseDTO mapStudentToSimpleDTO(com.sistema.notas.entity.core.Student student) {
+    default StudentSimpleResponseDTO mapStudentToSimpleDTO(Student student) {
         if (student == null)
             return null;
         return new StudentSimpleResponseDTO(

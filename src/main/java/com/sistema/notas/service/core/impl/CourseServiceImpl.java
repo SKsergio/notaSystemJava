@@ -48,8 +48,8 @@ public class CourseServiceImpl implements CourseService {
     private final PeriodRespository periodRespository;
     private final SubjectRepository subjectRepository;
     private final GradeDetailRepository gradeDetailRepository;
-    //cerrar en cascada
-    private final EvaluationsRepository  evaluationsRepository;
+    // cerrar en cascada
+    private final EvaluationsRepository evaluationsRepository;
 
     @Override
     public CourseResponseDTO save(CourseRequestDTO courseDto) {
@@ -73,11 +73,12 @@ public class CourseServiceImpl implements CourseService {
 
         GradeDetail gradeDetail = gradeDetailRepository.findById(courseDto.gradeDetailId())
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("No existe una detalle grado con ID: " + courseDto.gradeDetailId()));
+                        () -> new ResourceNotFoundException(
+                                "No existe una detalle grado con ID: " + courseDto.gradeDetailId()));
 
         Course entity = courseMapper.toEntity(courseDto);
 
-        //entity.setStatus(1);//aca hare un enum :C
+        // entity.setStatus(1);//aca hare un enum :C
         entity.setSubject(subject);
         entity.setTeacher(teacher);
         entity.setPeriod(period);
@@ -91,9 +92,10 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     public CourseResponseDTO update(Integer id, CourseRequestDTO courseDto) {
         Course courseFind = coursesRespository.findById(id).orElseThrow(
-            () -> new ResourceNotFoundException("No existe ningun curso con el id: " + id));
+                () -> new ResourceNotFoundException("No existe ningun curso con el id: " + id));
 
-        if (coursesRespository.isCourseDuplicatedForUpdate(courseDto.subjectId(), courseDto.gradeDetailId(), courseDto.periodId(), id)) {
+        if (coursesRespository.isCourseDuplicatedForUpdate(courseDto.subjectId(), courseDto.gradeDetailId(),
+                courseDto.periodId(), id)) {
             throw new BadRequestException("Ya existe un courso con estos datos.");
         }
 
@@ -112,13 +114,13 @@ public class CourseServiceImpl implements CourseService {
 
         GradeDetail gradeDetail = gradeDetailRepository.findById(courseDto.gradeDetailId())
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("No existe una detalle grado con ID: " + courseDto.gradeDetailId()));
+                        () -> new ResourceNotFoundException(
+                                "No existe una detalle grado con ID: " + courseDto.gradeDetailId()));
 
         courseFind.setSubject(subject);
         courseFind.setTeacher(teacher);
         courseFind.setPeriod(period);
         courseFind.setGradeDetail(gradeDetail);
-
 
         courseMapper.updateEntityFromDTO(courseDto, courseFind);
         return courseMapper.toResponseDTO(courseFind);
@@ -127,14 +129,14 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void delete(Integer id) {
         Course courseFind = coursesRespository.findById(id).orElseThrow(
-            ()->new ResourceNotFoundException("No existe ningun curso con esta id"));
+                () -> new ResourceNotFoundException("No existe ningun curso con esta id"));
 
         coursesRespository.delete(courseFind);
     }
 
     @Override
     public PaginateResponse<CourseResponseDTO> obtenerCoursePaginados(int page, int size, String search,
-                                                                      LocalDate fromDate, LocalDate toDate) {
+            LocalDate fromDate, LocalDate toDate) {
         Pageable pagable = PageRequest.of(page, size);
 
         Specification<Course> filtros = Specification
@@ -153,18 +155,18 @@ public class CourseServiceImpl implements CourseService {
         List<Course> courses = coursesRespository.findAll();
 
         return courses.stream()
-            .map(co-> new CourseSimpleResponseDTO(
-                co.getId(),
-                co.getName(),
-                co.getCode(), co.getStatus(), co.getTotalStudents(),
-                co.getGradeDetail().getYear()
-            )).toList();
+                .map(co -> new CourseSimpleResponseDTO(
+                        co.getId(),
+                        co.getName(),
+                        co.getCode(), co.getStatus(), co.getTotalStudents(),
+                        co.getGradeDetail().getYear()))
+                .toList();
     }
 
     @Override
     public CourseFullResponseDTO obtenerOneCourse(Integer id) {
         Course courseFind = coursesRespository.findById(id).orElseThrow(
-            () -> new ResourceNotFoundException("No existe ningun curso con el id: " + id));
+                () -> new ResourceNotFoundException("No existe ningun curso con el id: " + id));
 
         return courseMapper.toFullResponseDTO(courseFind);
     }
