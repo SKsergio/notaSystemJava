@@ -36,4 +36,9 @@ public interface EvaluationsRepository
 
     @Query("SELECT COALESCE(SUM(e.percentage), 0.0) FROM Evaluation e WHERE e.course.id = :courseId AND (:excludeEvaluationId IS NULL OR e.id != :excludeEvaluationId)")
     Double getAccumulatedPercentage(@Param("courseId") Integer courseId, @Param("excludeEvaluationId") Integer excludeEvaluationId);
+
+
+    // Suma los porcentajes del curso, pero filtrando por el estado de la evaluación
+    @Query("SELECT COALESCE(SUM(e.percentage), 0.0) FROM Evaluation e WHERE e.course.id = :courseId AND e.status = :status")
+    Double getEvaluatedPercentage(@Param("courseId") Integer courseId, @Param("status") StatusEnum status);
 }

@@ -15,6 +15,7 @@ public interface DegreeEnrollmentService {
     DegreeEnrollmentResponseDTO save(DegreeEnrollmentRequestDTO degreeEnrollmentDTO);
     void delete(Integer id);
     PaginateResponse<DegreeEnrollmentResponseDTO> obtenerEnrtollmentPaginados(int page, int size, String search , LocalDate fromDate, LocalDate  toDate);
+    PaginateResponse<DegreeEnrollmentResponseDTO> getEnrollmentsByGradeDetail(int page, int size, Integer gradeDetailId);
     List<DegreeEnrollmentSimpleResponseDTO> listarToSelects();
     DegreeEnrollmentResponseDTO changeStatusEnrollment(Integer id, EnrollmentStatus status);
 }

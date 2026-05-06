@@ -2,6 +2,9 @@ package com.sistema.notas.respository.core;
 
 import com.sistema.notas.entity.core.DegreeEnrollment;
 import com.sistema.notas.entity.enums.EnrollmentStatus;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -30,4 +33,8 @@ public interface DegreeEnrollmentRepository extends JpaRepository<DegreeEnrollme
             @Param("oldEnrollmentStatus") EnrollmentStatus oldEnrollmentStatus,
             @Param("newEnrollmentStatus") EnrollmentStatus newEnrollmentStatus
     );
+
+    Integer countByGradeDetailIdAndStatus(Integer gradeDetailId, EnrollmentStatus status);
+    Page<DegreeEnrollment> findByGradeDetailId(Integer gradeDetailId, Pageable pageable);
+
 }

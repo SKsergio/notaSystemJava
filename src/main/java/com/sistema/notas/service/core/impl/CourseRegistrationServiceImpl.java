@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sistema.notas.dto.core.courseRegistration.CourseRegistrationRequestDTO;
 import com.sistema.notas.dto.core.courseRegistration.CourseRegistrationResponseDTO;
@@ -97,6 +98,17 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
 
         registrationFind.setStatus(status);
         return courseRegistrationMapper.toResponseDTO(registrationFind);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PaginateResponse<CourseRegistrationResponseDTO> getRegistrationByCourse(int page, int size,Integer CourseId) {
+        Pageable pagable = PageRequest.of(page, size);
+        Page<CourseRegistration> courseRegistration = courseRegistrationRepository.findByCourseId(CourseId, pagable);
+
+        return pageMapper.toPaginateResponse(
+                courseRegistration,
+                courseRegistrationMapper::toResponseDTO);
     }
 
 }

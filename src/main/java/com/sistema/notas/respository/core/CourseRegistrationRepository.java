@@ -2,6 +2,8 @@ package com.sistema.notas.respository.core;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -32,4 +34,8 @@ public interface CourseRegistrationRepository
         List<CourseRegistration> findRegistrationsStudents(
                         @Param("studentId") Integer studentId,
                         @Param("gradeDetailId") Integer gradeDetailId);
+
+        Integer countByCourseIdAndStatus(Integer courseId, EnrollmentStatus status);
+        Page<CourseRegistration> findByCourseId(Integer courseId, Pageable pageable);
+
 }

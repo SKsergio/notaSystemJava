@@ -15,6 +15,8 @@ public record CourseFullResponseDTO(
     CatalogueSimpleResponseDTO subject,
     PeriodSimpleResponseDto period,
     Integer totalStudents,
+    Integer availableSlots,
+    Double evaluatedPercentage,
     StatusEnum status,
     int year,
     Double valorityUnity

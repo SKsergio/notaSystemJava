@@ -157,7 +157,11 @@ public class GradeDetailServiceImpl implements GradeDetailService {
         GradeDetail gradeDetailFind = gradeDetailRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("No existe ningun detalle de grado con el id: " + id));
 
-        return gradeDetailMapper.toFullResponseDTO(gradeDetailFind);
+        Integer totalStudents = degreeEnrollmentRepository.countByGradeDetailIdAndStatus(id, EnrollmentStatus.ACTIVE);
+        Integer ability = gradeDetailFind.getAbility() != null ? gradeDetailFind.getAbility() : 0;
+        Integer availableSlots = Math.max(0, ability - totalStudents);
+
+        return gradeDetailMapper.toFullResponseDTO(gradeDetailFind, totalStudents, availableSlots);
     }
 
     @Override
