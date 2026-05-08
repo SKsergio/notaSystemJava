@@ -26,7 +26,7 @@ public interface StudentService {
     StudentResponseDTO update(Integer id, StudentEditRequestDTO studentRequestDTO);
     void delete(Integer id);
     PaginateResponse<StudentResponseDTO> obtenerStudentPaginados(int page, int size, String search, LocalDate startDate, LocalDate endDate);
-    List<StudentSimpleResponseDTO> listartoSelect();
+    List<StudentSimpleResponseDTO> listartoSelect(String search);
     StudentFullResponseDTO obtenerStudent(Integer id);
     StudentResponseEditDTO obtenerStudentEdit(Integer id);
 }

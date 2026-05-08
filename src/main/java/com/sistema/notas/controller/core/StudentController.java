@@ -40,8 +40,10 @@ public class StudentController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<List<StudentSimpleResponseDTO>> getAllStudent() {
-        return ResponseEntity.status(HttpStatus.OK).body(studentService.listartoSelect());
+    public ResponseEntity<List<StudentSimpleResponseDTO>> getAllStudent(
+            @RequestParam(required = false) String search
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(studentService.listartoSelect(search));
     }
 
     @GetMapping

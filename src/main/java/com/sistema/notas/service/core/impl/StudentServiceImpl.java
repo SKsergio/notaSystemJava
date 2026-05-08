@@ -107,17 +107,14 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentSimpleResponseDTO> listartoSelect() {
-        List<Student> students = studentRepository.findAll();
+    public List<StudentSimpleResponseDTO> listartoSelect(String search) {
+        Specification<Student> filtros = Specification
+                .where(StudentSpecification.search(search));
+
+        List<Student> students = studentRepository.findAll(filtros);
 
         return students.stream()
-                .map(st -> new StudentSimpleResponseDTO(
-                        st.getId(),
-                        st.getfullName(),
-                        st.getCarnet(),
-                        st.getEmail(),
-                        st.getRoutePhoto(),
-                        st.getAge()))
+                .map(studentMapper::toSimpleResponseDTO)
                 .toList();
     }
 

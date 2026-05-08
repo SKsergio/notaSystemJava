@@ -1,15 +1,11 @@
 package com.sistema.notas.mapper.core;
 
+import com.sistema.notas.dto.core.student.*;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
-import com.sistema.notas.dto.core.student.StudentEditRequestDTO;
-import com.sistema.notas.dto.core.student.StudentFullResponseDTO;
-import com.sistema.notas.dto.core.student.StudentRequestDTO;
-import com.sistema.notas.dto.core.student.StudentResponseDTO;
-import com.sistema.notas.dto.core.student.StudentResponseEditDTO;
 import com.sistema.notas.entity.core.Student;
 
 import org.mapstruct.Mapper;
@@ -24,6 +20,9 @@ public interface StudentMapper {
     @Mapping(source = "routePhoto", target = "routePhoto", qualifiedByName = "mapPhotoUrl")
     StudentResponseDTO toResponseDTO(Student student);
 
+    @Mapping(source = "routePhoto", target = "routePhoto", qualifiedByName = "mapPhotoUrl")
+    StudentSimpleResponseDTO toSimpleResponseDTO(Student student);
+
     @Mapping(target = "routePhoto", ignore = true)
     Student toEntity(StudentRequestDTO responseDTO);
 
@@ -37,7 +36,6 @@ public interface StudentMapper {
     //full response
     @Mapping(source = "routePhoto", target = "routePhoto", qualifiedByName = "mapPhotoUrl")
     StudentFullResponseDTO toFullResponse(Student student);
-
 
     @Named("mapPhotoUrl")
     default String mapPhotoUrl(String routePhoto) {
