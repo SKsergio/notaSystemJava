@@ -10,9 +10,9 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
-@Table(name = "degree_enrollment", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"student_id", "grade_detail_id"})
-})
+// @Table(name = "degree_enrollment", uniqueConstraints = {
+//         @UniqueConstraint(columnNames = {"student_id", "grade_detail_id"})
+// })
 @Getter @Setter
 @EqualsAndHashCode(callSuper = true)
 @SQLDelete(sql = "UPDATE degree_enrollment SET active = false WHERE id = ?")

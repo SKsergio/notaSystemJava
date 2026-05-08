@@ -1,5 +1,6 @@
 package com.sistema.notas.service.core.impl;
 
+import com.sistema.notas.dto.core.degreeEnrollment.BatchEnrollmentRequestDTO;
 import com.sistema.notas.dto.core.degreeEnrollment.DegreeEnrollmentRequestDTO;
 import com.sistema.notas.dto.core.degreeEnrollment.DegreeEnrollmentResponseDTO;
 import com.sistema.notas.dto.core.degreeEnrollment.DegreeEnrollmentSimpleResponseDTO;
@@ -135,5 +136,60 @@ public class DegreeEnrollmentServiceImpl implements DegreeEnrollmentService {
         return pageMapper.toPaginateResponse(
                 enrollments,
                 degreeEnrollmentMapper::toResponseDTO);
+    }
+
+    @Override
+    public List<DegreeEnrollmentResponseDTO> enrollInBatch(BatchEnrollmentRequestDTO requestDTO) {
+        GradeDetail gradeDetail = gradeDetailRepository.findById(requestDTO.gradeDetailId())
+            .orElseThrow(()-> new ResourceNotFoundException("El grado academico no existe"));
+
+        Integer currentEnrolled = degreeEnrollmentRepository.countByGradeDetailIdAndStatus(gradeDetail.getId(), EnrollmentStatus.ACTIVE);
+        Integer ability = gradeDetail.getAbility() != null ? gradeDetail.getAbility() : 0;
+        Integer availableSlots = Math.max(0, ability - currentEnrolled);
+
+        if (requestDTO.studentIds().size() > availableSlots) {
+            throw new BadRequestException("No hay cupos suficientes. Intentas matricular " 
+                    + requestDTO.studentIds().size() + " alumnos, pero solo quedan " + availableSlots + " cupos.");
+        }
+
+        List<Student> studentsToEnroll = studentRepository.findAllById(requestDTO.studentIds());
+
+        //validando que todo realmente exista
+        if (studentsToEnroll.size() != requestDTO.studentIds().size()) {
+            throw new BadRequestException("Algunos ids proporcionados no existen");
+        }
+
+        List<Integer> duplicatedInGrade = degreeEnrollmentRepository.findDuplicatedStudentIdsInGrade(
+                gradeDetail.getId(), requestDTO.studentIds()
+        );
+        
+        if (!duplicatedInGrade.isEmpty()) {
+            throw new BadRequestException("Los siguientes estudiantes ya están matriculados en esta sección: IDs " + duplicatedInGrade);
+        }
+
+        // 3B. Validar si ya están matriculados en el mismo AÑO (pero quizás en otra sección)
+        List<Integer> enrolledInYear = degreeEnrollmentRepository.findStudentIdsAlreadyEnrolledInYear(
+                gradeDetail.getYear(), requestDTO.studentIds()
+        );
+        
+        if (!enrolledInYear.isEmpty()) {
+            throw new BadRequestException("Los siguientes estudiantes ya tienen una matrícula activa para el año " 
+                    + gradeDetail.getYear() + ": IDs " + enrolledInYear);
+        }
+
+        List<DegreeEnrollment> newEnrollments = studentsToEnroll.stream().map(student -> {
+            DegreeEnrollment enrollment = new DegreeEnrollment();
+            enrollment.setGradeDetail(gradeDetail);
+            enrollment.setStudent(student);
+            enrollment.setStatus(EnrollmentStatus.ACTIVE);
+            return enrollment;
+        }).toList();
+
+        List<DegreeEnrollment> savedEnrollments = degreeEnrollmentRepository.saveAll(newEnrollments);
+
+        return savedEnrollments.stream()
+                .map(degreeEnrollmentMapper::toResponseDTO)
+                .toList();
+
     }
 }

@@ -1,6 +1,7 @@
 package com.sistema.notas.service.core;
 
 
+import com.sistema.notas.dto.core.degreeEnrollment.BatchEnrollmentRequestDTO;
 import com.sistema.notas.dto.core.degreeEnrollment.DegreeEnrollmentRequestDTO;
 import com.sistema.notas.dto.core.degreeEnrollment.DegreeEnrollmentResponseDTO;
 import com.sistema.notas.dto.core.degreeEnrollment.DegreeEnrollmentSimpleResponseDTO;
@@ -13,7 +14,7 @@ import java.util.List;
 public interface DegreeEnrollmentService {
 
     DegreeEnrollmentResponseDTO save(DegreeEnrollmentRequestDTO degreeEnrollmentDTO);
-    void delete(Integer id);
+    List<DegreeEnrollmentResponseDTO> enrollInBatch(BatchEnrollmentRequestDTO requestDTO);    void delete(Integer id);
     PaginateResponse<DegreeEnrollmentResponseDTO> obtenerEnrtollmentPaginados(int page, int size, String search , LocalDate fromDate, LocalDate  toDate);
     PaginateResponse<DegreeEnrollmentResponseDTO> getEnrollmentsByGradeDetail(int page, int size, Integer gradeDetailId);
     List<DegreeEnrollmentSimpleResponseDTO> listarToSelects();

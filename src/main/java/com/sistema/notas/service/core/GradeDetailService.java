@@ -14,7 +14,6 @@ import com.sistema.notas.entity.enums.StatusEnum;
 public interface GradeDetailService {
     
     //funcion para devolver historial de notas por grado
-    //funcion para devolver el total de alumnos asignados a este grado
     //funcion calcular promedio global del aula
 
     GradeDetailResponseDTO save(GradeDetailRequestDTO gradeDetail);

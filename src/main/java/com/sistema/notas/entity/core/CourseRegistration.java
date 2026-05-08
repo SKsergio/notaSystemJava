@@ -20,9 +20,9 @@ import com.sistema.notas.entity.AuditableEntity;
 import com.sistema.notas.entity.enums.EnrollmentStatus;
 
 @Entity
-@Table(name = "course_registration", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"student_id", "course_id"})
-})
+// @Table(name = "course_registration", uniqueConstraints = {
+//         @UniqueConstraint(columnNames = {"student_id", "course_id"})
+// })
 @Getter @Setter
 @EqualsAndHashCode(callSuper = true)
 @SQLDelete(sql = "UPDATE course_registration SET active = false WHERE id = ?")

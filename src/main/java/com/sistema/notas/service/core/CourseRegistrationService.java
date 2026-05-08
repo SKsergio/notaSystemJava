@@ -3,6 +3,7 @@ package com.sistema.notas.service.core;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.sistema.notas.dto.core.courseRegistration.BatchRegistrationCourseDTO;
 import com.sistema.notas.dto.core.courseRegistration.CourseRegistrationRequestDTO;
 import com.sistema.notas.dto.core.courseRegistration.CourseRegistrationResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
@@ -10,6 +11,7 @@ import com.sistema.notas.entity.enums.EnrollmentStatus;
 
 public interface CourseRegistrationService {
     CourseRegistrationResponseDTO save(CourseRegistrationRequestDTO requestDTO);
+    List<CourseRegistrationResponseDTO> enrollInBatch(BatchRegistrationCourseDTO requestDTO);    void delete(Integer id);
     PaginateResponse<CourseRegistrationResponseDTO> obtenerRegistrosPaginados(int page, int size, String search , LocalDate fromDate, LocalDate  toDate);
     PaginateResponse<CourseRegistrationResponseDTO> getRegistrationByCourse(int page, int size, Integer courseId);
     List<CourseRegistrationResponseDTO> listarToSelects();

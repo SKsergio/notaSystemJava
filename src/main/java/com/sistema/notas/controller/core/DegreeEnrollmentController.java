@@ -1,5 +1,6 @@
 package com.sistema.notas.controller.core;
 
+import com.sistema.notas.dto.core.degreeEnrollment.BatchEnrollmentRequestDTO;
 import com.sistema.notas.dto.core.degreeEnrollment.DegreeEnrollmentRequestDTO;
 import com.sistema.notas.dto.core.degreeEnrollment.DegreeEnrollmentResponseDTO;
 import com.sistema.notas.dto.core.degreeEnrollment.DegreeEnrollmentSimpleResponseDTO;
@@ -25,6 +26,11 @@ public class DegreeEnrollmentController {
     @PostMapping()
     public ResponseEntity<DegreeEnrollmentResponseDTO> createDegreeEnrollment(@Valid @RequestBody DegreeEnrollmentRequestDTO enrollDTO){
         return ResponseEntity.status(HttpStatus.OK).body(degreeEnrollmentService.save(enrollDTO));
+    }
+
+    @PostMapping("batch")
+    public ResponseEntity<List<DegreeEnrollmentResponseDTO>> createDegreeEnrollmentInBatch(@Valid @RequestBody BatchEnrollmentRequestDTO enrollDTO){
+        return ResponseEntity.status(HttpStatus.OK).body(degreeEnrollmentService.enrollInBatch(enrollDTO));
     }
 
     @GetMapping("all")
