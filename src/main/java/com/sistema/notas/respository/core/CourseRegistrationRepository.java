@@ -28,6 +28,14 @@ public interface CourseRegistrationRepository
                         @Param("oldStatus") EnrollmentStatus oldStatus,
                         @Param("newStatus") EnrollmentStatus newStatus);
 
+        // 1. Devuelve los IDs de los alumnos que YA están en este cursi exacto
+        @Query("SELECT co.student.id FROM CourseRegistration co WHERE co.course.id = :courseId AND co.student.id IN :studentIds")
+        List<Integer> findDuplicatedStudentIdsInCourse(
+                @Param("courseId") Integer courseId,
+                @Param("studentIds") List<Integer> studentIds
+        );
+
+
         boolean existsByStudentIdAndCourseIdAndStatus(Integer studentId, Integer courseId, EnrollmentStatus status);
 
         @Query("SELECT cr FROM CourseRegistration cr JOIN FETCH cr.course c WHERE cr.student.id = :studentId AND c.gradeDetail.id = :gradeDetailId")

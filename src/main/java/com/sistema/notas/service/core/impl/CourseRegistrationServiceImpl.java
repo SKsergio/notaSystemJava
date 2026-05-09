@@ -3,6 +3,8 @@ package com.sistema.notas.service.core.impl;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.sistema.notas.dto.core.courseRegistration.BatchRegistrationCourseDTO;
+import com.sistema.notas.exceptions.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -62,6 +64,47 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
         entity.setCourse(course);
         CourseRegistration savedEntity = courseRegistrationRepository.save(entity);
         return courseRegistrationMapper.toResponseDTO(savedEntity);
+    }
+
+    @Override
+    public List<CourseRegistrationResponseDTO> enrollInBatch(BatchRegistrationCourseDTO requestDTO) {
+        Course course = coursesRespository.findById(requestDTO.courseId())
+            .orElseThrow(
+                () -> new ResourceNotFoundException("No existe ningun curso con el ID: " + requestDTO.courseId()));
+
+
+        //validar que no excedean de la cantidad cupos disponibles para el grado.
+        List<Student> studentsToEnroll = studentRepository.findAllById(requestDTO.studentIds());
+
+        if (studentsToEnroll.size() != requestDTO.studentIds().size()) {
+            throw new BadRequestException("Algunos ids proporcionados no existen");
+        }
+
+        List<Integer> duplicatedInCourse = courseRegistrationRepository.findDuplicatedStudentIdsInCourse(
+                course.getId(), requestDTO.studentIds()
+        );
+
+        if (!duplicatedInCourse.isEmpty()) {
+            throw new BadRequestException("Los siguientes estudiantes ya están matriculados en esta curso: IDs " + duplicatedInCourse);
+        }
+
+        List<CourseRegistration> newRegistration = studentsToEnroll.stream().map( student -> {
+            CourseRegistration registration = new CourseRegistration();
+            registration.setStudent(student);
+            registration.setCourse(course);
+            return registration;
+        }).toList();
+        List<CourseRegistration> savedRegistration = courseRegistrationRepository.saveAll(newRegistration);
+        return savedRegistration.stream()
+                .map(courseRegistration -> )
+    }
+
+    @Override
+    public void delete(Integer id) {
+        CourseRegistration registrationFind = courseRegistrationRepository.findById(id).orElseThrow(
+                ()->new ResourceNotFoundException("No existe ninguna inscripcion con esta id"));
+
+        courseRegistrationRepository.delete(registrationFind);
     }
 
     @Override
