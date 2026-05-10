@@ -54,6 +54,7 @@ public interface CourseMapper {
     Course updateEntityFromDTO(CourseRequestDTO requestDTO, @MappingTarget Course course);
 
     @Mapping(source = "entity.gradeDetail.year", target = "year")
+    @Mapping(source = "totalStudents", target = "totalStudents")
     CourseFullResponseDTO toFullResponseDTO(Course entity, Integer totalStudents, Integer availableSlots, Double evaluatedPercentage);
 
     default CatalogueSimpleResponseDTO mapSubjectToSimpleDTO(Subject subject) {

@@ -50,6 +50,15 @@ public interface DegreeEnrollmentRepository extends JpaRepository<DegreeEnrollme
             @Param("newEnrollmentStatus") EnrollmentStatus newEnrollmentStatus
     );
 
+    boolean existsByStudentIdAndGradeDetailIdAndStatus(Integer studentId, Integer gradeDetailId, EnrollmentStatus status);
+
+    @Query("SELECT de.student.id FROM DegreeEnrollment de WHERE de.gradeDetail.id = :gradeDetailId AND de.student.id IN :studentIds AND de.status = :status")
+    List<Integer> findValidEnrolledStudentIds(
+            @Param("gradeDetailId") Integer gradeDetailId,
+            @Param("studentIds") List<Integer> studentIds,
+            @Param("status") EnrollmentStatus status
+    );
+
     Integer countByGradeDetailIdAndStatus(Integer gradeDetailId, EnrollmentStatus status);
     Page<DegreeEnrollment> findByGradeDetailId(Integer gradeDetailId, Pageable pageable);
 

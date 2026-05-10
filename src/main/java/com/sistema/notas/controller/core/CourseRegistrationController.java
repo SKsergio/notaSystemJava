@@ -1,5 +1,6 @@
 package com.sistema.notas.controller.core;
 
+import com.sistema.notas.dto.core.courseRegistration.BatchRegistrationCourseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +36,11 @@ public class CourseRegistrationController {
     @PostMapping()
     public ResponseEntity<CourseRegistrationResponseDTO> createRegistration(@Valid @RequestBody CourseRegistrationRequestDTO registrationDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(courseRegistrationService.save(registrationDTO));
+    }
+
+    @PostMapping("batch")
+    public ResponseEntity<List<CourseRegistrationResponseDTO>> createCourseRegistrationInBatch(@Valid @RequestBody BatchRegistrationCourseDTO registrationCourseDTO){
+        return ResponseEntity.status(HttpStatus.OK).body(courseRegistrationService.enrollInBatch(registrationCourseDTO));
     }
 
     @GetMapping("all")

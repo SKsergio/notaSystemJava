@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.sistema.notas.dto.core.evaluations.*;
+import com.sistema.notas.entity.catalogues.Period;
 import com.sistema.notas.entity.enums.StatusEnum;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
@@ -48,11 +49,27 @@ public class EvaluationServiceImpl implements EvaluationService {
                 .orElseThrow(
                         () -> new ResourceNotFoundException("No existe el curso con ID: " + evaluationDTO.courseId()));
 
+        Period period = course.getPeriod();
+        if (period == null) {
+            throw new BadRequestException("El curso no tiene un periodo académico asociado.");
+        }
+
+        if (evaluationDTO.startDate().isBefore(period.getStartDate())) {
+            throw new BadRequestException("La fecha de inicio de la evaluación (" + evaluationDTO.startDate() +
+                    ") no puede ser anterior al inicio del periodo (" + period.getStartDate() + ").");
+        }
+
+        // Validar fecha de fin
+        if (evaluationDTO.endDate().isAfter(period.getEndDate())) {
+            throw new BadRequestException("La fecha de cierre de la evaluación (" + evaluationDTO.endDate() +
+                    ") no puede ser posterior al fin del periodo (" + period.getEndDate() + ").");
+        }
+
         Double currentAccumulated = evaluationsRepository.getAccumulatedPercentage(evaluationDTO.courseId(), null);
         if (currentAccumulated + evaluationDTO.percentage() > 100.0) {
             double remaining = 100.0 - currentAccumulated;
             throw new IllegalArgumentException(
-                    "No se puede editar la evaluación. El curso solo tiene un " + remaining + "% disponible.");
+                    "No se puede crear la evaluación. El curso solo tiene un " + remaining + "% disponible.");
         }
 
         Evaluation evaluation = evaluationsMapper.toEntity(evaluationDTO);

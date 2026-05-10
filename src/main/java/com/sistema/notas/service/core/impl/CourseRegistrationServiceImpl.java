@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.sistema.notas.dto.core.courseRegistration.BatchRegistrationCourseDTO;
 import com.sistema.notas.exceptions.BadRequestException;
+import com.sistema.notas.respository.core.DegreeEnrollmentRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -42,6 +43,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
     // relaciones
     private final StudentRepository studentRepository;
     private final CoursesRespository coursesRespository;
+    private final DegreeEnrollmentRepository degreeEnrollmentRepository;
 
     @Override
     public CourseRegistrationResponseDTO save(CourseRegistrationRequestDTO requestDTO) {
@@ -69,11 +71,21 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
     @Override
     public List<CourseRegistrationResponseDTO> enrollInBatch(BatchRegistrationCourseDTO requestDTO) {
         Course course = coursesRespository.findById(requestDTO.courseId())
-            .orElseThrow(
-                () -> new ResourceNotFoundException("No existe ningun curso con el ID: " + requestDTO.courseId()));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("No existe ningun curso con el ID: " + requestDTO.courseId()));
 
+        List<Integer> validEnrolledIds = degreeEnrollmentRepository.findValidEnrolledStudentIds(
+                course.getGradeDetail().getId(),
+                requestDTO.studentIds(),
+                EnrollmentStatus.ACTIVE
+        );
 
-        //validar que no excedean de la cantidad cupos disponibles para el grado.
+        if (validEnrolledIds.size() != requestDTO.studentIds().size()) {
+            List<Integer> invalidIds = new java.util.ArrayList<>(requestDTO.studentIds());
+            invalidIds.removeAll(validEnrolledIds);
+            throw new BadRequestException("Los siguientes estudiantes NO están matriculados en el grado de este curso: IDs " + invalidIds);
+        }
+
         List<Student> studentsToEnroll = studentRepository.findAllById(requestDTO.studentIds());
 
         if (studentsToEnroll.size() != requestDTO.studentIds().size()) {
@@ -85,7 +97,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
         );
 
         if (!duplicatedInCourse.isEmpty()) {
-            throw new BadRequestException("Los siguientes estudiantes ya están matriculados en esta curso: IDs " + duplicatedInCourse);
+            throw new BadRequestException("Los siguientes estudiantes ya están matriculados en este curso: IDs " + duplicatedInCourse);
         }
 
         List<CourseRegistration> newRegistration = studentsToEnroll.stream().map( student -> {
@@ -94,9 +106,12 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
             registration.setCourse(course);
             return registration;
         }).toList();
+
         List<CourseRegistration> savedRegistration = courseRegistrationRepository.saveAll(newRegistration);
+
         return savedRegistration.stream()
-                .map(courseRegistration -> )
+                .map(courseRegistrationMapper::toResponseDTO)
+                .toList();
     }
 
     @Override
