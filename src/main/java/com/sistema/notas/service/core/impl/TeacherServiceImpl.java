@@ -30,11 +30,16 @@ import com.sistema.notas.service.fileStorage.FileStorageService;
 import com.sistema.notas.specifications.CatalogoSpecification;
 
 import lombok.RequiredArgsConstructor;
-
+import com.sistema.notas.entity.security.User;
+import com.sistema.notas.entity.enums.Role;
+import com.sistema.notas.respository.security.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 @Service
 @RequiredArgsConstructor
 public class TeacherServiceImpl implements TeacherService {
+    private final UserRepository userRepository;
 
+    private final PasswordEncoder passwordEncoder;
     private final TeacherRepository teacherRepository;
     private final PageMapper pageMapper;
     private final TeacherMapper teacherMapper;
@@ -77,6 +82,24 @@ public class TeacherServiceImpl implements TeacherService {
         }
 
         Teacher saved = teacherRepository.save(entity);
+        if (!userRepository.existsByEmail(saved.getEmail())) {
+
+            User user = new User();
+
+            user.setEmail(saved.getEmail());
+
+            user.setPasswordHash(
+                    passwordEncoder.encode("123456")
+            );
+
+            user.setRole(Role.TEACHER);
+
+            user.setTeacherId(saved.getId());
+
+            user.setFirstLogin(true);
+
+            userRepository.save(user);
+        }
         return teacherMapper.toResponseDTO(saved);
     }
 
