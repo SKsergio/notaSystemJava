@@ -25,14 +25,19 @@ import com.sistema.notas.service.core.StudentService;
 import com.sistema.notas.service.fileStorage.FileStorageService;
 import com.sistema.notas.specifications.CatalogoSpecification;
 import com.sistema.notas.specifications.StudentSpecification;
-
+import com.sistema.notas.entity.security.User;
+import com.sistema.notas.entity.enums.Role;
+import com.sistema.notas.respository.security.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
+    private final UserRepository userRepository;
 
+    private final PasswordEncoder passwordEncoder;
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
     private final PageMapper pageMapper;
@@ -53,6 +58,24 @@ public class StudentServiceImpl implements StudentService {
         }
 
         Student saved = studentRepository.save(entity);
+        if (!userRepository.existsByEmail(saved.getEmail())) {
+
+            User user = new User();
+
+            user.setEmail(saved.getEmail());
+
+            user.setPasswordHash(
+                    passwordEncoder.encode("123456")
+            );
+
+            user.setRole(Role.STUDENT);
+
+            user.setStudentId(saved.getId());
+
+            user.setFirstLogin(true);
+
+            userRepository.save(user);
+        }
         return studentMapper.toResponseDTO(saved);
     }
 
