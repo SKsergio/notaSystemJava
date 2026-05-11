@@ -7,6 +7,7 @@ public record LoginResponseDTO(
         String token,
         String tokenType,
         long expiresInMs,
-        UserResponseDTO user
+        UserResponseDTO user,
+        boolean firstLogin
 ) {
 }

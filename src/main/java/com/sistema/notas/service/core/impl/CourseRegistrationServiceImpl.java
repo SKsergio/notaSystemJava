@@ -157,7 +157,14 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService 
         registrationFind.setStatus(status);
         return courseRegistrationMapper.toResponseDTO(registrationFind);
     }
+    @Override
+    public List<CourseRegistrationResponseDTO> findByCourse(Integer courseId) {
 
+        List<CourseRegistration> registrations =
+                courseRegistrationRepository.findByCourseId(courseId);
+
+        return courseRegistrationMapper.toResponseDTOList(registrations);
+    }
     @Transactional(readOnly = true)
     @Override
     public PaginateResponse<CourseRegistrationResponseDTO> getRegistrationByCourse(int page, int size,Integer CourseId) {
