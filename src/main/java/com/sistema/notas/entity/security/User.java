@@ -46,4 +46,7 @@ public class User extends AuditableEntity {
     /** Vinculo opcional con Student.id (cuando el usuario es estudiante). */
     @Column(name = "student_id")
     private Integer studentId;
+
+    @Column(name = "first_login")
+    private boolean firstLogin = true;
 }
