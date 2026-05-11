@@ -59,15 +59,6 @@ public class CourseRegistrationController {
         return ResponseEntity.ok(
                 courseRegistrationService.obtenerRegistrosPaginados(page, size, search, fromDate, toDate ));
     }
-    @GetMapping("/course/{courseId}")
-    public ResponseEntity<?> getByCourse(
-            @PathVariable Integer courseId
-    ) {
-
-        return ResponseEntity.ok(
-                courseRegistrationService.findByCourse(courseId)
-        );
-    }
 
     //CAMBIAR ESTADOS
     @PatchMapping("/{id}/status")
@@ -75,15 +66,13 @@ public class CourseRegistrationController {
         return ResponseEntity.status(HttpStatus.OK).body(courseRegistrationService.changeStatusRegistration(id, status));
     }
 
-    @GetMapping("/course/{courseId}/paginated")
+    @GetMapping("/course/{courseId}")
     public ResponseEntity<PaginateResponse<CourseRegistrationResponseDTO>> getEnrollsByGradeDetail(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @PathVariable Integer courseId
-    ) {
-
+        ) {
         return ResponseEntity.ok(
-                courseRegistrationService.getRegistrationByCourse(page, size, courseId)
-        );
+                courseRegistrationService.getRegistrationByCourse(page, size, courseId));
     }
 }
