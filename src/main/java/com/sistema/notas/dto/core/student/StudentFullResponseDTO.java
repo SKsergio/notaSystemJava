@@ -14,7 +14,9 @@ public record StudentFullResponseDTO(
         GenderEnum gender,
         String address,
         String phoneNumber,
-        LocalDate birthDate
+        LocalDate birthDate,
+        String currentDegree,
+        Integer gradeDetailId
         // grade details current
         // cum global(calculado en base a sus calificaciones)
         // historial de cursos con sus calificaciones

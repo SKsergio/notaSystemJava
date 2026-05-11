@@ -1,9 +1,11 @@
 package com.sistema.notas.respository.core;
 
 import com.sistema.notas.entity.core.DegreeEnrollment;
+import com.sistema.notas.entity.core.GradeDetail;
 import com.sistema.notas.entity.enums.EnrollmentStatus;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +35,40 @@ public interface DegreeEnrollmentRepository extends JpaRepository<DegreeEnrollme
     List<Integer> findDuplicatedStudentIdsInGrade(
             @Param("gradeDetailId") Integer gradeDetailId,
             @Param("studentIds") List<Integer> studentIds
+    );
+
+
+    // EXPLICACIÓN: Busca el "contrato" principal. Queremos el registro exacto que dice que
+    // este Alumno específico pertenece a este Grado específico, y que su matrícula está Activa.
+    // Retorna un Optional porque puede que el alumno no esté matriculado ahí.
+    @Query("SELECT de FROM DegreeEnrollment de WHERE de.student.id = :studentId AND de.gradeDetail.id = :gradeDetailId AND de.status = :status")
+    Optional<DegreeEnrollment> findActiveEnrollment(
+            @Param("studentId") Integer studentId,
+            @Param("gradeDetailId") Integer gradeDetailId,
+            @Param("status") EnrollmentStatus status
+    );
+
+    @Query("SELECT de.gradeDetail FROM DegreeEnrollment de " +
+            "WHERE de.student.id = :studentId " +
+            "AND de.gradeDetail.year = :year " +
+            "AND de.status = :status")
+    Optional<GradeDetail> findCurrentGradeDetail(
+            @Param("studentId") Integer studentId,
+            @Param("year") Integer year,
+            @Param("status") EnrollmentStatus status
+    );
+
+    @Query("SELECT de FROM DegreeEnrollment de " +
+            "JOIN FETCH de.gradeDetail gd " +
+            "JOIN FETCH gd.degree " +
+            "JOIN FETCH gd.section " +
+            "WHERE de.student.id IN :studentIds " +
+            "AND de.gradeDetail.year = :year " +
+            "AND de.status = :status")
+    List<DegreeEnrollment> findActiveEnrollmentsByStudentIdsAndYear(
+            @Param("studentIds") List<Integer> studentIds,
+            @Param("year") Integer year,
+            @Param("status") EnrollmentStatus status
     );
 
     // 2. Devuelve los IDs de los alumnos que YA están matriculados en OTRA sección en ese mismo año

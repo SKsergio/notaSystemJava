@@ -6,7 +6,7 @@ public record EvaluationDetailResponseDTO(
     String feedback,
     String evaluationName,
     String studentName,
-    String studentCode,
+    String carnet,
     String courseName
     ) {
 }

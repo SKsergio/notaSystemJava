@@ -1,8 +1,13 @@
 package com.sistema.notas.service.core.impl;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import com.sistema.notas.dto.core.evaluationDetail.StudentGradeDTO;
+import com.sistema.notas.dto.core.evaluationDetail.*;
+import com.sistema.notas.entity.core.CourseRegistration;
 import com.sistema.notas.specifications.CatalogoSpecification;
 import com.sistema.notas.specifications.EvaluationDetailSpecification;
 
@@ -13,12 +18,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailEditRequestDTO;
-import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailEditResponseDTO;
-import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailFullResponseDTO;
-import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailRequestDTO;
-import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailResponseDTO;
-import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailSimpleResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.entity.core.Evaluation;
 import com.sistema.notas.entity.core.EvaluationDetail;
@@ -145,6 +144,120 @@ public class EvaluationDetailServiceImpl implements EvaluationDetailService {
         EvaluationDetail evaluationFind = evaluationDetailRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("No existe ningun registro de nota con el id: " + id));
         return evaluationDetailMapper.toEditResponseDTO(evaluationFind);
+    }
+
+    @Transactional
+    @Override
+    public List<EvaluationDetailResponseDTO> calificateinBatch(BatchEvaluationDetailDTO requestDTO) {
+
+        Evaluation evaluation = evaluationsRepository.findById(requestDTO.evaluationId())
+                .orElseThrow(() -> new ResourceNotFoundException("Evaluación no encontrada con ID: " + requestDTO.evaluationId()));
+
+        if (evaluation.getStatus() == StatusEnum.CLOSED) {
+            throw new BadRequestException("No se pueden modificar calificaciones en una evaluación cerrada.");
+        }
+
+        //(Nuevos vs Existentes)
+        List<StudentGradeDTO> newGrades = requestDTO.grades().stream()
+                .filter(g -> g.evaluationDetailId() == null).toList();
+
+        List<StudentGradeDTO> existingGrades = requestDTO.grades().stream()
+                .filter(g -> g.evaluationDetailId() != null).toList();
+
+        List<EvaluationDetail> finalDetailsToSave = new ArrayList<>();
+
+        //  PROCESAR LOS NUEVOS (INSERTS)
+        if (!newGrades.isEmpty()) {
+            List<Integer> newStudentIds = newGrades.stream().map(StudentGradeDTO::studentId).toList();
+
+            // A. Validar que los alumnos existan
+            List<Student> studentsToEval = studentRepository.findAllById(newStudentIds);
+            if (studentsToEval.size() != newStudentIds.size()) {
+                throw new BadRequestException("Algunos alumnos nuevos no existen en el sistema.");
+            }
+
+            // B. Validar inscripción al curso
+            List<Integer> enrolledIds = courseRegistrationRepository.findEnrolledStudentIds(
+                    evaluation.getCourse().getId(), newStudentIds, EnrollmentStatus.ACTIVE);
+            if (enrolledIds.size() != newStudentIds.size()) {
+                throw new BadRequestException("Hay alumnos en la lista que no están inscritos en el curso.");
+            }
+
+            // C. Validar duplicados (por si acaso alguien manda un null cuando ya existía)
+            List<Integer> duplicatedIds = evaluationDetailRepository.findDuplicatedStudentIdsInEvaluation(
+                    evaluation.getId(), newStudentIds);
+            if (!duplicatedIds.isEmpty()) {
+                throw new BadRequestException("Intento de crear nota duplicada para los alumnos: " + duplicatedIds);
+            }
+
+            // D. Armar las entidades nuevas
+            List<EvaluationDetail> newDetails = newGrades.stream().map(gradeInfo -> {
+                Student student = studentsToEval.stream()
+                        .filter(s -> s.getId().equals(gradeInfo.studentId())).findFirst().get();
+                EvaluationDetail detail = new EvaluationDetail();
+                detail.setEvaluation(evaluation);
+                detail.setStudent(student);
+                detail.setGrade(gradeInfo.grade());
+                detail.setFeedback(gradeInfo.feedback());
+                return detail;
+            }).toList();
+
+            finalDetailsToSave.addAll(newDetails);
+        }
+
+        // PROCESAR LOS EXISTENTES (UPDATES)
+        if (!existingGrades.isEmpty()) {
+            List<Integer> existingDetailIds = existingGrades.stream().map(StudentGradeDTO::evaluationDetailId).toList();
+
+            List<EvaluationDetail> detailsToUpdate = evaluationDetailRepository.findAllById(existingDetailIds);
+
+            for (EvaluationDetail detail : detailsToUpdate) {
+                StudentGradeDTO updateData = existingGrades.stream()
+                        .filter(g -> g.evaluationDetailId().equals(detail.getId())).findFirst().get();
+
+                detail.setGrade(updateData.grade());
+                detail.setFeedback(updateData.feedback());
+                finalDetailsToSave.add(detail);
+            }
+        }
+        List<EvaluationDetail> savedDetails = evaluationDetailRepository.saveAll(finalDetailsToSave);
+
+        return savedDetails.stream()
+                .map(evaluationDetailMapper::toResponseDTO)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PaginateResponse<EvaluationGradebookDTO> getEvaluationGradebook(int page, int size, Integer evaluationId) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Evaluation evaluation = evaluationsRepository.findById(evaluationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Evaluación no encontrada"));
+
+        Page<CourseRegistration> enrollmentsPage = courseRegistrationRepository
+                .findByCourseIdAndStatus(evaluation.getCourse().getId(), EnrollmentStatus.ACTIVE, pageable);
+
+        List<EvaluationDetail> existingGrades = evaluationDetailRepository
+                .findByEvaluationId(evaluationId);
+
+        Page<EvaluationGradebookDTO> dtoPage = enrollmentsPage.map(enrollment -> {
+            Optional<EvaluationDetail> studentGrade = existingGrades.stream()
+                    .filter(grade -> grade.getStudent().getId().equals(enrollment.getStudent().getId()))
+                    .findFirst();
+
+            return new EvaluationGradebookDTO(
+                    enrollment.getStudent().getId(),
+                    enrollment.getStudent().getfullName(),
+                    enrollment.getStudent().getCarnet(),
+                    studentGrade.map(EvaluationDetail::getId).orElse(null),
+                    studentGrade.map(EvaluationDetail::getGrade).orElse(null),
+                    studentGrade.map(EvaluationDetail::getFeedback).orElse(null)
+            );
+        });
+
+        // Asumiendo que usas tu mapper genérico:
+        return pageMapper.toPaginateResponse(dtoPage, dto -> dto);
     }
 
     @Transactional(readOnly = true)

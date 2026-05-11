@@ -11,7 +11,8 @@ import com.sistema.notas.entity.enums.EnrollmentStatus;
 
 public interface CourseRegistrationService {
     CourseRegistrationResponseDTO save(CourseRegistrationRequestDTO requestDTO);
-    List<CourseRegistrationResponseDTO> enrollInBatch(BatchRegistrationCourseDTO requestDTO);    void delete(Integer id);
+    List<CourseRegistrationResponseDTO> enrollInBatch(BatchRegistrationCourseDTO requestDTO);
+    void delete(Integer id);
     PaginateResponse<CourseRegistrationResponseDTO> obtenerRegistrosPaginados(int page, int size, String search , LocalDate fromDate, LocalDate  toDate);
     PaginateResponse<CourseRegistrationResponseDTO> getRegistrationByCourse(int page, int size, Integer courseId);
     List<CourseRegistrationResponseDTO> listarToSelects();

@@ -20,6 +20,10 @@ public interface StudentMapper {
     @Mapping(source = "routePhoto", target = "routePhoto", qualifiedByName = "mapPhotoUrl")
     StudentResponseDTO toResponseDTO(Student student);
 
+    @Mapping(source = "student.routePhoto", target = "routePhoto", qualifiedByName = "mapPhotoUrl")
+    @Mapping(source = "currentDegree", target = "currentDegree")
+    StudentResponseDTO toResponseDTOWithDegree(Student student, String currentDegree);
+
     @Mapping(source = "routePhoto", target = "routePhoto", qualifiedByName = "mapPhotoUrl")
     StudentSimpleResponseDTO toSimpleResponseDTO(Student student);
 
@@ -34,8 +38,10 @@ public interface StudentMapper {
     StudentResponseEditDTO toResponseEditDto(Student student);
 
     //full response
-    @Mapping(source = "routePhoto", target = "routePhoto", qualifiedByName = "mapPhotoUrl")
-    StudentFullResponseDTO toFullResponse(Student student);
+    @Mapping(source = "student.routePhoto", target = "routePhoto", qualifiedByName = "mapPhotoUrl")
+    @Mapping(source = "currentDegree", target = "currentDegree")
+    @Mapping(source = "gradeDetailId", target = "gradeDetailId")
+    StudentFullResponseDTO toFullResponse(Student student, String currentDegree, Integer gradeDetailId);
 
     @Named("mapPhotoUrl")
     default String mapPhotoUrl(String routePhoto) {

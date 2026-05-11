@@ -1,15 +1,11 @@
 package com.sistema.notas.controller.core;
 
+import com.sistema.notas.dto.core.courseRegistration.CourseRegistrationResponseDTO;
+import com.sistema.notas.dto.core.evaluationDetail.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailEditRequestDTO;
-import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailEditResponseDTO;
-import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailFullResponseDTO;
-import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailRequestDTO;
-import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailResponseDTO;
-import com.sistema.notas.dto.core.evaluationDetail.EvaluationDetailSimpleResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.service.core.EvaluationDetailService;
 
@@ -41,6 +37,11 @@ public class EvaluationDetailController {
             @Valid @RequestBody EvaluationDetailRequestDTO requestDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(evaluationDetailService.save(requestDTO));
     }
+    @PostMapping("batch")
+    public ResponseEntity<List<EvaluationDetailResponseDTO>> createinBatch(
+            @Valid @RequestBody BatchEvaluationDetailDTO requestDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(evaluationDetailService.calificateinBatch(requestDTO));
+    }
 
     @GetMapping
     public ResponseEntity<PaginateResponse<EvaluationDetailResponseDTO>> getPaginate(
@@ -53,6 +54,7 @@ public class EvaluationDetailController {
         return ResponseEntity.ok(
                 evaluationDetailService.getDetailsPaginated(page, size, search, fromDate, toDate));
     }
+
 
     @PatchMapping("/{id}")
     public ResponseEntity<EvaluationDetailResponseDTO> updateRecord(
@@ -103,5 +105,14 @@ public class EvaluationDetailController {
             @PathVariable Integer courseId) {
         return ResponseEntity.ok(
                 evaluationDetailService.getCurrentStudentAverage(studentId, courseId));
+    }
+    @GetMapping("/evaluation/{evaluationId}")
+    public ResponseEntity<PaginateResponse<EvaluationGradebookDTO>> getGradebook(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @PathVariable Integer evaluationId
+    ) {
+        return ResponseEntity.ok(
+                evaluationDetailService.getEvaluationGradebook(page, size, evaluationId));
     }
 }
