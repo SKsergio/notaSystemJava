@@ -53,6 +53,15 @@ public class CourseRegistrationController {
         return ResponseEntity.ok(
                 courseRegistrationService.obtenerRegistrosPaginados(page, size, search, fromDate, toDate ));
     }
+    @GetMapping("/course/{courseId}")
+    public ResponseEntity<?> getByCourse(
+            @PathVariable Integer courseId
+    ) {
+
+        return ResponseEntity.ok(
+                courseRegistrationService.findByCourse(courseId)
+        );
+    }
 
     //CAMBIAR ESTADOS
     @PatchMapping("/{id}/status")

@@ -15,6 +15,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.sistema.notas.dto.security.ChangePasswordRequestDTO;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +47,8 @@ public class AuthService {
                 token,
                 "Bearer",
                 jwtService.getExpirationMs(),
-                toResponse(user)
+                toResponse(user),
+                user.isFirstLogin()
         );
     }
 
@@ -80,5 +84,26 @@ public class AuthService {
                 user.getTeacherId(),
                 user.getStudentId()
         );
+    }
+    @Transactional
+    public void changePassword(ChangePasswordRequestDTO request) {
+
+        Authentication auth = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+        String email = auth.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UnauthorizedException("Usuario no encontrado"));
+
+        user.setPasswordHash(
+                passwordEncoder.encode(request.newPassword())
+        );
+
+        user.setFirstLogin(false);
+
+        userRepository.save(user);
     }
 }

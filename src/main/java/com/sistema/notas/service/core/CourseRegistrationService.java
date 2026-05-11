@@ -13,5 +13,6 @@ public interface CourseRegistrationService {
     PaginateResponse<CourseRegistrationResponseDTO> obtenerRegistrosPaginados(int page, int size, String search , LocalDate fromDate, LocalDate  toDate);
     PaginateResponse<CourseRegistrationResponseDTO> getRegistrationByCourse(int page, int size, Integer courseId);
     List<CourseRegistrationResponseDTO> listarToSelects();
+    List<CourseRegistrationResponseDTO> findByCourse(Integer courseId);
     CourseRegistrationResponseDTO changeStatusRegistration(Integer id, EnrollmentStatus status);
 }
