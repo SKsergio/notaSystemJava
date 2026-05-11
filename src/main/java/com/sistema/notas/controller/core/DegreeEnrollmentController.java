@@ -58,4 +58,15 @@ public class DegreeEnrollmentController {
         return ResponseEntity.status(HttpStatus.OK).body(degreeEnrollmentService.changeStatusEnrollment(id, status));
     }
 
+    //obtener por id del grado
+    @GetMapping("/grade-detail/{gradeDetailId}")
+    public ResponseEntity<PaginateResponse<DegreeEnrollmentResponseDTO>> getEnrollsByGradeDetail(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @PathVariable Integer gradeDetailId
+        ) {
+        return ResponseEntity.ok(
+                degreeEnrollmentService.getEnrollmentsByGradeDetail(page, size, gradeDetailId));
+    }
+
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.sistema.notas.dto.core.course.*;
+import com.sistema.notas.entity.enums.EnrollmentStatus;
 import com.sistema.notas.entity.enums.StatusEnum;
 import com.sistema.notas.respository.core.EvaluationsRepository;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,7 @@ import com.sistema.notas.mapper.PageMapper;
 import com.sistema.notas.mapper.core.CourseMapper;
 import com.sistema.notas.respository.catalogues.PeriodRespository;
 import com.sistema.notas.respository.catalogues.SubjectRepository;
+import com.sistema.notas.respository.core.CourseRegistrationRepository;
 import com.sistema.notas.respository.core.CoursesRespository;
 import com.sistema.notas.respository.core.GradeDetailRepository;
 import com.sistema.notas.respository.core.TeacherRepository;
@@ -48,6 +50,7 @@ public class CourseServiceImpl implements CourseService {
     private final PeriodRespository periodRespository;
     private final SubjectRepository subjectRepository;
     private final GradeDetailRepository gradeDetailRepository;
+    private final CourseRegistrationRepository courseRegistrationRepository;
     // cerrar en cascada
     private final EvaluationsRepository evaluationsRepository;
 
@@ -168,7 +171,13 @@ public class CourseServiceImpl implements CourseService {
         Course courseFind = coursesRespository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("No existe ningun curso con el id: " + id));
 
-        return courseMapper.toFullResponseDTO(courseFind);
+        Integer totalStudents = courseRegistrationRepository.countByCourseIdAndStatus(id, EnrollmentStatus.ACTIVE);
+        Integer ability = courseFind.getGradeDetail().getAbility() != null ? courseFind.getGradeDetail().getAbility() : 0;
+        Integer availableSlots = Math.max(0, ability - totalStudents);
+
+        // 2. Cálculo del porcentaje ya cursado (Evaluaciones en estado CLOSED)
+        Double evaluatedPercentage = evaluationsRepository.getEvaluatedPercentage(id, StatusEnum.CLOSED);
+        return courseMapper.toFullResponseDTO(courseFind, totalStudents, availableSlots, evaluatedPercentage);
     }
 
     @Override

@@ -24,5 +24,3 @@ public class Student extends InstitutionalPerson{
     @Column(name ="carnet", nullable = false, length = 10, unique = true)
     private String carnet;
 }
-
-

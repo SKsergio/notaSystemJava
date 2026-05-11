@@ -1,6 +1,5 @@
 package com.sistema.notas.controller.core;
 
-import com.sistema.notas.entity.enums.StatusEnum;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +10,7 @@ import com.sistema.notas.dto.core.gradeDetail.GradeDetailRequestDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailSimpleResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
+import com.sistema.notas.dto.generics.StatusUpdateRequestDTO;
 import com.sistema.notas.service.core.GradeDetailService;
 
 import jakarta.validation.Valid;
@@ -85,11 +85,11 @@ public class GradeDetailController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
-    @PatchMapping("/{id}/status")
+    @PatchMapping("status/{id}")
     public ResponseEntity<GradeDetailResponseDTO> updateGradeDetailStatus(
             @PathVariable Integer id,
-            @RequestParam StatusEnum status
+            @Valid @RequestBody StatusUpdateRequestDTO statusUpdateDto
             ){
-        return ResponseEntity.ok(gradeDetailService.changeGradeDetailStatus(id, status));
+        return ResponseEntity.ok(gradeDetailService.changeGradeDetailStatus(id, statusUpdateDto.newStatus()));
     }
 }

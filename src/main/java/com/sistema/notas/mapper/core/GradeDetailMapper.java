@@ -44,7 +44,7 @@ public interface GradeDetailMapper {
     @Mapping(source = "tutor.id", target = "degreeId")
     GradeDetailEditResponseDTO toEditResponseDTO(GradeDetail entity);
 
-    GradeDetailFullResponseDTO toFullResponseDTO(GradeDetail entity);
+    GradeDetailFullResponseDTO toFullResponseDTO(GradeDetail entity, Integer totalStudents, Integer availableSlots);
 
     default CatalogueSimpleResponseDTO mapDegreeToSimpleDTO(Degree degree) {
         if (degree == null)
