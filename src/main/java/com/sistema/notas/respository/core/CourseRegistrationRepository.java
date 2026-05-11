@@ -42,10 +42,9 @@ public interface CourseRegistrationRepository
         );
 
         List<CourseRegistration> findByCourseId(Integer courseId);
-                        @Param("studentId") Integer studentId,
-                        @Param("gradeDetailId") Integer gradeDetailId);
 
         Integer countByCourseIdAndStatus(Integer courseId, EnrollmentStatus status);
+
         Page<CourseRegistration> findByCourseId(Integer courseId, Pageable pageable);
 
 }

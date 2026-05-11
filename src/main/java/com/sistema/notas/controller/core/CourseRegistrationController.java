@@ -69,13 +69,15 @@ public class CourseRegistrationController {
         return ResponseEntity.status(HttpStatus.OK).body(courseRegistrationService.changeStatusRegistration(id, status));
     }
 
-    @GetMapping("/course/{courseId}")
+    @GetMapping("/course/{courseId}/paginated")
     public ResponseEntity<PaginateResponse<CourseRegistrationResponseDTO>> getEnrollsByGradeDetail(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @PathVariable Integer courseId
-        ) {
+    ) {
+
         return ResponseEntity.ok(
-                courseRegistrationService.getRegistrationByCourse(page, size, courseId));
+                courseRegistrationService.getRegistrationByCourse(page, size, courseId)
+        );
     }
 }
