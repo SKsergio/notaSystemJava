@@ -1,5 +1,6 @@
 package com.sistema.notas.entity.core;
 
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -18,8 +19,7 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@SQLDelete(sql = "UPDATE students SET active = false WHERE id = ?")
-@SQLRestriction("active = true")
+@PrimaryKeyJoinColumn(name = "id")
 public class Student extends InstitutionalPerson{
     @Column(name ="carnet", nullable = false, length = 10, unique = true)
     private String carnet;

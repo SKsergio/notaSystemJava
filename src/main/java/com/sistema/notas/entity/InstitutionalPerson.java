@@ -1,19 +1,23 @@
 package com.sistema.notas.entity;
 
-import jakarta.persistence.Transient; 
+import jakarta.persistence.*;
 import java.time.LocalDate;
-
 import com.sistema.notas.entity.enums.GenderEnum;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.MappedSuperclass;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import java.time.Period;
 
-@MappedSuperclass
-@Data
+@Entity
+@Table(name = "people")
+@Inheritance(strategy = InheritanceType.JOINED)
+@Getter @Setter
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@SQLDelete(sql = "UPDATE people SET active = false WHERE id = ?")
+@SQLRestriction("active = true")
 public class InstitutionalPerson extends AuditableEntity{
     
     @Column(name = "first_name", length = 25, nullable = false)
@@ -63,5 +67,4 @@ public class InstitutionalPerson extends AuditableEntity{
         String completeName = this.firstName + " " + this.firstLastName;
         return completeName; 
     }
-    
 }

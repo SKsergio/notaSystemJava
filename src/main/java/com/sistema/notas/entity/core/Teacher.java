@@ -20,8 +20,6 @@ import java.util.List;
 @Getter @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@SQLDelete(sql = "UPDATE teachers SET active = false WHERE id = ?")
-@SQLRestriction("active = true")
 public class Teacher extends InstitutionalPerson{
     @Column(name ="speciality", length = 20, nullable = false)
     private String speciality;
