@@ -26,9 +26,6 @@ public class Teacher extends InstitutionalPerson{
     @Column(name ="speciality", length = 20, nullable = false)
     private String speciality;
 
-    @Column(name ="dui", nullable = false, length = 10, unique = true)
-    private String dui;
-
     @OneToMany(mappedBy = "tutor")
     private List<GradeDetail> assignedGrades;
 
