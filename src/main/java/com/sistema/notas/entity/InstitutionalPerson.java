@@ -51,6 +51,9 @@ public class InstitutionalPerson extends AuditableEntity{
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
+    @Column(name ="dui", nullable = false, length = 10, unique = true)
+    private String dui;
+
     @Transient
     public Integer getAge() {
         if (this.birthDate == null) {

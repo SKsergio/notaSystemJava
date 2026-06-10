@@ -76,6 +76,7 @@ public class AuthService {
         return toResponse(user);
     }
 
+    //creo que esto lo voy a pasar a un mapper
     private UserResponseDTO toResponse(User user) {
         return new UserResponseDTO(
                 user.getId(),

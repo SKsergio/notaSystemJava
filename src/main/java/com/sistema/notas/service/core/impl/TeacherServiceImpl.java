@@ -3,6 +3,7 @@ package com.sistema.notas.service.core.impl;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.sistema.notas.respository.core.PersonRepository;
 import com.sistema.notas.specifications.TeacherSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +44,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository teacherRepository;
     private final PageMapper pageMapper;
     private final TeacherMapper teacherMapper;
+    private final PersonRepository personRepository;
     
     //servicio de imagenes
     private final FileStorageService fileStorageService;
@@ -64,13 +66,14 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    @Transactional
     public TeacherResponseDTO save(TeacherRequestDTO teacher) {
-        if (teacherRepository.existsByEmail(teacher.email())) {
-            throw new BadRequestException("Ya hay un maestro Registrado con el correo: " + teacher.email());
+        if (personRepository.existsByEmail(teacher.email())) {
+            throw new BadRequestException("Ya hay una persona registrada en el sistema con el correo: " + teacher.email());
         }
 
-        if (teacherRepository.existsByDui(teacher.dui())) {
-            throw new BadRequestException("Ya hay un maestro Registrado con este Dui: " + teacher.dui());
+        if (teacher.dui() != null && personRepository.existsByDui(teacher.dui())) {
+            throw new BadRequestException("Ya hay una persona registrada con este DUI: " + teacher.dui());
         }
 
         Teacher entity = teacherMapper.toEntity(teacher);
@@ -85,19 +88,13 @@ public class TeacherServiceImpl implements TeacherService {
         if (!userRepository.existsByEmail(saved.getEmail())) {
 
             User user = new User();
-
             user.setEmail(saved.getEmail());
-
             user.setPasswordHash(
                     passwordEncoder.encode("123456")
             );
-
             user.setRole(Role.TEACHER);
-
             user.setTeacherId(saved.getId());
-
             user.setFirstLogin(true);
-
             userRepository.save(user);
         }
         return teacherMapper.toResponseDTO(saved);
@@ -109,11 +106,11 @@ public class TeacherServiceImpl implements TeacherService {
         Teacher teacherFind = teacherRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("No esixte ningun maestro con el id: " + id));
 
-        if (teacherRepository.existsByEmailAndIdNot(teacher.email(), id)) {
+        if (personRepository.existsByEmailAndIdNot(teacher.email(), id)) {
             throw new BadRequestException("El correo " + teacher.email() + " ya está siendo usado por otro docente.");
         }
 
-        if (teacherRepository.existsByDuiAndIdNot(teacher.dui(), id)) {
+        if (personRepository.existsByDuiAndIdNot(teacher.dui(), id)) {
             throw new BadRequestException("El DUI " + teacher.dui() + " ya está siendo usado por otro docente.");
         }
 
