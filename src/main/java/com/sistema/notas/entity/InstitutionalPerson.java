@@ -7,6 +7,7 @@ import com.sistema.notas.entity.enums.GenderEnum;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import lombok.EqualsAndHashCode;
 
 import java.time.Period;
 

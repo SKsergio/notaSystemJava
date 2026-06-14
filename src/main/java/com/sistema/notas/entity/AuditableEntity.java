@@ -2,6 +2,7 @@ package com.sistema.notas.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.TenantId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,6 +16,11 @@ public class AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
+
+    //multi empresa o institucion
+    @TenantId
+    @Column(name = "tenant_id", nullable = false)
+    private Integer tenantId;
 
     //autitoria
     @CreatedDate
