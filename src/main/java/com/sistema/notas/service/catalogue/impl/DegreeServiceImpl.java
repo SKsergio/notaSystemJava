@@ -14,7 +14,7 @@ import com.sistema.notas.respository.catalogues.DegreeRespository;
 import com.sistema.notas.respository.core.GradeDetailRepository;
 import com.sistema.notas.service.catalogue.DegreeService;
 import lombok.RequiredArgsConstructor;
-import com.sistema.notas.specifications.CatalogoSpecification;
+import com.sistema.notas.specifications.catalogue.CatalogoSpecification;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

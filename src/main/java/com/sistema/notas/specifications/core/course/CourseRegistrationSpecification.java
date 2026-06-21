@@ -1,4 +1,4 @@
-package com.sistema.notas.specifications;
+package com.sistema.notas.specifications.core.course;
 
 import org.springframework.data.jpa.domain.Specification;
 

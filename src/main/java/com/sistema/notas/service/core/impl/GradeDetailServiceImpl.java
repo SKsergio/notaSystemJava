@@ -30,8 +30,8 @@ import com.sistema.notas.mapper.core.GradeDetailMapper;
 import com.sistema.notas.respository.catalogues.DegreeRespository;
 import com.sistema.notas.respository.catalogues.SectionRespository;
 import com.sistema.notas.service.core.GradeDetailService;
-import com.sistema.notas.specifications.CatalogoSpecification;
-import com.sistema.notas.specifications.GradeDetailSpecification;
+import com.sistema.notas.specifications.catalogue.CatalogoSpecification;
+import com.sistema.notas.specifications.core.degree.GradeDetailSpecification;
 
 import lombok.RequiredArgsConstructor;
 

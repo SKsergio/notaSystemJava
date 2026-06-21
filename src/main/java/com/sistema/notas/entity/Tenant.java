@@ -21,6 +21,18 @@ public class Tenant {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    @Column(name = "nit", nullable = false, unique = true)
+    private String nit;
+
+    @Column(name = "legalMane", nullable = false, unique = true)
+    private String legalName;
+
+    @Column(name = "address", nullable = true)
+    private String address;
+
     @Column(name = "url", nullable = false, unique = true)
     private String domainOrSlug;
+
+    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    protected boolean active = true;
 }

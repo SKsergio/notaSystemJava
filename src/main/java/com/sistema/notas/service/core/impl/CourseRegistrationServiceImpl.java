@@ -26,8 +26,8 @@ import com.sistema.notas.respository.core.CourseRegistrationRepository;
 import com.sistema.notas.respository.core.CoursesRespository;
 import com.sistema.notas.respository.core.StudentRepository;
 import com.sistema.notas.service.core.CourseRegistrationService;
-import com.sistema.notas.specifications.CatalogoSpecification;
-import com.sistema.notas.specifications.CourseRegistrationSpecification;
+import com.sistema.notas.specifications.catalogue.CatalogoSpecification;
+import com.sistema.notas.specifications.core.course.CourseRegistrationSpecification;
 import org.springframework.data.domain.Pageable;
 
 import lombok.RequiredArgsConstructor;

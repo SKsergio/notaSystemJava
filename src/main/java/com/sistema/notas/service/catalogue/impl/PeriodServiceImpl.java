@@ -14,7 +14,7 @@ import com.sistema.notas.respository.catalogues.PeriodRespository;
 import com.sistema.notas.respository.core.CoursesRespository;
 import com.sistema.notas.respository.core.EvaluationsRepository;
 import com.sistema.notas.service.catalogue.PeriodService;
-import com.sistema.notas.specifications.CatalogoSpecification;
+import com.sistema.notas.specifications.catalogue.CatalogoSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

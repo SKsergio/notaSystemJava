@@ -13,7 +13,7 @@ import com.sistema.notas.mapper.catalogues.SectionMapper;
 import com.sistema.notas.respository.catalogues.SectionRespository;
 import com.sistema.notas.respository.core.GradeDetailRepository;
 import com.sistema.notas.service.catalogue.SectionService;
-import com.sistema.notas.specifications.CatalogoSpecification;
+import com.sistema.notas.specifications.catalogue.CatalogoSpecification;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;

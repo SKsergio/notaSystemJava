@@ -31,8 +31,8 @@ import com.sistema.notas.respository.core.CoursesRespository;
 import com.sistema.notas.respository.core.GradeDetailRepository;
 import com.sistema.notas.respository.core.TeacherRepository;
 import com.sistema.notas.service.core.CourseService;
-import com.sistema.notas.specifications.CatalogoSpecification;
-import com.sistema.notas.specifications.CourseSpecification;
+import com.sistema.notas.specifications.catalogue.CatalogoSpecification;
+import com.sistema.notas.specifications.core.course.CourseSpecification;
 
 import lombok.RequiredArgsConstructor;
 

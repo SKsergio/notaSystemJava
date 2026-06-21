@@ -1,11 +1,9 @@
-package com.sistema.notas.specifications;
+package com.sistema.notas.specifications.core.people;
 
 import org.springframework.data.jpa.domain.Specification;
 
-
-public class TeacherSpecification {
-    //filtro para search
-    public static <Teacher> Specification<Teacher> searchContains(String search) {
+public class ManagerSpecification {
+    public static <Manager> Specification<Manager> searchContains(String search) {
         return (root, query, cb) -> {
             if (search == null || search.isBlank()) {
                 return cb.conjunction();

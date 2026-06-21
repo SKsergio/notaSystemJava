@@ -8,8 +8,8 @@ import java.util.Optional;
 import com.sistema.notas.dto.core.evaluationDetail.StudentGradeDTO;
 import com.sistema.notas.dto.core.evaluationDetail.*;
 import com.sistema.notas.entity.core.CourseRegistration;
-import com.sistema.notas.specifications.CatalogoSpecification;
-import com.sistema.notas.specifications.EvaluationDetailSpecification;
+import com.sistema.notas.specifications.catalogue.CatalogoSpecification;
+import com.sistema.notas.specifications.core.evaluation.EvaluationDetailSpecification;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -1,4 +1,4 @@
-package com.sistema.notas.specifications;
+package com.sistema.notas.specifications.core.degree;
 
 import com.sistema.notas.entity.core.GradeDetail;
 import org.springframework.data.jpa.domain.Specification;

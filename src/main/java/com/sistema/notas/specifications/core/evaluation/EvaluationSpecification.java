@@ -1,4 +1,4 @@
-package com.sistema.notas.specifications;
+package com.sistema.notas.specifications.core.evaluation;
 
 import com.sistema.notas.entity.core.Evaluation;
 import org.springframework.data.jpa.domain.Specification;

@@ -12,7 +12,7 @@ import com.sistema.notas.mapper.catalogues.SubjectMapper;
 import com.sistema.notas.respository.catalogues.SubjectRepository;
 import com.sistema.notas.respository.core.CoursesRespository;
 import com.sistema.notas.service.catalogue.SubjectService;
-import com.sistema.notas.specifications.CatalogoSpecification;
+import com.sistema.notas.specifications.catalogue.CatalogoSpecification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -1,4 +1,4 @@
-package com.sistema.notas.specifications;
+package com.sistema.notas.specifications.catalogue;
 
 
 import java.time.LocalDate;

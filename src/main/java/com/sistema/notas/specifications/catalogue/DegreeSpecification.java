@@ -1,4 +1,4 @@
-package com.sistema.notas.specifications;
+package com.sistema.notas.specifications.catalogue;
 
 import com.sistema.notas.entity.catalogues.Degree;
 import org.springframework.data.jpa.domain.Specification;

@@ -19,6 +19,7 @@ import java.time.Period;
 @EqualsAndHashCode(callSuper = true)
 @SQLDelete(sql = "UPDATE people SET active = false WHERE id = ?")
 @SQLRestriction("active = true")
+@PrimaryKeyJoinColumn(name = "id")
 public class InstitutionalPerson extends AuditableEntity{
     
     @Column(name = "first_name", length = 25, nullable = false)
@@ -52,7 +53,7 @@ public class InstitutionalPerson extends AuditableEntity{
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
-    @Column(name ="dui", nullable = false, length = 10, unique = true)
+    @Column(name = "dui", nullable = true, unique = true, length = 10)
     private String dui;
 
     @Transient

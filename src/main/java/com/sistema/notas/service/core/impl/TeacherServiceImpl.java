@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.sistema.notas.respository.core.PersonRepository;
-import com.sistema.notas.specifications.TeacherSpecification;
+import com.sistema.notas.specifications.core.people.TeacherSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -28,7 +28,7 @@ import com.sistema.notas.mapper.core.TeacherMapper;
 import com.sistema.notas.respository.core.TeacherRepository;
 import com.sistema.notas.service.core.TeacherService;
 import com.sistema.notas.service.fileStorage.FileStorageService;
-import com.sistema.notas.specifications.CatalogoSpecification;
+import com.sistema.notas.specifications.catalogue.CatalogoSpecification;
 
 import lombok.RequiredArgsConstructor;
 import com.sistema.notas.entity.security.User;

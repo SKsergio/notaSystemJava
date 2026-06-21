@@ -31,8 +31,8 @@ import com.sistema.notas.mapper.core.StudentMapper;
 import com.sistema.notas.respository.core.StudentRepository;
 import com.sistema.notas.service.core.StudentService;
 import com.sistema.notas.service.fileStorage.FileStorageService;
-import com.sistema.notas.specifications.CatalogoSpecification;
-import com.sistema.notas.specifications.StudentSpecification;
+import com.sistema.notas.specifications.catalogue.CatalogoSpecification;
+import com.sistema.notas.specifications.core.people.StudentSpecification;
 import com.sistema.notas.entity.security.User;
 import com.sistema.notas.entity.enums.Role;
 import com.sistema.notas.respository.security.UserRepository;
@@ -70,19 +70,13 @@ public class StudentServiceImpl implements StudentService {
         if (!userRepository.existsByEmail(saved.getEmail())) {
 
             User user = new User();
-
             user.setEmail(saved.getEmail());
-
             user.setPasswordHash(
                     passwordEncoder.encode("123456")
             );
-
             user.setRole(Role.STUDENT);
-
             user.setStudentId(saved.getId());
-
             user.setFirstLogin(true);
-
             userRepository.save(user);
         }
         return studentMapper.toResponseDTO(saved);
