@@ -49,7 +49,7 @@ public class ManagerServiceImpl implements ManagerService {
     @Transactional
     public ManagerResponseDTO save(ManagerRequestDTO manager) {
         if (personRepository.existsByEmail(manager.email())){
-            throw new BadRequestException("Ya hay una persona registrada en el sistema con el correo: " + teacher.email());
+            throw new BadRequestException("Ya hay una persona registrada en el sistema con el correo: " + manager.email());
         }
 
         if (manager.dui() != null && personRepository.existsByDui(manager.dui())) {

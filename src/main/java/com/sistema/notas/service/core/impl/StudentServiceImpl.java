@@ -1,16 +1,14 @@
 package com.sistema.notas.service.core.impl;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.sistema.notas.entity.core.DegreeEnrollment;
 import com.sistema.notas.entity.core.GradeDetail;
 import com.sistema.notas.entity.enums.EnrollmentStatus;
 import com.sistema.notas.respository.core.DegreeEnrollmentRepository;
+import com.sistema.notas.specifications.core.people.PersonSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -117,58 +115,53 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public PaginateResponse<StudentResponseDTO> obtenerStudentPaginados(int page, int size, String search,
-                                                                        LocalDate startDate, LocalDate endDate) {
-
-        Pageable pagable = PageRequest.of(page, size);
+    public PaginateResponse<StudentResponseDTO> obtenerStudentPaginados(int page, int size, String search, LocalDate startDate, LocalDate endDate) {
+        Pageable pageable = PageRequest.of(page, size);
 
         Specification<Student> filtros = Specification
-                .where(StudentSpecification.search(search))
+                .where(StudentSpecification.searchAll(search))
                 .and(CatalogoSpecification.<Student>createdBetween(startDate, endDate));
 
-        // 1. Consulta principal (1 Query)
-        Page<Student> students = studentRepository.findAll(filtros, pagable);
+        Page<Student> studentsPage = studentRepository.findAll(filtros, pageable);
 
-        // 2. Extraemos los IDs de los alumnos de esta página específica (Máximo 10 o 20 IDs)
-        List<Integer> studentIds = students.getContent().stream()
-                .map(Student::getId)
-                .toList();
+        Map<Integer, String> studentDegreeMap = getActiveDegreesMapForStudents(studentsPage.getContent());
 
-        int currentYear = LocalDate.now().getYear(); // Te dará 2026 dinámicamente
-        List<DegreeEnrollment> activeEnrollments = new ArrayList<>();
-
-        // 3. Segunda Consulta en lote (1 Query extra, evita el N+1)
-        // Validamos que la lista no esté vacía para que la cláusula IN de SQL no explote
-        if (!studentIds.isEmpty()) {
-            activeEnrollments = degreeEnrollmentRepository.findActiveEnrollmentsByStudentIdsAndYear(
-                    studentIds, currentYear, EnrollmentStatus.ACTIVE);
-        }
-
-        // 4. Creamos un diccionario (Map) para búsquedas ultrarrápidas O(1) en memoria
-        // Llave: ID del estudiante | Valor: Nombre completo del grado
-        Map<Integer, String> studentDegreeMap = activeEnrollments.stream()
-                .collect(Collectors.toMap(
-                        en -> en.getStudent().getId(),
-                        en -> en.getGradeDetail().getFullName()
-                ));
-
-        // 5. Transformamos cada Student de la base de datos a su DTO inyectando el grado
-        Page<StudentResponseDTO> dtoPage = students.map(student -> {
-            // Sacamos el grado del mapa (o el default)
+        Page<StudentResponseDTO> dtoPage = studentsPage.map(student -> {
             String grado = studentDegreeMap.getOrDefault(student.getId(), "No matriculado");
-
-            // ¡MapStruct hace la magia y crea el record inmutable con el grado incluido!
             return studentMapper.toResponseDTOWithDegree(student, grado);
         });
 
-        // 6. Usamos tu pageMapper pasando un mapper de identidad (dto -> dto)
         return pageMapper.toPaginateResponse(dtoPage, dto -> dto);
+    }
+
+
+    // Método privado de apoyo dentro de StudentService
+    private Map<Integer, String> getActiveDegreesMapForStudents(List<Student> students) {
+        List<Integer> studentIds = students.stream()
+                .map(Student::getId)
+                .toList();
+
+        if (studentIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        int currentYear = LocalDate.now().getYear();
+
+        List<DegreeEnrollment> activeEnrollments = degreeEnrollmentRepository
+                .findActiveEnrollmentsByStudentIdsAndYear(studentIds, currentYear, EnrollmentStatus.ACTIVE);
+
+        return activeEnrollments.stream()
+                .collect(Collectors.toMap(
+                        en -> en.getStudent().getId(),
+                        en -> en.getGradeDetail().getFullName(),
+                        (existing, replacement) -> existing // Por si un alumno tiene 2 matrículas activas por error, no crashea
+                ));
     }
 
     @Override
     public List<StudentSimpleResponseDTO> listartoSelect(String search) {
         Specification<Student> filtros = Specification
-                .where(StudentSpecification.search(search));
+                .where(StudentSpecification.searchAll(search));
 
         List<Student> students = studentRepository.findAll(filtros);
 

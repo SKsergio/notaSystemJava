@@ -2,7 +2,7 @@ package com.sistema.notas.specifications.core.people;
 
 import org.springframework.data.jpa.domain.Specification;
 
-
+//ya no se va utilizar para buscar epor search
 public class TeacherSpecification {
     //filtro para search
     public static <Teacher> Specification<Teacher> searchContains(String search) {

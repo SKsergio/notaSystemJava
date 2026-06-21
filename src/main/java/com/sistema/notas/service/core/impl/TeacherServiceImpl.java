@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.sistema.notas.respository.core.PersonRepository;
-import com.sistema.notas.specifications.core.people.TeacherSpecification;
+import com.sistema.notas.specifications.core.people.PersonSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -146,7 +146,7 @@ public class TeacherServiceImpl implements TeacherService {
         Pageable pagable = PageRequest.of(page, size);
 
         Specification<Teacher> filtros = Specification
-                .where(TeacherSpecification.<Teacher>searchContains(search))
+                .where(PersonSpecification.<Teacher>searchContains(search))
                 .and(CatalogoSpecification.<Teacher>createdBetween(fromDate, toDate));
 
         Page<Teacher> teachers = teacherRepository.findAll(filtros, pagable);
