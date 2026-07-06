@@ -1,7 +1,9 @@
 package com.sistema.notas.dto.core.managers;
 
-import com.sistema.notas.dto.core.student.StudentSimpleResponseDTO;
+import com.sistema.notas.dto.core.student.AssignedStudentDTO;
+import com.sistema.notas.entity.enums.GenderEnum;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,6 +17,8 @@ public record ManagerFullResponseDTO(
         int age,
         String routePhoto,
         LocalDateTime createdAt,
-        List<StudentSimpleResponseDTO> assignedStudents
+        GenderEnum gender,
+        LocalDate birthDate,
+        List<AssignedStudentDTO> assignedStudents
 ) {
 }

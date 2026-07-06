@@ -3,10 +3,15 @@ package com.sistema.notas.service.core.impl;
 import com.sistema.notas.dto.core.managers.*;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.entity.InstitutionalPerson;
+import com.sistema.notas.entity.core.GradeDetail;
 import com.sistema.notas.entity.core.Manager;
+import com.sistema.notas.entity.core.Student;
 import com.sistema.notas.entity.core.Teacher;
+import com.sistema.notas.entity.enums.EnrollmentStatus;
+import com.sistema.notas.mapper.core.StudentMapper;
 import com.sistema.notas.specifications.catalogue.CatalogoSpecification;
 import com.sistema.notas.specifications.core.people.PersonSpecification;
+import com.sistema.notas.specifications.core.people.StudentSpecification;
 import com.sistema.notas.specifications.core.people.TeacherSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +49,7 @@ public class ManagerServiceImpl implements ManagerService {
     private final PersonRepository personRepository;
     //servicio de imagnes
     private final FileStorageService fileStorageService;
+    private final StudentMapper studentMapper;
 
 
     @Override
@@ -137,17 +144,31 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public List<ManagerSimpleResponseDTO> listartoSelect() {
-        return List.of();
+    public List<ManagerSimpleResponseDTO> listartoSelect(String search) {
+        Specification<Manager> filtros = Specification
+                .where(PersonSpecification.searchContains(search));
+
+        List<Manager>  managers= managerRepository.findAll(filtros);
+
+        return managers.stream().
+                map(managerMapper::toSimpleResponseDTO).
+                toList();
     }
 
     @Override
     public ManagerFullResponseDTO obtenerManager(Integer id) {
-        return null;
+        Manager managerFind = managerRepository.findManagerWithStudentsById(id).orElseThrow(
+                () -> new BadRequestException("No se encontró el encargado con id: " + id));
+
+        return managerMapper.toFullResponse(managerFind);
+
     }
 
     @Override
     public ManagerResponseEditDTO obtenerManagertoEdit(Integer id) {
-        return null;
+        Manager managerFind = managerRepository.findById(id).orElseThrow(
+                () -> new BadRequestException("No se encontró el encargado con id: " + id));
+
+        return managerMapper.toResponseEditDTO(managerFind);
     }
 }

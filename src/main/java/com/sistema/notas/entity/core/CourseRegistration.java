@@ -6,8 +6,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,9 +18,6 @@ import com.sistema.notas.entity.AuditableEntity;
 import com.sistema.notas.entity.enums.EnrollmentStatus;
 
 @Entity
-// @Table(name = "course_registration", uniqueConstraints = {
-//         @UniqueConstraint(columnNames = {"student_id", "course_id"})
-// })
 @Getter @Setter
 @EqualsAndHashCode(callSuper = true)
 @SQLDelete(sql = "UPDATE course_registration SET active = false WHERE id = ?")

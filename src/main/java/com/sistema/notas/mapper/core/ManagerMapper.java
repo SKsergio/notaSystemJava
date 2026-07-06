@@ -3,9 +3,9 @@ package com.sistema.notas.mapper.core;
 import com.sistema.notas.dto.core.course.CourseSimpleResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailAssignedDTO;
 import com.sistema.notas.dto.core.managers.*;
-import com.sistema.notas.entity.core.Course;
-import com.sistema.notas.entity.core.GradeDetail;
-import com.sistema.notas.entity.core.Manager;
+import com.sistema.notas.dto.core.student.AssignedStudentDTO;
+import com.sistema.notas.dto.core.student.StudentSimpleResponseDTO;
+import com.sistema.notas.entity.core.*;
 import org.mapstruct.*;
 
 @Mapper(
@@ -30,14 +30,18 @@ public interface ManagerMapper {
 
     //response full
     @Mapping(source = "routePhoto", target = "routePhoto", qualifiedByName = "mapPhotoUrl")
+    @Mapping(source = "studentRelations", target = "assignedStudents")
     ManagerFullResponseDTO toFullResponse(Manager entity);
 
-//    @Mapping(source = "section.name", target = "sectionName")
-//    @Mapping(source = "degree.name", target = "degreeName")
-//    GradeDetailAssignedDTO toAssignedDTO(GradeDetail gradeDetail);
+    @Mapping(source = "student.id", target = "studentId")
+    @Mapping(source = "student.fullName", target = "fullName")
+    @Mapping(source = "student.carnet", target = "carnet")
+    AssignedStudentDTO toAssignedStudentDTO(ManagerStudents managerStudent);
 
-//    @Mapping(source = "gradeDetail.year", target = "year")
-//    CourseSimpleResponseDTO toCourseSimpleDTO(Course course);
+    //simpleREsponse
+    @Mapping(source = "routePhoto", target = "routePhoto", qualifiedByName = "mapPhotoUrl")
+    ManagerSimpleResponseDTO toSimpleResponseDTO(Manager manager);
+
 
     @Named("mapPhotoUrl")
     default String mapPhotoUrl(String routePhoto) {

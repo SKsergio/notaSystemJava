@@ -19,7 +19,6 @@ import java.time.Period;
 @EqualsAndHashCode(callSuper = true)
 @SQLDelete(sql = "UPDATE people SET active = false WHERE id = ?")
 @SQLRestriction("active = true")
-@PrimaryKeyJoinColumn(name = "id")
 public class InstitutionalPerson extends AuditableEntity{
     
     @Column(name = "first_name", length = 25, nullable = false)

@@ -16,7 +16,7 @@ public interface ManagerService {
     ManagerResponseDTO update(Integer id, ManagerRequestUpdateDTO manager);
     void delete(Integer id);
     PaginateResponse<ManagerResponseDTO> obtenerManagerPaginados(int page, int size, String search , LocalDate fromDate, LocalDate  toDate);
-    List<ManagerSimpleResponseDTO> listartoSelect();
+    List<ManagerSimpleResponseDTO> listartoSelect(String search);
     ManagerFullResponseDTO obtenerManager(Integer id);
     ManagerResponseEditDTO obtenerManagertoEdit(Integer id);
 }

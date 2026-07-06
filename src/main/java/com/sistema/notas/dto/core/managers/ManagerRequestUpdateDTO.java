@@ -46,7 +46,7 @@ public record ManagerRequestUpdateDTO(
         LocalDate birthDate,
 
         @NotBlank(message = "El dui no puede venir vacio")
-        @Size(max = 9, message = "El dui no cumple con el formato requerido")
+        @Size(max = 10, message = "El dui no cumple con el formato requerido")
         String dui
 ) {
 }
