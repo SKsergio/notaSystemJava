@@ -1,17 +1,10 @@
 package com.sistema.notas.controller.core;
 
-import com.sistema.notas.dto.core.degreeEnrollment.BatchEnrollmentRequestDTO;
-import com.sistema.notas.dto.core.degreeEnrollment.DegreeEnrollmentRequestDTO;
-import com.sistema.notas.dto.core.degreeEnrollment.DegreeEnrollmentResponseDTO;
-import com.sistema.notas.dto.core.degreeEnrollment.DegreeEnrollmentSimpleResponseDTO;
-import com.sistema.notas.dto.core.evaluations.EvaluationRequestDTO;
-import com.sistema.notas.dto.core.evaluations.EvaluationsResponseDTO;
+import com.sistema.notas.dto.core.managerStudents.AssignedStudentDetailDTO;
 import com.sistema.notas.dto.core.managerStudents.ManagerStudentRequestDTO;
 import com.sistema.notas.dto.core.managerStudents.ManagerStudentRequestEditDTO;
 import com.sistema.notas.dto.core.managerStudents.ManagerStudentResponseDTO;
-import com.sistema.notas.dto.core.managers.ManagerRequestUpdateDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
-import com.sistema.notas.entity.enums.EnrollmentStatus;
 import com.sistema.notas.service.core.ManagerStudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +42,7 @@ public class ManagerStudentController {
     }
 
     @GetMapping
-    public ResponseEntity<PaginateResponse<ManagerStudentResponseDTO>> getEnrolls(
+    public ResponseEntity<PaginateResponse<ManagerStudentResponseDTO>> getManagerStudents(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String search,
@@ -58,6 +51,17 @@ public class ManagerStudentController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
         return ResponseEntity.ok(
                 managerStudentService.obtenerManagerStudents(page, size, search, fromDate, toDate ));
+    }
+
+    @GetMapping("assignedStudents/{managerId}")
+    public ResponseEntity<PaginateResponse<AssignedStudentDetailDTO>> getAssigned(
+            @PathVariable Integer managerId,
+
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String search){
+        return ResponseEntity.ok(
+                managerStudentService.getAsignedStudents(page, size, search,managerId ));
     }
 
 

@@ -7,3 +7,5 @@ public record AssignedStudentDTO(
         String relationType,
         Boolean emergencyContact
 ) {}
+
+//por si acaso
