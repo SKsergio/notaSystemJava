@@ -1,8 +1,6 @@
 package com.sistema.notas.entity.core;
 
 import jakarta.persistence.PrimaryKeyJoinColumn;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 import com.sistema.notas.entity.InstitutionalPerson;
 
