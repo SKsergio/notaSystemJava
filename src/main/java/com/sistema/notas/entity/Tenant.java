@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import lombok.EqualsAndHashCode;
 
 
 @Entity
@@ -24,7 +23,7 @@ public class Tenant {
     @Column(name = "nit", nullable = false, unique = true)
     private String nit;
 
-    @Column(name = "legalMane", nullable = false, unique = true)
+    @Column(name = "legal_name", nullable = false, unique = true)
     private String legalName;
 
     @Column(name = "address", nullable = true)
