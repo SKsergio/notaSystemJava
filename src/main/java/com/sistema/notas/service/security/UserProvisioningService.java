@@ -1,0 +1,73 @@
+package com.sistema.notas.service.security;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.sistema.notas.config.core.TenantContext;
+import com.sistema.notas.entity.Tenant;
+import com.sistema.notas.entity.security.Role;
+import com.sistema.notas.entity.security.User;
+import com.sistema.notas.entity.security.UserTenantAccess;
+import com.sistema.notas.respository.config.TenantRepository;
+import com.sistema.notas.respository.security.RoleRepository;
+import com.sistema.notas.respository.security.UserRepository;
+import com.sistema.notas.respository.security.UserTenantAccessRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class UserProvisioningService {
+
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final TenantRepository tenantRepository;
+    private final UserTenantAccessRepository userTenantAccessRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    /**
+     * Aprovisiona la identidad global de un usuario y le otorga acceso al Tenant actual con un Rol específico.
+     * * @String email Correo de la persona
+     * @String roleName Nombre del rol ("MANAGER", "TEACHER", "STUDENT", etc.)
+     * @Integer institutionalPersonId ID físico de la persona en la tabla correspondiente
+     * @return UserTenantAccess La membresía creada o existente
+     */
+    @Transactional
+    public UserTenantAccess provisionUserForCurrentTenant(String email, String roleName, Integer institutionalPersonId) {
+        
+        // 1. Obtener el Tenant activo del contexto HTTP
+        Integer currentTenantId = TenantContext.getCurrentTenant();
+        if (currentTenantId == null) {
+            throw new IllegalStateException("Error de seguridad: No existe un Tenant configurado en el contexto de la peticion.");
+        }
+
+        Tenant currentTenant = tenantRepository.findById(currentTenantId)
+                .orElseThrow(() -> new IllegalStateException("Tenant no encontrado con ID: " + currentTenantId));
+
+        // 2. Obtener el Rol solicitado
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new IllegalStateException("Error de configuracion: El Rol '" + roleName + "' no existe en el sistema."));
+
+        // 3. Buscar usuario global o crearlo si es la primera vez que ingresa al SaaS
+        User user = userRepository.findByEmail(email)
+                .orElseGet(() -> {
+                    User newUser = new User();
+                    newUser.setEmail(email);
+                    newUser.setPasswordHash(passwordEncoder.encode("123456")); // Credencial base inicial
+                    newUser.setFirstLogin(true);
+                    return userRepository.save(newUser);
+                });
+
+        // 4. Otorgar membresía en UserTenantAccess si aún no la tiene
+        return userTenantAccessRepository.findByUserIdAndTenantId(user.getId(), currentTenantId)
+                .orElseGet(() -> {
+                    UserTenantAccess access = new UserTenantAccess();
+                    access.setUser(user);
+                    access.setTenant(currentTenant);
+                    access.setRole(role);
+                    access.setInstitutionalPersonId(institutionalPersonId);
+                    return userTenantAccessRepository.save(access);
+                });
+    }
+}

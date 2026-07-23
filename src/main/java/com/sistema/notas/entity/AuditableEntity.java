@@ -2,35 +2,16 @@ package com.sistema.notas.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.TenantId;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
+import org.hibernate.annotations.TenantId;
 
 @MappedSuperclass
 @Data
-@EntityListeners(AuditingEntityListener.class)
-public class AuditableEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Integer id;
-
+@EqualsAndHashCode(callSuper = true)
+public class AuditableEntity extends GlobalAuditableEntity {
     //multi empresa o institucion
     @TenantId
     @Column(name = "tenant_id", nullable = false)
     private Integer tenantId;
-
-    //autitoria
-    @CreatedDate
-    @Column(name = "created_at", updatable = false)
-    protected LocalDateTime createdAt;
-
-    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
-    protected boolean active = true;
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    protected LocalDateTime updatedAt;
 }

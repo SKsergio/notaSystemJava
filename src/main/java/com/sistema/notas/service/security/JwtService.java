@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
@@ -33,21 +34,20 @@ public class JwtService {
         this.signingKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    /** Genera un token para el usuario dado, con su rol como claim. */
-    public String generateToken(User user) {
+    /** Genera el JWT enriquecido con el contexto de la institución seleccionada */
+    public String generateToken(User user, Integer tenantId, String roleName, Collection<String> permissions) {
         long now = System.currentTimeMillis();
-        Date issuedAt = new Date(now);
-        Date expiresAt = new Date(now + props.expirationMs());
 
         return Jwts.builder()
                 .subject(user.getEmail())
                 .issuer(props.issuer())
-                .issuedAt(issuedAt)
-                .expiration(expiresAt)
+                .issuedAt(new Date(now))
+                .expiration(new Date(now + props.expirationMs()))
                 .claims(Map.of(
                         "uid", user.getId(),
-                        "role", user.getRole().name()
-                ))
+                        "tenantId", tenantId,
+                        "role", roleName,
+                        "permissions", permissions))
                 .signWith(signingKey, Jwts.SIG.HS256)
                 .compact();
     }
@@ -62,7 +62,9 @@ public class JwtService {
                 .getPayload();
     }
 
-    /** Devuelve el email (subject) si el token es valido, null en caso contrario. */
+    /**
+     * Devuelve el email (subject) si el token es valido, null en caso contrario.
+     */
     public String extractEmailSafe(String token) {
         try {
             return parse(token).getSubject();

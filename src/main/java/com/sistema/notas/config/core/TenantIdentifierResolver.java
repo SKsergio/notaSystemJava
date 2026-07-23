@@ -12,12 +12,9 @@ public class TenantIdentifierResolver implements CurrentTenantIdentifierResolver
     @Override
     public Integer resolveCurrentTenantIdentifier() {
         Integer currentTenant = TenantContext.getCurrentTenant();
-        
         if (currentTenant != null) {
             return currentTenant;
         }
-        
-        // 2. Si NO hay petición web (Arranque de la app, Creación del Admin, etc.),
         // le inyectamos a Hibernate el Tenant del Sistema para que no colapse.
         return SYSTEM_TENANT_ID; 
     }

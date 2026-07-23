@@ -25,6 +25,8 @@ import com.sistema.notas.respository.core.PersonRepository;
 import com.sistema.notas.respository.security.UserRepository;
 import com.sistema.notas.service.core.ManagerService;
 import com.sistema.notas.service.fileStorage.FileStorageService;
+import com.sistema.notas.service.security.UserProvisioningService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,7 +51,8 @@ public class ManagerServiceImpl implements ManagerService {
     private final PersonRepository personRepository;
     //servicio de imagnes
     private final FileStorageService fileStorageService;
-    private final StudentMapper studentMapper;
+    //servoicio de seguridad
+    private final UserProvisioningService userProvisioningService;
 
 
     @Override
@@ -71,18 +74,9 @@ public class ManagerServiceImpl implements ManagerService {
         }
 
         Manager saved = managerRepository.save(entity);
-        if (!userRepository.existsByEmail(saved.getEmail())) {
-
-            User user = new User();
-            user.setEmail(saved.getEmail());
-            user.setPasswordHash(
-                    passwordEncoder.encode("123456")
-            );
-            user.setRole(Role.TEACHER);//luego se guardara como encargadop
-            user.setTeacherId(saved.getId());
-            user.setFirstLogin(true);
-            userRepository.save(user);
-        }
+       
+        //crear el usuario global y asignar el rol
+        userProvisioningService.provisionUserForCurrentTenant(saved.getEmail(), "MANAGER", saved.getId());
         return managerMapper.toResponseDTO(saved);
     }
 

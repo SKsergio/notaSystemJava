@@ -1,6 +1,4 @@
 package com.sistema.notas.dto.security;
-
-import com.sistema.notas.entity.enums.Role;
 import jakarta.validation.constraints.*;
 
 /**
@@ -20,13 +18,6 @@ public record RegisterRequestDTO(
                 regexp = "^(?=.*[A-Za-z])(?=.*\\d).+$",
                 message = "La contrasena debe contener al menos una letra y un numero"
         )
-        String password,
-
-        @NotNull(message = "El rol es obligatorio")
-        Role role,
-
-        Integer teacherId,
-
-        Integer studentId
+        String password
 ) {
 }

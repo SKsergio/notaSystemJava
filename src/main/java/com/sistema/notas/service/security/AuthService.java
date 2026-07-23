@@ -5,10 +5,17 @@ import com.sistema.notas.dto.security.LoginResponseDTO;
 import com.sistema.notas.dto.security.RegisterRequestDTO;
 import com.sistema.notas.dto.security.UserResponseDTO;
 import com.sistema.notas.entity.security.User;
+import com.sistema.notas.entity.security.UserTenantAccess;
 import com.sistema.notas.exceptions.BadRequestException;
 import com.sistema.notas.exceptions.UnauthorizedException;
 import com.sistema.notas.respository.security.UserRepository;
+import com.sistema.notas.respository.security.UserTenantAccessRepository;
+
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,30 +33,81 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final UserTenantAccessRepository userTenantAccessRepository;
     private final JwtService jwtService;
 
     @Transactional(readOnly = true)
     public LoginResponseDTO login(LoginRequestDTO dto) {
+
+        // 1. Validación de Identidad (Autenticación Global)
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(dto.email(), dto.password())
-            );
+                    new UsernamePasswordAuthenticationToken(dto.email(), dto.password()));
         } catch (BadCredentialsException ex) {
-            // Mensaje generico: no revelamos si el email existe o no
             throw new UnauthorizedException("Credenciales invalidas");
         }
 
         User user = userRepository.findByEmail(dto.email())
                 .orElseThrow(() -> new UnauthorizedException("Credenciales invalidas"));
 
-        String token = jwtService.generateToken(user);
+        List<UserTenantAccess> accesses = userTenantAccessRepository.findByUserId(user.getId());
+
+        if (accesses.isEmpty()) {
+            throw new UnauthorizedException("El usuario no tiene acceso a ninguna institución.");
+        }
+
+        UserTenantAccess selectedAccess;
+
+        // 3. Lógica de Enrutamiento SaaS
+        if (accesses.size() == 1) {
+            // Caso A: El usuario solo pertenece a 1 colegio (Como tu Administrador Seed
+            selectedAccess = accesses.get(0);
+        } else {
+            // Caso B: El usuario pertenece a Varios Colegios.
+            // TODO: Aquí en el futuro deberíamos devolver un DTO pidiendo al Frontend que
+            // muestre
+            // una pantalla de "Seleccionar Colegio". Por ahora, para no romper tu frontend
+            // de Vue,
+            // tomaremos el primer colegio por defecto.
+            selectedAccess = accesses.get(0);
+        }
+
+        // 4. Calcular Permisos Efectivos (Rol Base + Extras - Revocados)
+        Set<String> effectivePermissions = calculateEffectivePermissions(selectedAccess);
+
+        // 5. ¡LA MAGIA! Generar el JWT sellado con el Tenant y los Permisos Exactos
+        String token = jwtService.generateToken(
+                user,
+                selectedAccess.getTenant().getId(),
+                selectedAccess.getRole().getName(),
+                effectivePermissions);
+
         return new LoginResponseDTO(
                 token,
                 "Bearer",
                 jwtService.getExpirationMs(),
                 toResponse(user),
-                user.isFirstLogin()
-        );
+                user.isFirstLogin());
+    }
+
+    /**
+     * Calcula la lista final de permisos aplicando la fórmula de excepciones.
+     */
+    private Set<String> calculateEffectivePermissions(UserTenantAccess access) {
+        // A. Obtener permisos base del Rol
+        Set<String> effective = access.getRole().getPermissions().stream()
+                .map(p -> p.getCode())
+                .collect(java.util.stream.Collectors.toSet());
+
+        if (access.getGrantedPermissions() != null) {
+            access.getGrantedPermissions().forEach(p -> effective.add(p.getCode()));
+        }
+
+        if (access.getRevokedPermissions() != null) {
+            access.getRevokedPermissions().forEach(p -> effective.remove(p.getCode()));
+        }
+
+        return effective;
     }
 
     @Transactional
@@ -61,9 +119,6 @@ public class AuthService {
         User user = new User();
         user.setEmail(dto.email());
         user.setPasswordHash(passwordEncoder.encode(dto.password()));
-        user.setRole(dto.role());
-        user.setTeacherId(dto.teacherId());
-        user.setStudentId(dto.studentId());
 
         User saved = userRepository.save(user);
         return toResponse(saved);
@@ -76,16 +131,13 @@ public class AuthService {
         return toResponse(user);
     }
 
-    //creo que esto lo voy a pasar a un mapper
+    // creo que esto lo voy a pasar a un mapper
     private UserResponseDTO toResponse(User user) {
         return new UserResponseDTO(
                 user.getId(),
-                user.getEmail(),
-                user.getRole(),
-                user.getTeacherId(),
-                user.getStudentId()
-        );
+                user.getEmail());
     }
+
     @Transactional
     public void changePassword(ChangePasswordRequestDTO request) {
 
@@ -96,12 +148,10 @@ public class AuthService {
         String email = auth.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new UnauthorizedException("Usuario no encontrado"));
+                .orElseThrow(() -> new UnauthorizedException("Usuario no encontrado"));
 
         user.setPasswordHash(
-                passwordEncoder.encode(request.newPassword())
-        );
+                passwordEncoder.encode(request.newPassword()));
 
         user.setFirstLogin(false);
 
