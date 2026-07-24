@@ -8,7 +8,7 @@ import com.sistema.notas.entity.core.DegreeEnrollment;
 import com.sistema.notas.entity.core.GradeDetail;
 import com.sistema.notas.entity.enums.EnrollmentStatus;
 import com.sistema.notas.respository.core.DegreeEnrollmentRepository;
-import com.sistema.notas.specifications.core.people.PersonSpecification;
+import com.sistema.notas.respository.core.PersonRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,54 +29,44 @@ import com.sistema.notas.mapper.core.StudentMapper;
 import com.sistema.notas.respository.core.StudentRepository;
 import com.sistema.notas.service.core.StudentService;
 import com.sistema.notas.service.fileStorage.FileStorageService;
+import com.sistema.notas.service.security.UserProvisioningService;
 import com.sistema.notas.specifications.catalogue.CatalogoSpecification;
 import com.sistema.notas.specifications.core.people.StudentSpecification;
-import com.sistema.notas.entity.security.User;
-import com.sistema.notas.entity.enums.Role;
-import com.sistema.notas.respository.security.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
-    private final UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    //inyección de dependencias
+    private final UserProvisioningService userProvisioningService;
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
     private final PageMapper pageMapper;
-    // servicio de imagenes
+    private final PersonRepository personRepository;
     private final FileStorageService fileStorageService;
     private final DegreeEnrollmentRepository degreeEnrollmentRepository;
 
     @Override
     public StudentResponseDTO save(StudentRequestDTO studentRequestDTO) {
-        if (studentRepository.existsByEmail(studentRequestDTO.email())) {
+        if (personRepository.existsByEmail(studentRequestDTO.email())) {
             throw new BadRequestException(
-                    "Ya hay un estudiante Registrado con el correo: " + studentRequestDTO.email());
+                    "Ya hay una persona registrada con el correo: " + studentRequestDTO.email());
         }
 
         Student entity = studentMapper.toEntity(studentRequestDTO);
+
         if (studentRequestDTO.photo() != null && !studentRequestDTO.photo().isEmpty()) {
             String fileName = fileStorageService.storeFile(studentRequestDTO.photo());
             entity.setRoutePhoto(fileName);
         }
 
         Student saved = studentRepository.save(entity);
-        if (!userRepository.existsByEmail(saved.getEmail())) {
 
-            User user = new User();
-            user.setEmail(saved.getEmail());
-            user.setPasswordHash(
-                    passwordEncoder.encode("123456")
-            );
-            user.setRole(Role.STUDENT);
-            user.setStudentId(saved.getId());
-            user.setFirstLogin(true);
-            userRepository.save(user);
-        }
+        //crear usuario global para el estudiante
+        userProvisioningService.provisionUserForCurrentTenant(saved.getEmail(), "STUDENT", saved.getId());
+        
         return studentMapper.toResponseDTO(saved);
     }
 
@@ -86,7 +76,7 @@ public class StudentServiceImpl implements StudentService {
         Student studentFind = studentRepository.findById(id).orElseThrow(
                 () -> new BadRequestException("No se encontró el estudiante con id: " + id));
 
-        if (studentRepository.existsByEmailAndIdNot(studentRequestDTO.email(), id)) {
+        if (personRepository.existsByEmailAndIdNot(studentRequestDTO.email(), id)) {
             throw new BadRequestException(
                     "Ya hay un estudiante Registrado con el correo: " + studentRequestDTO.email());
         }

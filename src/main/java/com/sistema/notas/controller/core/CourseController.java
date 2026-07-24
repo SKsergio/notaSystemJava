@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.sistema.notas.dto.core.course.*;
-import com.sistema.notas.dto.core.evaluations.EvaluationsResponseDTO;
-import com.sistema.notas.entity.enums.StatusEnum;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -12,17 +12,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @MappedSuperclass
-@Data
+@Getter 
+@Setter
 @EntityListeners(AuditingEntityListener.class)
 public class GlobalAuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
-    //autitoria
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     protected LocalDateTime createdAt;

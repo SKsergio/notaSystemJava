@@ -54,7 +54,7 @@ public class UserTenantAccess extends GlobalAuditableEntity{
     private Integer institutionalPersonId; // Puede ser teacherId o studentId, dependiendo del rol
 
    //EXCPECIONES POR USUARIO
-   @ManyToOne(fetch = FetchType.LAZY)
+   @ManyToMany(fetch = FetchType.LAZY)
    @JoinTable(
        name = "user_tenant_access_exceptions",
        joinColumns = @JoinColumn(name = "user_tenant_access_id"),

@@ -9,7 +9,6 @@ import com.sistema.notas.entity.core.*;
 import com.sistema.notas.exceptions.ResourceNotFoundException;
 import com.sistema.notas.mapper.PageMapper;
 import com.sistema.notas.mapper.core.ManagerStudentMapper;
-import com.sistema.notas.mapper.core.StudentMapper;
 import com.sistema.notas.respository.core.ManagerRepository;
 import com.sistema.notas.respository.core.ManagerStudentRepository;
 import com.sistema.notas.respository.core.StudentRepository;

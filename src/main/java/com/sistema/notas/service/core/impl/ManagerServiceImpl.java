@@ -2,49 +2,33 @@ package com.sistema.notas.service.core.impl;
 
 import com.sistema.notas.dto.core.managers.*;
 import com.sistema.notas.dto.generics.PaginateResponse;
-import com.sistema.notas.entity.InstitutionalPerson;
-import com.sistema.notas.entity.core.GradeDetail;
 import com.sistema.notas.entity.core.Manager;
-import com.sistema.notas.entity.core.Student;
-import com.sistema.notas.entity.core.Teacher;
-import com.sistema.notas.entity.enums.EnrollmentStatus;
-import com.sistema.notas.mapper.core.StudentMapper;
 import com.sistema.notas.specifications.catalogue.CatalogoSpecification;
 import com.sistema.notas.specifications.core.people.PersonSpecification;
-import com.sistema.notas.specifications.core.people.StudentSpecification;
-import com.sistema.notas.specifications.core.people.TeacherSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import com.sistema.notas.entity.enums.Role;
-import com.sistema.notas.entity.security.User;
 import com.sistema.notas.exceptions.BadRequestException;
 import com.sistema.notas.mapper.PageMapper;
 import com.sistema.notas.mapper.core.ManagerMapper;
 import com.sistema.notas.respository.core.ManagerRepository;
 import com.sistema.notas.respository.core.PersonRepository;
-import com.sistema.notas.respository.security.UserRepository;
 import com.sistema.notas.service.core.ManagerService;
 import com.sistema.notas.service.fileStorage.FileStorageService;
 import com.sistema.notas.service.security.UserProvisioningService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ManagerServiceImpl implements ManagerService {
     //INYECCION DE DEPENDENCIAS
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-
     private final ManagerRepository managerRepository;
     private final PageMapper pageMapper;
     private final ManagerMapper managerMapper;

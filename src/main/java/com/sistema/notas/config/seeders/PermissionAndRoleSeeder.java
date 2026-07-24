@@ -35,19 +35,19 @@ public class PermissionAndRoleSeeder {
             Role admin = new Role();
             admin.setName("ADMIN");
             admin.setDescription("Administrador Global del Colegio");
-            admin.setPermissions(Set.of(studentRead, studentWrite, studentDelete, restoreDelete, gradeRead, gradeWrite));
+            admin.getPermissions().addAll(Set.of(studentRead, studentWrite, studentDelete, restoreDelete, gradeRead, gradeWrite));
             roleRepository.save(admin);
 
             Role teacher = new Role();
             teacher.setName("TEACHER");
             teacher.setDescription("Profesor Titular");
-            teacher.setPermissions(Set.of(studentRead, gradeRead, gradeWrite)); // El profesor no edita alumnos
+            teacher.getPermissions().addAll(Set.of(studentRead, gradeRead, gradeWrite)); // El profesor no edita alumnos
             roleRepository.save(teacher);
 
             Role student = new Role();
             student.setName("STUDENT");
             student.setDescription("Estudiante Matriculado");
-            student.setPermissions(Set.of(gradeRead)); // El alumno solo ve notas
+            student.getPermissions().addAll(Set.of(gradeRead)); // El alumno solo ve notas
             roleRepository.save(student);
 
             System.out.println("✅ [SEEDER] Permisos y Roles creados exitosamente.");

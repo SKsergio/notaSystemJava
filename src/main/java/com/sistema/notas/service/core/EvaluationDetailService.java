@@ -3,9 +3,6 @@ package com.sistema.notas.service.core;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.sistema.notas.dto.core.courseRegistration.BatchRegistrationCourseDTO;
-import com.sistema.notas.dto.core.courseRegistration.CourseRegistrationResponseDTO;
-import com.sistema.notas.dto.core.degreeEnrollment.DegreeEnrollmentResponseDTO;
 import com.sistema.notas.dto.core.evaluationDetail.*;
 import com.sistema.notas.dto.generics.PaginateResponse;
 
