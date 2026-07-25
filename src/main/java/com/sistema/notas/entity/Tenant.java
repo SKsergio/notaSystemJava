@@ -12,16 +12,16 @@ import org.hibernate.annotations.SQLRestriction;
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE tenant SET active = false WHERE id = ?")
 @SQLRestriction("active = true")
-public class Tenant {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Tenant extends GlobalAuditableEntity{
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "nit", nullable = false, unique = true)
+    @Column(name = "nit", length = 14, nullable = false, unique = true)
     private String nit;
+
+     @Column(name = "nrc", length = 8, nullable = false, unique = true)
+    private String nrc;
 
     @Column(name = "legal_name", nullable = false, unique = true)
     private String legalName;
@@ -31,7 +31,4 @@ public class Tenant {
 
     @Column(name = "url", nullable = false, unique = true)
     private String domainOrSlug;
-
-    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
-    protected boolean active = true;
 }

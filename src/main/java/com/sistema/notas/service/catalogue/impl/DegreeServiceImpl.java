@@ -121,8 +121,6 @@ public class DegreeServiceImpl implements DegreeService {
                 ()-> new ResourceNotFoundException("El grado con el id: " + id + " no existe")
         );
 
-        
-
         return catalogueMapper.toResponse(degreeFind);
     }
 
