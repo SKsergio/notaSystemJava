@@ -4,12 +4,36 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import com.sistema.notas.dto.security.tenant.UserTenantSummaryDTO;
 import com.sistema.notas.entity.security.UserTenantAccess;
 
 public interface UserTenantAccessRepository extends JpaRepository<UserTenantAccess, Integer> {
-    List<UserTenantAccess> findByUserId(Integer userId);//obtener todas las membresias
+    List<UserTenantAccess> findByUserId(Integer userId);// obtener todas las membresias
 
-    Optional<UserTenantAccess> findByUserIdAndTenantId(Integer userId, Integer tenantId);//obtener una membresia especifica
+    @Query("""
+                SELECT uta
+                FROM UserTenantAccess uta
+                JOIN FETCH uta.user
+                JOIN FETCH uta.role
+                JOIN FETCH uta.tenant
+                WHERE uta.user.id = :userId
+                  AND uta.tenant.id = :tenantId
+            """)
+    Optional<UserTenantAccess> findByUserIdAndTenantId(
+            @Param("userId") Integer userId,
+            @Param("tenantId") Integer tenantId);
 
+    @Query("""
+                SELECT new UserTenantSummaryDTO(
+                    uta.tenant.id,
+                    uta.tenant.name,
+                    uta.role.name
+                )
+                FROM UserTenantAccess uta
+                WHERE uta.user.id = :userId
+            """)
+    List<UserTenantSummaryDTO> findTenantsByUserId(@Param("userId") Integer userId);
 }
