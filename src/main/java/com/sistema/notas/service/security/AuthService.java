@@ -4,6 +4,7 @@ import com.sistema.notas.dto.security.LoginRequestDTO;
 import com.sistema.notas.dto.security.LoginResponseDTO;
 import com.sistema.notas.dto.security.RegisterRequestDTO;
 import com.sistema.notas.dto.security.UserResponseDTO;
+import com.sistema.notas.dto.security.tenant.UserTenantSummaryDTO;
 import com.sistema.notas.entity.security.User;
 import com.sistema.notas.entity.security.UserTenantAccess;
 import com.sistema.notas.exceptions.BadRequestException;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -90,6 +92,39 @@ public class AuthService {
                 user.isFirstLogin());
     }
 
+    @Transactional(readOnly = true)
+    public List<UserTenantSummaryDTO> getUserTenants(Integer userId) {
+        return userTenantAccessRepository.findTenantsByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public LoginResponseDTO switchTenant(Integer userId, Integer targetTenantId) {
+
+        // 1. Validar que el usuario pertenece al tenant destino
+        UserTenantAccess access = userTenantAccessRepository
+                .findByUserIdAndTenantId(userId, targetTenantId)
+                .orElseThrow(() -> new AccessDeniedException(
+                    "Acceso denegado: No perteneces al colegio especificado."
+                ));
+
+        Set<String> effectivePermissions = calculateEffectivePermissions(access);
+
+        User user = access.getUser();
+        String newToken = jwtService.generateToken(
+                user,
+                access.getTenant().getId(),
+                access.getRole().getName(),
+                effectivePermissions
+        );
+
+        return new LoginResponseDTO(
+                newToken,
+                "Bearer",
+                jwtService.getExpirationMs(),
+                toResponse(user),
+                user.isFirstLogin());
+    }
+    
     /**
      * Calcula la lista final de permisos aplicando la fórmula de excepciones.
      */

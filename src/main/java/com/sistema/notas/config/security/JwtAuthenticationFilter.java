@@ -1,7 +1,9 @@
 package com.sistema.notas.config.security;
 
-import com.sistema.notas.service.security.CustomUserDetailsService;
+import com.sistema.notas.config.security.model.CustomUserDetails;
 import com.sistema.notas.service.security.JwtService;
+
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -9,13 +11,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Lee el header Authorization: Bearer <jwt>, valida el token y, si es correcto,
@@ -33,12 +38,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final JwtService jwtService;
-    private final CustomUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
 
         // Saltarse preflight CORS
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
@@ -59,19 +63,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            String email = jwtService.parse(token).getSubject();
+            Claims claims = jwtService.parse(token);
+            String email = claims.getSubject();
 
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities());
+                Integer uid = claims.get("uid", Integer.class);
+                Integer tenantId = claims.get("tenantId", Integer.class);
+
+                List<String> permissions = claims.get("permissions", List.class);
+                List<SimpleGrantedAuthority> authorities = permissions != null
+                        ? permissions.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
+                        : Collections.emptyList();
+
+                CustomUserDetails userDetails = new CustomUserDetails(
+                        uid,
+                        email,
+                        "", 
+                        tenantId,
+                        authorities,
+                        true 
+                );
+
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities());
+
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                // TenantContext.setTenantId(tenantId);
             }
         } catch (JwtException | IllegalArgumentException ex) {
             // Token invalido / expirado: limpiamos el contexto y dejamos seguir.
