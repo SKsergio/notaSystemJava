@@ -29,6 +29,6 @@ public class Tenant extends GlobalAuditableEntity{
     @Column(name = "address", nullable = true)
     private String address;
 
-    @Column(name = "url", nullable = false, unique = true)
-    private String domainOrSlug;
+    @Column(name = "logo_url", nullable = true)
+    private String logoUrl;
 }

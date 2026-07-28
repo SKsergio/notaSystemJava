@@ -55,10 +55,11 @@ public class TenantFilter extends OncePerRequestFilter {
     }
 
     private boolean isPublicRoute(String path) {
-        return path.contains("/swagger-ui") || 
-               path.contains("/v3/api-docs") || 
+        return path.contains("/swagger-ui") ||
+               path.contains("/v3/api-docs") ||
                path.contains("/photos/") ||
-               path.contains("/api/auth/"); // Aquí entrará el login más adelante
+               path.contains("/api/auth/") || // Aquí entrará el login más adelante
+               path.contains("/api/core/tenants"); // Gestion global de tenants (solo super admin), no pertenece a ningun tenant
     }
 
     private void buildErrorResponse(HttpServletResponse response, int status, String message) throws IOException {

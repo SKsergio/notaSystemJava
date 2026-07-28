@@ -7,6 +7,6 @@ public record TenantResponseDTO(
         String nrc,
         String legalName,
         String address,
-        String domainOrSlug
+        String logoUrl
 ) {
 }

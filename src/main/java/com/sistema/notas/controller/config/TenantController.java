@@ -22,7 +22,8 @@ import com.sistema.notas.dto.security.tenant.TenantResponseDTO;
 import com.sistema.notas.dto.security.tenant.TenantSimpleResponseDTO;
 import com.sistema.notas.service.config.TenantService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController

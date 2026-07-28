@@ -17,10 +17,10 @@ public class TenantSeeder {
             System.out.println("[SEEDER] - Iniciando el proceso de seeders para la tabla Tenant");
             Tenant tenant = new Tenant();
             tenant.setName("Colegio San Francisco (Pruebas)");
-            tenant.setNit("0000-000000-000-0");
+            tenant.setNit("00000000000000");
+            tenant.setNrc("01235");
             tenant.setLegalName("Sistemas Educativos S.A.");
             tenant.setAddress("San Salvador, El Salvador");
-            tenant.setDomainOrSlug("sanfrancisco");
             tenant.setActive(true);
 
             tenantRepository.save(tenant);
