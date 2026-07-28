@@ -123,6 +123,7 @@ public class TeacherServiceImpl implements TeacherService {
                 () -> new ResourceNotFoundException("No esixte ningun maestro con el id: " + id));
 
         teacherRepository.delete(teacherFind);
+        userProvisioningService.deactivateAccessForCurrentTenant(id, "TEACHER");
     }
 
     @Override

@@ -35,12 +35,9 @@ public class UserProvisioningService {
      */
     @Transactional
     public UserTenantAccess provisionUserForCurrentTenant(String email, String roleName, Integer institutionalPersonId) {
-        
+
         // 1. Obtener el Tenant activo del contexto HTTP
-        Integer currentTenantId = TenantContext.getCurrentTenant();
-        if (currentTenantId == null) {
-            throw new IllegalStateException("Error de seguridad: No existe un Tenant configurado en el contexto de la peticion.");
-        }
+        Integer currentTenantId = requireCurrentTenant();
 
         Tenant currentTenant = tenantRepository.findById(currentTenantId)
                 .orElseThrow(() -> new IllegalStateException("Tenant no encontrado con ID: " + currentTenantId));
@@ -69,5 +66,26 @@ public class UserProvisioningService {
                     access.setInstitutionalPersonId(institutionalPersonId);
                     return userTenantAccessRepository.save(access);
                 });
+    }
+
+    /**
+     * Desactiva la membresia (UserTenantAccess) de una persona institucional en el tenant actual
+     * cuando esta es eliminada (soft-delete). No afecta al User global ni a sus otras membresias.
+     */
+    @Transactional
+    public void deactivateAccessForCurrentTenant(Integer institutionalPersonId, String roleName) {
+        Integer currentTenantId = requireCurrentTenant();
+
+        userTenantAccessRepository
+                .findByInstitutionalPersonIdAndTenantIdAndRoleName(institutionalPersonId, currentTenantId, roleName)
+                .ifPresent(userTenantAccessRepository::delete);
+    }
+
+    private Integer requireCurrentTenant() {
+        Integer currentTenantId = TenantContext.getCurrentTenant();
+        if (currentTenantId == null) {
+            throw new IllegalStateException("Error de seguridad: No existe un Tenant configurado en el contexto de la peticion.");
+        }
+        return currentTenantId;
     }
 }

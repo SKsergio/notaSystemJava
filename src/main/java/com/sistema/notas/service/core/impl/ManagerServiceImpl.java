@@ -104,6 +104,7 @@ public class ManagerServiceImpl implements ManagerService {
         );
 
         managerRepository.delete(managerFind);
+        userProvisioningService.deactivateAccessForCurrentTenant(id, "MANAGER");
     }
 
     @Override

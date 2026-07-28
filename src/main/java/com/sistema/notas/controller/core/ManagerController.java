@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ public class ManagerController {
     private final ManagerService managerService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ManagerResponseDTO> createManager(@Validated @ModelAttribute ManagerRequestDTO managerRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(managerService.save(managerRequest));
     }
