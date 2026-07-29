@@ -41,6 +41,7 @@ public class AdminBootstrapSeeder {
             adminUser.setEmail(adminEmail);
             adminUser.setPasswordHash(passwordEncoder.encode(adminPassword));
             adminUser.setFirstLogin(false);
+            adminUser.setSuperAdmin(true);
             User savedUser = userRepository.save(adminUser);
 
             // 2. Obtener Tenant de prueba (ID 1) y Rol ADMIN

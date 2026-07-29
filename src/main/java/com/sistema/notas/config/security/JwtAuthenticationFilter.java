@@ -70,11 +70,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Integer uid = claims.get("uid", Integer.class);
                 Integer tenantId = claims.get("tenantId", Integer.class);
                 String role = claims.get("role", String.class);
+                Boolean superAdmin = claims.get("superAdmin", Boolean.class);
 
                 List<String> permissions = claims.get("permissions", List.class);
                 List<SimpleGrantedAuthority> authorities = new ArrayList<>();
                 if (role != null) {
                     authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+                }
+                if (Boolean.TRUE.equals(superAdmin)) {
+                    authorities.add(new SimpleGrantedAuthority("ROLE_SUPERADMIN"));
                 }
                 if (permissions != null) {
                     permissions.forEach(p -> authorities.add(new SimpleGrantedAuthority(p)));

@@ -11,6 +11,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -35,19 +36,22 @@ public class JwtService {
     }
 
     /** Genera el JWT enriquecido con el contexto de la institución seleccionada */
-    public String generateToken(User user, Integer tenantId, String roleName, Collection<String> permissions) {
+    public String generateToken(User user, Integer tenantId, String roleName, Collection<String> permissions, boolean superAdmin) {
         long now = System.currentTimeMillis();
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("uid", user.getId());
+        claims.put("tenantId", tenantId);
+        claims.put("role", roleName);
+        claims.put("permissions", permissions);
+        claims.put("superAdmin", superAdmin);
 
         return Jwts.builder()
                 .subject(user.getEmail())
                 .issuer(props.issuer())
                 .issuedAt(new Date(now))
                 .expiration(new Date(now + props.expirationMs()))
-                .claims(Map.of(
-                        "uid", user.getId(),
-                        "tenantId", tenantId,
-                        "role", roleName,
-                        "permissions", permissions))
+                .claims(claims)
                 .signWith(signingKey, Jwts.SIG.HS256)
                 .compact();
     }
