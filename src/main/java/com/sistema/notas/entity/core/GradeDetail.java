@@ -9,14 +9,15 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
+
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction; 
 
 
 @Entity
-@Table(name = "grade_details", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"degree_id", "section_id", "year"})
-})
+@Table(name = "grade_details")
 @Getter @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -27,9 +28,12 @@ public class GradeDetail extends AuditableEntity {
     @Column(name = "ability")
     private Integer ability;
 
-    @Column(name = "year")
-    private Integer year;
-
+    //startDate
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
+    //endDate
+    @Column(name = "end_date", nullable = false)
+    private LocalDate enDate;
 
     // Muchos Detalles pueden pertenecer a Un Grado
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,11 +56,21 @@ public class GradeDetail extends AuditableEntity {
 
     @Transient
     public String getFullName() {
-        if (this.degree == null || this.section == null || this.year == null) {
+        if (this.degree == null || this.section == null || this.getYear() == 0) {
             return null;
         }
         
-        return this.degree.getName() + " - " + this.section.getName() + " - " + this.year;
+        return this.degree.getName() + " - " + this.section.getName() + " - " + this.startDate.getYear();
     }
+
+    @Transient 
+    public int getYear(){
+        if (this.startDate == null) {
+            return 0;
+        }
+        
+        return this.startDate.getYear();
+    }
+
     
 }

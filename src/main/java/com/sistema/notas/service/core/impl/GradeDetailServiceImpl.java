@@ -52,9 +52,14 @@ public class GradeDetailServiceImpl implements GradeDetailService {
 
     @Override
     public GradeDetailResponseDTO save(GradeDetailRequestDTO gradeDetail) {
-        if (gradeDetailRepository.existsByDegreeIdAndSectionIdAndYear(gradeDetail.degreeId(), gradeDetail.sectionId(),
-                gradeDetail.year())) {
-            throw new BadRequestException("Ya existe un detalle de grado con esa seccion y grado");
+
+        if (gradeDetail.startDate().isAfter(gradeDetail.endDate())){
+            throw new BadRequestException("La fecha de inicio no puede ser posterior a la fecha de fin.");
+        }
+
+        if (gradeDetailRepository.existsOverlappingGradeDetail(gradeDetail.degreeId(), gradeDetail.sectionId(),
+                gradeDetail.startDate(), gradeDetail.endDate())) {
+            throw new BadRequestException("Ya existe un detalle de grado para ese grado y seccion que se traslapa con ese rango de fechas.");
         }
 
         Degree degree = degreeRespository.findById(gradeDetail.degreeId())
@@ -85,12 +90,13 @@ public class GradeDetailServiceImpl implements GradeDetailService {
         GradeDetail gradeDetailFind = gradeDetailRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("No existe ningun detalle de grado con el id: " + id));
 
-        if (gradeDetailRepository.existsByDegreeIdAndSectionIdAndYearAndIdNot(
+        if (gradeDetailRepository.existsOverlappingGradeDetailForUpdate(
                 gradeDetail.degreeId(),
                 gradeDetail.sectionId(),
-                gradeDetail.year(),
+                gradeDetail.startDate(),
+                gradeDetail.endDate(),
                 id)) {
-            throw new BadRequestException("Ya existe un detalle de grado para esa sección en este año.");
+            throw new BadRequestException("Ya existe un detalle de grado para ese grado y seccion que se traslapa con ese rango de fechas.");
         }
 
         Degree degree = degreeRespository.findById(gradeDetail.degreeId())

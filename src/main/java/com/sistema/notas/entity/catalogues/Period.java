@@ -1,7 +1,7 @@
 package com.sistema.notas.entity.catalogues;
 
 import com.sistema.notas.entity.AuditableEntity;
-import com.sistema.notas.entity.enums.GenderEnum;
+import com.sistema.notas.entity.core.GradeDetail;
 import com.sistema.notas.entity.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -24,11 +24,15 @@ public class Period extends AuditableEntity {
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private StatusEnum status = StatusEnum.OPEN;
 
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
+
+    //muchos periodos pertenecen a un cicloAcademico.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "grade_detail_id", nullable = true)
+    private GradeDetail gradeDetail;
 }

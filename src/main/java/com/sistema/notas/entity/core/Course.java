@@ -64,7 +64,7 @@ public class Course extends AuditableEntity{
             return null;
         }
         
-        return  this.subject.getName() + " - " + this.gradeDetail.getSection().getCode() + " (" + this.gradeDetail.getYear() + ")";
+        return  this.subject.getName() + " - " + this.gradeDetail.getSection().getCode() + " (" + this.gradeDetail.getStartDate().getYear() + ")";
     }
 
     @Transient
