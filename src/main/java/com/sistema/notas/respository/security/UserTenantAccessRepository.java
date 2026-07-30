@@ -26,8 +26,11 @@ public interface UserTenantAccessRepository extends JpaRepository<UserTenantAcce
             @Param("userId") Integer userId,
             @Param("tenantId") Integer tenantId);
 
+    Optional<UserTenantAccess> findByInstitutionalPersonIdAndTenantIdAndRoleName(
+            Integer institutionalPersonId, Integer tenantId, String roleName);
+
     @Query("""
-                SELECT new UserTenantSummaryDTO(
+                SELECT new com.sistema.notas.dto.security.tenant.UserTenantSummaryDTO(
                     uta.tenant.id,
                     uta.tenant.name,
                     uta.role.name

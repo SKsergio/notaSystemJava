@@ -3,9 +3,11 @@ package com.sistema.notas.controller.config;
 import java.time.LocalDate;
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,19 +19,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sistema.notas.dto.generics.PaginateResponse;
+import com.sistema.notas.dto.security.tenant.AssignUserToTenantRequestDTO;
 import com.sistema.notas.dto.security.tenant.TenantRequestDTO;
 import com.sistema.notas.dto.security.tenant.TenantResponseDTO;
 import com.sistema.notas.dto.security.tenant.TenantSimpleResponseDTO;
+import com.sistema.notas.dto.security.tenant.UserTenantAssignmentResponseDTO;
+import com.sistema.notas.entity.security.UserTenantAccess;
 import com.sistema.notas.service.config.TenantService;
+import com.sistema.notas.service.security.UserProvisioningService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("api/core/tenants")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('SUPERADMIN')")
 public class TenantController {
     private final TenantService tenantService;
+    private final UserProvisioningService userProvisioningService;
 
     @PostMapping
     public ResponseEntity<TenantResponseDTO> createDegree(@Validated @RequestBody TenantRequestDTO dto) {
@@ -71,6 +80,21 @@ public class TenantController {
     public ResponseEntity<TenantResponseDTO> getTenant(@PathVariable Integer id) {
         TenantResponseDTO responseDTO = tenantService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    }
+
+    @PostMapping("/{tenantId}/users")
+    public ResponseEntity<UserTenantAssignmentResponseDTO> assignUser(
+            @PathVariable Integer tenantId,
+            @Valid @RequestBody AssignUserToTenantRequestDTO dto) {
+        UserTenantAccess access = userProvisioningService
+                .assignExistingUserToTenant(dto.userId(), tenantId, dto.roleName());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new UserTenantAssignmentResponseDTO(
+                access.getUser().getId(),
+                access.getUser().getEmail(),
+                access.getTenant().getId(),
+                access.getTenant().getName(),
+                access.getRole().getName()));
     }
 
 }

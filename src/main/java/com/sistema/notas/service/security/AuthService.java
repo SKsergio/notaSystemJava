@@ -55,7 +55,18 @@ public class AuthService {
         List<UserTenantAccess> accesses = userTenantAccessRepository.findByUserId(user.getId());
 
         if (accesses.isEmpty()) {
-            throw new UnauthorizedException("El usuario no tiene acceso a ninguna institución.");
+            if (!user.isSuperAdmin()) {
+                throw new UnauthorizedException("El usuario no tiene acceso a ninguna institución.");
+            }
+
+            // Superadmin puro: no pertenece a ningun tenant, se emite un token a nivel de plataforma.
+            String platformToken = jwtService.generateToken(user, null, null, Set.of(), true);
+            return new LoginResponseDTO(
+                    platformToken,
+                    "Bearer",
+                    jwtService.getExpirationMs(),
+                    toResponse(user),
+                    user.isFirstLogin());
         }
 
         UserTenantAccess selectedAccess;
@@ -82,7 +93,8 @@ public class AuthService {
                 user,
                 selectedAccess.getTenant().getId(),
                 selectedAccess.getRole().getName(),
-                effectivePermissions);
+                effectivePermissions,
+                user.isSuperAdmin());
 
         return new LoginResponseDTO(
                 token,
@@ -114,7 +126,8 @@ public class AuthService {
                 user,
                 access.getTenant().getId(),
                 access.getRole().getName(),
-                effectivePermissions
+                effectivePermissions,
+                user.isSuperAdmin()
         );
 
         return new LoginResponseDTO(

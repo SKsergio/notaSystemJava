@@ -18,10 +18,9 @@ public class TenantSeeder {
             Tenant tenant = new Tenant();
             tenant.setName("Colegio San Francisco (Pruebas)");
             tenant.setNit("00000000000000");
-            tenant.setNrc("000001");
+            tenant.setNrc("01235");
             tenant.setLegalName("Sistemas Educativos S.A.");
             tenant.setAddress("San Salvador, El Salvador");
-            tenant.setDomainOrSlug("sanfrancisco");
             tenant.setActive(true);
 
             tenantRepository.save(tenant);

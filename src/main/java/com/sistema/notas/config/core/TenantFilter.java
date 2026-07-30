@@ -1,11 +1,14 @@
 package com.sistema.notas.config.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sistema.notas.config.security.model.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -16,8 +19,6 @@ import java.util.Map;
 
 @Component
 public class TenantFilter extends OncePerRequestFilter {
-
-    private static final String TENANT_HEADER = "X-Tenant-ID";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -31,34 +32,40 @@ public class TenantFilter extends OncePerRequestFilter {
             return;
         }
 
-        String tenantHeader = request.getHeader(TENANT_HEADER);
-
         try {
-            // 2. VALIDACIÓN ESTRICTA
-            if (tenantHeader == null || tenantHeader.isBlank()) {
-                buildErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, 
-                        "El encabezado 'X-Tenant-ID' es absolutamente obligatorio.");
-                return; // Cortamos la petición aquí mismo
+            // 2. EL TENANT SALE DEL JWT AUTENTICADO, NUNCA DE UN HEADER QUE EL CLIENTE CONTROLA
+            Integer tenantId = resolveAuthenticatedTenantId();
+
+            if (tenantId == null) {
+                buildErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                        "No se pudo determinar el tenant del usuario autenticado.");
+                return;
             }
 
             // 3. SETEAR EL CONTEXTO Y CONTINUAR
-            TenantContext.setCurrentTenant(Integer.valueOf(tenantHeader));
+            TenantContext.setCurrentTenant(tenantId);
             filterChain.doFilter(request, response);
 
-        } catch (NumberFormatException e) {
-            buildErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, 
-                    "El encabezado 'X-Tenant-ID' debe ser un numero entero.");
         } finally {
             // 4. LIMPIEZA OBLIGATORIA
             TenantContext.clear();
         }
     }
 
+    private Integer resolveAuthenticatedTenantId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            return userDetails.getTenantId();
+        }
+        return null;
+    }
+
     private boolean isPublicRoute(String path) {
-        return path.contains("/swagger-ui") || 
-               path.contains("/v3/api-docs") || 
+        return path.contains("/swagger-ui") ||
+               path.contains("/v3/api-docs") ||
                path.contains("/photos/") ||
-               path.contains("/api/auth/"); // Aquí entrará el login más adelante
+               path.contains("/api/auth/") || // Aquí entrará el login más adelante
+               path.contains("/api/core/tenants"); // Gestion global de tenants (solo super admin), no pertenece a ningun tenant
     }
 
     private void buildErrorResponse(HttpServletResponse response, int status, String message) throws IOException {

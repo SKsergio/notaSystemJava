@@ -9,6 +9,8 @@ import com.sistema.notas.entity.Tenant;
 import com.sistema.notas.entity.security.Role;
 import com.sistema.notas.entity.security.User;
 import com.sistema.notas.entity.security.UserTenantAccess;
+import com.sistema.notas.exceptions.BadRequestException;
+import com.sistema.notas.exceptions.ResourceNotFoundException;
 import com.sistema.notas.respository.config.TenantRepository;
 import com.sistema.notas.respository.security.RoleRepository;
 import com.sistema.notas.respository.security.UserRepository;
@@ -35,12 +37,9 @@ public class UserProvisioningService {
      */
     @Transactional
     public UserTenantAccess provisionUserForCurrentTenant(String email, String roleName, Integer institutionalPersonId) {
-        
+
         // 1. Obtener el Tenant activo del contexto HTTP
-        Integer currentTenantId = TenantContext.getCurrentTenant();
-        if (currentTenantId == null) {
-            throw new IllegalStateException("Error de seguridad: No existe un Tenant configurado en el contexto de la peticion.");
-        }
+        Integer currentTenantId = requireCurrentTenant();
 
         Tenant currentTenant = tenantRepository.findById(currentTenantId)
                 .orElseThrow(() -> new IllegalStateException("Tenant no encontrado con ID: " + currentTenantId));
@@ -69,5 +68,51 @@ public class UserProvisioningService {
                     access.setInstitutionalPersonId(institutionalPersonId);
                     return userTenantAccessRepository.save(access);
                 });
+    }
+
+    /**
+     * Desactiva la membresia (UserTenantAccess) de una persona institucional en el tenant actual
+     * cuando esta es eliminada (soft-delete). No afecta al User global ni a sus otras membresias.
+     */
+    @Transactional
+    public void deactivateAccessForCurrentTenant(Integer institutionalPersonId, String roleName) {
+        Integer currentTenantId = requireCurrentTenant();
+
+        userTenantAccessRepository
+                .findByInstitutionalPersonIdAndTenantIdAndRoleName(institutionalPersonId, currentTenantId, roleName)
+                .ifPresent(userTenantAccessRepository::delete);
+    }
+
+    /**
+     * Asocia un usuario global ya existente a un tenant con un rol determinado.
+     * Uso exclusivo de superadmin (asignar ADMINs u otros roles a un colegio directamente).
+     * Si la membresia ya existia, actualiza el rol (operacion idempotente de "asegurar rol X").
+     */
+    @Transactional
+    public UserTenantAccess assignExistingUserToTenant(Integer userId, Integer tenantId, String roleName) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("No existe ningun usuario con el id: " + userId));
+
+        Tenant tenant = tenantRepository.findById(tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("No existe ningun tenant con el id: " + tenantId));
+
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new BadRequestException("El rol '" + roleName + "' no existe."));
+
+        UserTenantAccess access = userTenantAccessRepository.findByUserIdAndTenantId(userId, tenantId)
+                .orElseGet(UserTenantAccess::new);
+
+        access.setUser(user);
+        access.setTenant(tenant);
+        access.setRole(role);
+        return userTenantAccessRepository.save(access);
+    }
+
+    private Integer requireCurrentTenant() {
+        Integer currentTenantId = TenantContext.getCurrentTenant();
+        if (currentTenantId == null) {
+            throw new IllegalStateException("Error de seguridad: No existe un Tenant configurado en el contexto de la peticion.");
+        }
+        return currentTenantId;
     }
 }

@@ -15,21 +15,24 @@ public class CustomUserDetails implements UserDetails {
     private final String email;
     private final String password;
     private final Integer tenantId;
+    private final String role;
     private final Collection<? extends GrantedAuthority> authorities;
     private final boolean active;
 
     public CustomUserDetails(
-            Integer id, 
-            String email, 
-            String password, 
-            Integer tenantId, 
-            Collection<? extends GrantedAuthority> authorities, 
+            Integer id,
+            String email,
+            String password,
+            Integer tenantId,
+            String role,
+            Collection<? extends GrantedAuthority> authorities,
             boolean active
     ) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.tenantId = tenantId;
+        this.role = role;
         this.authorities = authorities;
         this.active = active;
     }

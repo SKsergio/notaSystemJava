@@ -30,6 +30,7 @@ public class PermissionAndRoleSeeder {
             Permission restoreDelete = createPermission("student:restore", "Restaurar Estudiantes", "ESTUDIANTES");
             Permission gradeRead = createPermission("grade:read", "Ver Notas", "NOTAS");
             Permission gradeWrite = createPermission("grade:write", "Modificar Notas", "NOTAS");
+            Permission managerRead = createPermission("manager:read", "Ver Estudiantes a Cargo", "ENCARGADOS");
 
             // 2. Crear Roles y asignarles sus permisos
             Role admin = new Role();
@@ -49,6 +50,12 @@ public class PermissionAndRoleSeeder {
             student.setDescription("Estudiante Matriculado");
             student.getPermissions().addAll(Set.of(gradeRead)); // El alumno solo ve notas
             roleRepository.save(student);
+
+            Role manager = new Role();
+            manager.setName("MANAGER");
+            manager.setDescription("Encargado / Tutor de Estudiantes");
+            manager.getPermissions().addAll(Set.of(managerRead, gradeRead)); // Solo lectura
+            roleRepository.save(manager);
 
             System.out.println("✅ [SEEDER] Permisos y Roles creados exitosamente.");
         }

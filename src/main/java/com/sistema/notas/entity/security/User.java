@@ -34,4 +34,7 @@ public class User extends GlobalAuditableEntity {
 
     @Column(name = "first_login")
     private boolean firstLogin = true;
+
+    @Column(name = "super_admin", nullable = false)
+    private boolean superAdmin = false;
 }

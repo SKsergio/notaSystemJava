@@ -18,9 +18,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Lee el header Authorization: Bearer <jwt>, valida el token y, si es correcto,
@@ -70,19 +69,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 Integer uid = claims.get("uid", Integer.class);
                 Integer tenantId = claims.get("tenantId", Integer.class);
+                String role = claims.get("role", String.class);
+                Boolean superAdmin = claims.get("superAdmin", Boolean.class);
 
                 List<String> permissions = claims.get("permissions", List.class);
-                List<SimpleGrantedAuthority> authorities = permissions != null
-                        ? permissions.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
-                        : Collections.emptyList();
+                List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                if (role != null) {
+                    authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+                }
+                if (Boolean.TRUE.equals(superAdmin)) {
+                    authorities.add(new SimpleGrantedAuthority("ROLE_SUPERADMIN"));
+                }
+                if (permissions != null) {
+                    permissions.forEach(p -> authorities.add(new SimpleGrantedAuthority(p)));
+                }
 
                 CustomUserDetails userDetails = new CustomUserDetails(
                         uid,
                         email,
-                        "", 
+                        "",
                         tenantId,
+                        role,
                         authorities,
-                        true 
+                        true
                 );
 
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -92,8 +101,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-
-                // TenantContext.setTenantId(tenantId);
             }
         } catch (JwtException | IllegalArgumentException ex) {
             // Token invalido / expirado: limpiamos el contexto y dejamos seguir.

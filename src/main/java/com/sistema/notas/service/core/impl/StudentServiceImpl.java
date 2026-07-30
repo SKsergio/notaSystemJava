@@ -82,6 +82,7 @@ public class StudentServiceImpl implements StudentService {
         }
 
         studentMapper.updateEntityFromDTO(studentRequestDTO, studentFind);
+
         if (studentRequestDTO.photo() != null && !studentRequestDTO.photo().isEmpty()) {
             // obtener nombre de la antigua
             String oldNamePhoto = studentFind.getRoutePhoto();
@@ -102,6 +103,7 @@ public class StudentServiceImpl implements StudentService {
         Student studentFind = studentRepository.findById(id).orElseThrow(
                 () -> new BadRequestException("No se encontró el estudiante con id: " + id));
         studentRepository.delete(studentFind);
+        userProvisioningService.deactivateAccessForCurrentTenant(id, "STUDENT");
     }
 
     @Override
