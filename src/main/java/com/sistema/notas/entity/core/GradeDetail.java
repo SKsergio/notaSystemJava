@@ -33,7 +33,7 @@ public class GradeDetail extends AuditableEntity {
     private LocalDate startDate;
     //endDate
     @Column(name = "end_date", nullable = false)
-    private LocalDate enDate;
+    private LocalDate endDate;
 
     // Muchos Detalles pueden pertenecer a Un Grado
     @ManyToOne(fetch = FetchType.LAZY)

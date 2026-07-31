@@ -58,9 +58,9 @@ public class DegreeEnrollmentServiceImpl implements DegreeEnrollmentService {
 
         Integer targetYear = gradeDetail.getYear();
 
-        if (degreeEnrollmentRepository.hasEnrollmentInYear(student.getId(), targetYear)) {
+        if (degreeEnrollmentRepository.hasOverlappingEnrollment(student.getId(), gradeDetail.getStartDate(), gradeDetail.getEndDate())) {
             throw new BadRequestException(
-                    "El estudiante ya está matriculado en un grado para el año académico " + targetYear);
+                    "El estudiante ya está matriculado en un grado para el periodo " + targetYear);
         }
 
         if (degreeEnrollmentRepository.isEnrollmentDuplicated(degreeEnrollmentDTO.gradeDetailId(),
@@ -129,9 +129,10 @@ public class DegreeEnrollmentServiceImpl implements DegreeEnrollmentService {
 
     @Transactional(readOnly = true)
     @Override
-    public PaginateResponse<DegreeEnrollmentResponseDTO> getEnrollmentsByGradeDetail(int page, int size,Integer gradeDetailId) {
+    public PaginateResponse<DegreeEnrollmentResponseDTO> getEnrollmentsByGradeDetail(int page, int size,
+            Integer gradeDetailId) {
         Pageable pagable = PageRequest.of(page, size);
-        Page<DegreeEnrollment> enrollments = degreeEnrollmentRepository.findByGradeDetailId(gradeDetailId,pagable);
+        Page<DegreeEnrollment> enrollments = degreeEnrollmentRepository.findByGradeDetailId(gradeDetailId, pagable);
 
         return pageMapper.toPaginateResponse(
                 enrollments,
@@ -141,39 +142,40 @@ public class DegreeEnrollmentServiceImpl implements DegreeEnrollmentService {
     @Override
     public List<DegreeEnrollmentResponseDTO> enrollInBatch(BatchEnrollmentRequestDTO requestDTO) {
         GradeDetail gradeDetail = gradeDetailRepository.findById(requestDTO.gradeDetailId())
-            .orElseThrow(()-> new ResourceNotFoundException("El grado academico no existe"));
+                .orElseThrow(() -> new ResourceNotFoundException("El grado academico no existe"));
 
-        Integer currentEnrolled = degreeEnrollmentRepository.countByGradeDetailIdAndStatus(gradeDetail.getId(), EnrollmentStatus.ACTIVE);
+        Integer currentEnrolled = degreeEnrollmentRepository.countByGradeDetailIdAndStatus(gradeDetail.getId(),
+                EnrollmentStatus.ACTIVE);
         Integer ability = gradeDetail.getAbility() != null ? gradeDetail.getAbility() : 0;
         Integer availableSlots = Math.max(0, ability - currentEnrolled);
 
         if (requestDTO.studentIds().size() > availableSlots) {
-            throw new BadRequestException("No hay cupos suficientes. Intentas matricular " 
+            throw new BadRequestException("No hay cupos suficientes. Intentas matricular "
                     + requestDTO.studentIds().size() + " alumnos, pero solo quedan " + availableSlots + " cupos.");
         }
 
         List<Student> studentsToEnroll = studentRepository.findAllById(requestDTO.studentIds());
 
-        //validando que todo realmente exista
+        // validando que todo realmente exista
         if (studentsToEnroll.size() != requestDTO.studentIds().size()) {
             throw new BadRequestException("Algunos ids proporcionados no existen");
         }
 
         List<Integer> duplicatedInGrade = degreeEnrollmentRepository.findDuplicatedStudentIdsInGrade(
-                gradeDetail.getId(), requestDTO.studentIds()
-        );
-        
+                gradeDetail.getId(), requestDTO.studentIds());
+
         if (!duplicatedInGrade.isEmpty()) {
-            throw new BadRequestException("Los siguientes estudiantes ya están matriculados en esta sección: IDs " + duplicatedInGrade);
+            throw new BadRequestException(
+                    "Los siguientes estudiantes ya están matriculados en esta sección: IDs " + duplicatedInGrade);
         }
 
-        // 3B. Validar si ya están matriculados en el mismo AÑO (pero quizás en otra sección)
-        List<Integer> enrolledInYear = degreeEnrollmentRepository.findStudentIdsAlreadyEnrolledInYear(
-                gradeDetail.getYear(), requestDTO.studentIds()
-        );
-        
+        // 3B. Validar si ya están matriculados en el mismo AÑO (pero quizás en otra
+        // sección)
+        List<Integer> enrolledInYear = degreeEnrollmentRepository.findStudentIdsAlreadyEnrolledInPeriod(
+                gradeDetail.getStartDate(), gradeDetail.getEndDate(), requestDTO.studentIds());
+
         if (!enrolledInYear.isEmpty()) {
-            throw new BadRequestException("Los siguientes estudiantes ya tienen una matrícula activa para el año " 
+            throw new BadRequestException("Los siguientes estudiantes ya tienen una matrícula activa para el año "
                     + gradeDetail.getYear() + ": IDs " + enrolledInYear);
         }
 

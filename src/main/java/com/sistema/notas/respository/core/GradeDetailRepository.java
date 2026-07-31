@@ -15,7 +15,7 @@ public interface GradeDetailRepository extends JpaRepository<GradeDetail, Intege
             WHERE gd.degree.id = :degreeId
               AND gd.section.id = :sectionId
               AND gd.startDate <= :endDate
-              AND gd.enDate >= :startDate
+              AND gd.endDate >= :startDate
             """)
     boolean existsOverlappingGradeDetail(
             @Param("degreeId") Integer degreeId,
@@ -28,7 +28,7 @@ public interface GradeDetailRepository extends JpaRepository<GradeDetail, Intege
             WHERE gd.degree.id = :degreeId
               AND gd.section.id = :sectionId
               AND gd.startDate <= :endDate
-              AND gd.enDate >= :startDate
+              AND gd.endDate >= :startDate
               AND gd.id != :gradeDetailId
             """)
     boolean existsOverlappingGradeDetailForUpdate(

@@ -137,10 +137,10 @@ public class StudentServiceImpl implements StudentService {
             return Collections.emptyMap();
         }
 
-        int currentYear = LocalDate.now().getYear();
+        LocalDate currentDate = LocalDate.now();
 
         List<DegreeEnrollment> activeEnrollments = degreeEnrollmentRepository
-                .findActiveEnrollmentsByStudentIdsAndYear(studentIds, currentYear, EnrollmentStatus.ACTIVE);
+                .findActiveEnrollmentsByStudentIdsAndDate(studentIds, currentDate, EnrollmentStatus.ACTIVE);
 
         return activeEnrollments.stream()
                 .collect(Collectors.toMap(
@@ -167,11 +167,11 @@ public class StudentServiceImpl implements StudentService {
         Student studentFind = studentRepository.findById(id).orElseThrow(
                 () -> new BadRequestException("No se encontró el estudiante con id: " + id));
 
-        int currentYear = LocalDate.now().getYear();
+        LocalDate currentDate = LocalDate.now();
 
         // Buscamos el detalle del grado
         Optional<GradeDetail> gradeDetailOpt = degreeEnrollmentRepository.findCurrentGradeDetail(
-                studentFind.getId(), currentYear, EnrollmentStatus.ACTIVE);
+                studentFind.getId(), currentDate, EnrollmentStatus.ACTIVE);
 
         String degreeName = gradeDetailOpt.map(GradeDetail::getFullName).orElse("No matriculado");
         Integer gradeDetailId = gradeDetailOpt.map(GradeDetail::getId).orElse(null);
