@@ -2,6 +2,7 @@ package com.sistema.notas.service.catalogue;
 
 import com.sistema.notas.dto.catalogues.PeriodRequestDTO;
 import com.sistema.notas.dto.catalogues.PeriodResponseDTO;
+import com.sistema.notas.dto.catalogues.PeriodResponseEditDto;
 import com.sistema.notas.dto.catalogues.PeriodSimpleResponseDto;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.entity.enums.StatusEnum;
@@ -21,6 +22,7 @@ public interface PeriodService {
     List<PeriodSimpleResponseDto> listartoSelects();
 
     PeriodResponseDTO obtenerPeriod(Integer id);
+    PeriodResponseEditDto obtenerPeriodEdit(Integer id);
 
     PeriodResponseDTO changePeriodStatus(Integer id, StatusEnum newState);
 }

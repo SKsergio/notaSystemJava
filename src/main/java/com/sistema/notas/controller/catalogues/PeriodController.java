@@ -1,6 +1,7 @@
 package com.sistema.notas.controller.catalogues;
 
 import com.sistema.notas.dto.catalogues.*;
+import com.sistema.notas.dto.core.gradeDetail.GradeDetailEditResponseDTO;
 import com.sistema.notas.dto.generics.PaginateResponse;
 import com.sistema.notas.dto.generics.StatusUpdateRequestDTO;
 import com.sistema.notas.service.catalogue.PeriodService;
@@ -42,6 +43,12 @@ public class PeriodController {
     @GetMapping("all")
     public ResponseEntity<List<PeriodSimpleResponseDto>> getAllPeriods() {
         return ResponseEntity.status(HttpStatus.OK).body(periodService.listartoSelects());
+    }
+
+    @GetMapping("edit/{id}")
+    public ResponseEntity<PeriodResponseEditDto> getGradeDetailEdit(@PathVariable Integer id) {
+        PeriodResponseEditDto responseDTO = periodService.obtenerPeriodEdit(id);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
     @PatchMapping("/{id}")

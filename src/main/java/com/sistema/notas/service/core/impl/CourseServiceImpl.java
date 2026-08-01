@@ -81,7 +81,6 @@ public class CourseServiceImpl implements CourseService {
 
         Course entity = courseMapper.toEntity(courseDto);
 
-        // entity.setStatus(1);//aca hare un enum :C
         entity.setSubject(subject);
         entity.setTeacher(teacher);
         entity.setPeriod(period);
