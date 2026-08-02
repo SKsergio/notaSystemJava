@@ -52,12 +52,6 @@ public class Course extends AuditableEntity{
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
 
-    //muchas materias pertenecen a un curso
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "period_id", nullable = false)
-    private Period period;
-
-
     @Transient
     public String getName() {
         if (this.subject == null || this.gradeDetail.getSection() == null) {

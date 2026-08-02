@@ -21,7 +21,7 @@ import com.sistema.notas.entity.core.GradeDetail;
 import com.sistema.notas.entity.core.Teacher;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface CourseMapper {
+public interface  CourseMapper {
 
     // DE ENTIDAD A RESPONSE
     // asiganmos los nombres de las entidades a las variables del response

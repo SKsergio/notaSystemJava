@@ -6,6 +6,7 @@ import java.util.List;
 import com.sistema.notas.dto.core.evaluations.*;
 import com.sistema.notas.entity.catalogues.Period;
 import com.sistema.notas.entity.enums.StatusEnum;
+import com.sistema.notas.respository.catalogues.PeriodRespository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,6 +39,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     // relaciones
     private final CoursesRespository coursesRespository;
+    private final PeriodRespository periodRespository;
 
     @Override
     public EvaluationsResponseDTO save(EvaluationRequestDTO evaluationDTO) {
@@ -49,10 +51,9 @@ public class EvaluationServiceImpl implements EvaluationService {
                 .orElseThrow(
                         () -> new ResourceNotFoundException("No existe el curso con ID: " + evaluationDTO.courseId()));
 
-        Period period = course.getPeriod();
-        if (period == null) {
-            throw new BadRequestException("El curso no tiene un periodo académico asociado.");
-        }
+        Period period = periodRespository.findById(evaluationDTO.periodId())
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("No existe un periodo con el ID: " + evaluationDTO.periodId()));
 
         if (evaluationDTO.startDate().isBefore(period.getStartDate())) {
             throw new BadRequestException("La fecha de inicio de la evaluación (" + evaluationDTO.startDate() +
@@ -74,6 +75,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
         Evaluation evaluation = evaluationsMapper.toEntity(evaluationDTO);
         evaluation.setCourse(course);
+        evaluation.setPeriod(period);
         Evaluation saved = evaluationsRepository.save(evaluation);
 
         return evaluationsMapper.toResponseDTO(saved);
@@ -93,6 +95,17 @@ public class EvaluationServiceImpl implements EvaluationService {
                 .orElseThrow(
                         () -> new ResourceNotFoundException("No existe el curso con ID: " + evaluationDTO.courseId()));
 
+
+        Period period = periodRespository.findById(evaluationDTO.periodId())
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("No existe un periodo con el ID: " + evaluationDTO.periodId()));
+
+
+        if (evaluationDTO.startDate().isBefore(period.getStartDate())) {
+            throw new BadRequestException("La fecha de inicio de la evaluación (" + evaluationDTO.startDate() +
+                    ") no puede ser anterior al inicio del periodo (" + period.getStartDate() + ").");
+        }
+
         Double currentAccumulated = evaluationsRepository.getAccumulatedPercentage(evaluationDTO.courseId(), id);
         if (currentAccumulated + evaluationDTO.percentage() > 100.0) {
             double remaining = 100.0 - currentAccumulated;
@@ -101,6 +114,7 @@ public class EvaluationServiceImpl implements EvaluationService {
         }
 
         evaluationFind.setCourse(course);
+        evaluationFind.setPeriod(period);
         evaluationsMapper.updateEntityFromDTO(evaluationDTO, evaluationFind);
         return evaluationsMapper.toResponseDTO(evaluationFind);
     }

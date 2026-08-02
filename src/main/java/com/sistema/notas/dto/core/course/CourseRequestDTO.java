@@ -13,10 +13,6 @@ public record CourseRequestDTO(
         @Positive(message = "El ID del Detalle Grado debe ser un número positivo válido.")
         Integer gradeDetailId,
 
-        @NotNull(message = "El Periodo es obligatorio.")
-        @Positive(message = "El ID del Periodo debe ser un número positivo válido.")
-        Integer periodId,
-
         @NotNull(message = "El maestro asignado es obligatorio.")
         @Positive(message = "El ID del Docente debe ser un número positivo válido.")
         Integer teacherId,

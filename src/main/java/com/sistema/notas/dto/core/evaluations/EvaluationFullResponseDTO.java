@@ -2,6 +2,7 @@ package com.sistema.notas.dto.core.evaluations;
 
 import java.time.LocalDate;
 
+import com.sistema.notas.dto.catalogues.PeriodSimpleResponseDto;
 import com.sistema.notas.dto.core.course.CourseSimpleResponseDTO;
 import com.sistema.notas.entity.enums.StatusEnum;
 
@@ -13,6 +14,7 @@ public record EvaluationFullResponseDTO(
     StatusEnum status,
     Long daysRemaning,
     Double percentage,
-    CourseSimpleResponseDTO course
+    CourseSimpleResponseDTO course,
+    PeriodSimpleResponseDto period
 ) {    
 }

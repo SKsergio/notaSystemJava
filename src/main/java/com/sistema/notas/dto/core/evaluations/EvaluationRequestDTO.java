@@ -16,6 +16,10 @@ public record EvaluationRequestDTO(
     @Size(max = 255, message = "La descripción de la evaluación no puede tener más de 255 caracteres.")
     String description,
 
+    @NotNull(message = "El Periodo es obligatorio.")
+    @Positive(message = "El ID del Periodo debe ser un número positivo válido.")
+    Integer periodId,
+
     @NotNull(message = "El porcentaje de la evaluación es obligatorio.")
     Double percentage,
 

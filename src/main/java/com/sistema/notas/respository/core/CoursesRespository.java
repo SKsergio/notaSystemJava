@@ -13,18 +13,16 @@ import com.sistema.notas.entity.core.Course;
 
 public interface CoursesRespository extends JpaRepository<Course, Integer>, JpaSpecificationExecutor<Course>{
     
-    @Query("SELECT COUNT(c) > 0 FROM Course c WHERE c.subject.id = :subjectId AND c.gradeDetail.id = :gradeDetailId AND c.period.id = :periodId")
+    @Query("SELECT COUNT(c) > 0 FROM Course c WHERE c.subject.id = :subjectId AND c.gradeDetail.id = :gradeDetailId")
     boolean isCourseDuplicated(
             @Param("subjectId") Integer subcjectId, 
-            @Param("gradeDetailId") Integer gradeDetailId, 
-            @Param("periodId") Integer periodId
+            @Param("gradeDetailId") Integer gradeDetailId
     );
 
-    @Query("SELECT COUNT(c) > 0 FROM Course c WHERE c.subject.id = :subjectId AND c.gradeDetail.id = :gradeDetailId AND c.period.id = :periodId AND c.id != :courseId")
+    @Query("SELECT COUNT(c) > 0 FROM Course c WHERE c.subject.id = :subjectId AND c.gradeDetail.id = :gradeDetailId AND c.id != :courseId")
     boolean isCourseDuplicatedForUpdate(
             @Param("subjectId") Integer subcjectId, 
             @Param("gradeDetailId") Integer gradeDetailId, 
-            @Param("periodId") Integer periodId,
             @Param("courseId") Integer courseId
     );
 

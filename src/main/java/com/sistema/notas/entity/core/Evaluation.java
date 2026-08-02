@@ -1,6 +1,7 @@
 package com.sistema.notas.entity.core;
 
 import com.sistema.notas.entity.AuditableEntity;
+import com.sistema.notas.entity.catalogues.Period;
 import com.sistema.notas.entity.enums.StatusEnum;
 import jakarta.persistence.*;
 
@@ -44,6 +45,10 @@ public class Evaluation extends AuditableEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "period_id", nullable = false)
+    private Period period;
 
     @Transient
     public Long getDaysRemaning(){

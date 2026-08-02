@@ -47,7 +47,6 @@ public class CourseServiceImpl implements CourseService {
 
     // relaciones
     private final TeacherRepository teacherRepository;
-    private final PeriodRespository periodRespository;
     private final SubjectRepository subjectRepository;
     private final GradeDetailRepository gradeDetailRepository;
     private final CourseRegistrationRepository courseRegistrationRepository;
@@ -56,8 +55,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseResponseDTO save(CourseRequestDTO courseDto) {
-        if (coursesRespository.isCourseDuplicated(courseDto.subjectId(), courseDto.gradeDetailId(),
-                courseDto.periodId())) {
+        if (coursesRespository.isCourseDuplicated(courseDto.subjectId(), courseDto.gradeDetailId())) {
             throw new BadRequestException("Ya existe un curso con los detalles especificados");
         }
 
@@ -65,10 +63,6 @@ public class CourseServiceImpl implements CourseService {
         Teacher teacher = teacherRepository.findById(courseDto.teacherId())
                 .orElseThrow(
                         () -> new ResourceNotFoundException("No existe el maestro con ID: " + courseDto.teacherId()));
-
-        Period period = periodRespository.findById(courseDto.periodId())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("No existe un periodo con el ID: " + courseDto.periodId()));
 
         Subject subject = subjectRepository.findById(courseDto.subjectId())
                 .orElseThrow(
@@ -83,7 +77,6 @@ public class CourseServiceImpl implements CourseService {
 
         entity.setSubject(subject);
         entity.setTeacher(teacher);
-        entity.setPeriod(period);
         entity.setGradeDetail(gradeDetail);
 
         Course saved = coursesRespository.save(entity);
@@ -96,8 +89,7 @@ public class CourseServiceImpl implements CourseService {
         Course courseFind = coursesRespository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("No existe ningun curso con el id: " + id));
 
-        if (coursesRespository.isCourseDuplicatedForUpdate(courseDto.subjectId(), courseDto.gradeDetailId(),
-                courseDto.periodId(), id)) {
+        if (coursesRespository.isCourseDuplicatedForUpdate(courseDto.subjectId(), courseDto.gradeDetailId(),id)) {
             throw new BadRequestException("Ya existe un courso con estos datos.");
         }
 
@@ -105,10 +97,6 @@ public class CourseServiceImpl implements CourseService {
         Teacher teacher = teacherRepository.findById(courseDto.teacherId())
                 .orElseThrow(
                         () -> new ResourceNotFoundException("No existe el maestro con ID: " + courseDto.teacherId()));
-
-        Period period = periodRespository.findById(courseDto.periodId())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("No existe un periodo con el ID: " + courseDto.periodId()));
 
         Subject subject = subjectRepository.findById(courseDto.subjectId())
                 .orElseThrow(
@@ -121,7 +109,6 @@ public class CourseServiceImpl implements CourseService {
 
         courseFind.setSubject(subject);
         courseFind.setTeacher(teacher);
-        courseFind.setPeriod(period);
         courseFind.setGradeDetail(gradeDetail);
 
         courseMapper.updateEntityFromDTO(courseDto, courseFind);
@@ -138,7 +125,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public PaginateResponse<CourseResponseDTO> obtenerCoursePaginados(int page, int size, String search,
-            LocalDate fromDate, LocalDate toDate) {
+                                                                      LocalDate fromDate, LocalDate toDate) {
         Pageable pagable = PageRequest.of(page, size);
 
         Specification<Course> filtros = Specification
