@@ -8,6 +8,7 @@ public record GradeDetailResponseDTO(
         Integer id,
         Integer ability,
         String fullName,
+        String code,
         Integer year,
         LocalDate startDate,
         LocalDate endDate,

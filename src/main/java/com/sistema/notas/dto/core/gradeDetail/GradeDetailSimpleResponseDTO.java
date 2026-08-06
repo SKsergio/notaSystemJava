@@ -6,6 +6,7 @@ public record GradeDetailSimpleResponseDTO(
     Integer id,
     StatusEnum status,
     String fullName,
+    String code,
     String sectionName,
     String degreeName,
     String tutorName

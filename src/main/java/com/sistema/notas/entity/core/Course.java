@@ -13,14 +13,13 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import com.sistema.notas.entity.AuditableEntity;
-import com.sistema.notas.entity.catalogues.Period;
 import com.sistema.notas.entity.catalogues.Subject;
 
 
 @Entity
 @Table(name = "courses", 
     uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"grade_detail_id", "subject_id", "period_id"})
+        @UniqueConstraint(columnNames = {"grade_detail_id", "subject_id"})
     }
 )
 @Getter @Setter
@@ -58,7 +57,7 @@ public class Course extends AuditableEntity{
             return null;
         }
         
-        return  this.subject.getName() + " - " + this.gradeDetail.getSection().getCode() + " (" + this.gradeDetail.getStartDate().getYear() + ")";
+        return this.subject.getName()  + "-" + this.gradeDetail.getCode();
     }
 
     @Transient
@@ -67,7 +66,7 @@ public class Course extends AuditableEntity{
             return null;
         }
         
-        return (this.subject.getCode() + "-" + this.gradeDetail.getDegree().getCode()).toUpperCase();
+        return (this.gradeDetail.getCode() +  "-" + this.subject.getCode()).toUpperCase();
     }
 
     @Transient

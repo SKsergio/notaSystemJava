@@ -60,7 +60,16 @@ public class GradeDetail extends AuditableEntity {
             return null;
         }
         
-        return this.degree.getName() + " - " + this.section.getName() + " - " + this.startDate.getYear();
+        return this.degree.getName() + "-" + this.section.getName() + "-" + this.startDate.getYear();
+    }
+
+    @Transient
+    public String getCode() {
+        if (this.degree == null || this.section == null || this.getYear() == 0) {
+            return null;
+        }
+
+        return this.degree.getCode() + "-" + this.section.getCode() + "-" + this.startDate.getYear();
     }
 
     @Transient 

@@ -20,7 +20,7 @@ public interface EvaluationsRepository
 
     // evaluaciones de periodos
     @Modifying
-    @Query("UPDATE Evaluation e SET e.status = :newState WHERE e.course.id IN (SELECT c.id FROM Course c WHERE c.period.id = :periodId) AND e.status != :newState")
+    @Query("UPDATE Evaluation e SET e.status = :newState WHERE e.course.id IN (SELECT c.id FROM Course c WHERE e.period.id = :periodId) AND e.status != :newState")
     void updateEvaluationStatusByPeriodId(@Param("periodId") Integer periodId, @Param("newState") StatusEnum newState);
 
     //evaluaciones desde grados
@@ -41,4 +41,6 @@ public interface EvaluationsRepository
     // Suma los porcentajes del curso, pero filtrando por el estado de la evaluación
     @Query("SELECT COALESCE(SUM(e.percentage), 0.0) FROM Evaluation e WHERE e.course.id = :courseId AND e.status = :status")
     Double getEvaluatedPercentage(@Param("courseId") Integer courseId, @Param("status") StatusEnum status);
+
+    boolean existsByPeriodId(Integer periodId);
 }

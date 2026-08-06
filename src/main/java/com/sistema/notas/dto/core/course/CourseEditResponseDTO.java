@@ -4,7 +4,6 @@ public record CourseEditResponseDTO(
         Integer id,
         double valorityUnity,
         Integer gradeDetailId,
-        Integer periodId,
         Integer teacherId,
         Integer subjectId
 ) {

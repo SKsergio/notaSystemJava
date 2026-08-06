@@ -9,6 +9,7 @@ import com.sistema.notas.entity.enums.StatusEnum;
 public record GradeDetailFullResponseDTO(
     Integer id,
     Integer ability,
+    String code,
     Integer totalStudents, 
     Integer availableSlots,
     Integer year,

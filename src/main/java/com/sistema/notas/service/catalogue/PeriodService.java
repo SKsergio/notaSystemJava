@@ -20,6 +20,7 @@ public interface PeriodService {
     PaginateResponse<PeriodResponseDTO> obtenerPeriodsPaginados(int page, int size, LocalDate fromDate, LocalDate  toDate);
 
     List<PeriodSimpleResponseDto> listartoSelects();
+    List<PeriodSimpleResponseDto> periodsByGrades(Integer gradeDetailId);
 
     PeriodResponseDTO obtenerPeriod(Integer id);
     PeriodResponseEditDto obtenerPeriodEdit(Integer id);

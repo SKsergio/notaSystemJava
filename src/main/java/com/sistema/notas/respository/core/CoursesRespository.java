@@ -30,16 +30,11 @@ public interface CoursesRespository extends JpaRepository<Course, Integer>, JpaS
     @Query("UPDATE Course c SET c.status = :newState WHERE c.gradeDetail.id = :gradeDetailId AND c.status != :newState")
     void updateCourseStatusByGradeDetailId(@Param("gradeDetailId") Integer gradeDetailId, @Param("newState") StatusEnum newState);
 
-    @Modifying
-    @Query("UPDATE Course c SET c.status = :newState WHERE c.period.id = :periodId AND c.status != :newState")
-    void updateCourseStatusByPeriodId(@Param("periodId") Integer periodId, @Param("newState") StatusEnum newState);
-
     List<Course> findByGradeDetailId(Integer gradeDetailId);
     List<Course> findByTeacherId(Integer teacherId);
     List<Course> findByStatus(Integer status);
 
     boolean existsByGradeDetailId(Integer gradeDetailId);
-    boolean existsByPeriodId(Integer periodId);
     boolean existsBySubjectId(Integer subjectId);
 
 }

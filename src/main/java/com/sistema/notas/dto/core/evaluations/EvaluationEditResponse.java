@@ -7,6 +7,7 @@ public record EvaluationEditResponse(
         String name,
         String description,
         Double percentage,
+        Integer periodId,
         LocalDate startDate,
         LocalDate endDate,
         Integer courseId

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.sistema.notas.entity.enums.EnrollmentStatus;
+import com.sistema.notas.respository.catalogues.PeriodRespository;
 import com.sistema.notas.respository.core.*;
 import org.springframework.transaction.annotation.Transactional;
 import com.sistema.notas.entity.enums.StatusEnum;
@@ -49,6 +50,7 @@ public class GradeDetailServiceImpl implements GradeDetailService {
     private final EvaluationsRepository evaluationsRepository;
     private final CoursesRespository coursesRespository;
     private final DegreeEnrollmentRepository  degreeEnrollmentRepository;
+    private final PeriodRespository periodRespository;
 
     @Override
     public GradeDetailResponseDTO save(GradeDetailRequestDTO gradeDetail) {
@@ -152,6 +154,7 @@ public class GradeDetailServiceImpl implements GradeDetailService {
                         gdt.getId(),
                         gdt.getStatus(),
                         gdt.getFullName(),
+                        gdt.getCode(),
                         gdt.getSection().getName(),
                         gdt.getDegree().getName(),
                         gdt.getTutor().getFirstName()))
@@ -194,8 +197,9 @@ public class GradeDetailServiceImpl implements GradeDetailService {
             degreeEnrollmentRepository.finalizeEnrollmentsByGradeDetail(id, EnrollmentStatus.ACTIVE, EnrollmentStatus.COMPLETED);
         }
 
-        evaluationsRepository.updateEvaluationStatusByGradeDetailId(id, status);
-        coursesRespository.updateCourseStatusByGradeDetailId(id, status);
+        evaluationsRepository.updateEvaluationStatusByGradeDetailId(id, status);//cerrar evaluaciones
+        coursesRespository.updateCourseStatusByGradeDetailId(id, status);//cerrar cursos
+        periodRespository.updatePeriodStatusByGradeDetailId(id, status);//cerrar periodos
         gradeFind.setStatus(status);
         gradeDetailRepository.save(gradeFind);
 

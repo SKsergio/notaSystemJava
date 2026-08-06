@@ -50,7 +50,7 @@ public class PeriodServiceImpl implements PeriodService {
             throw new BadRequestException("La fecha de inicio no puede ser posterior a la fecha de fin.");
         }
 
-        if (periodRespository.existsOverlappingPeriod(period.startDate(), period.endDate())){
+        if (periodRespository.existsOverlappingPeriod(period.startDate(), period.endDate(), period.gradeDetailId())){
             throw new BadRequestException("Las fechas indicadas se cruzan con un periodo escolar ya existente.");
         }
 
@@ -77,7 +77,7 @@ public class PeriodServiceImpl implements PeriodService {
             throw new BadRequestException("La fecha de inicio no puede ser posterior a la fecha de fin.");
         }
 
-        if (periodRespository.existsOverlappingPeriodForUpdate(period.startDate(), period.endDate(), id)){
+        if (periodRespository.existsOverlappingPeriodForUpdate(period.startDate(), period.endDate(), id, period.gradeDetailId())){
             throw new BadRequestException("Ya existe un periodo establecido para estas fechas");
         }
 
@@ -98,8 +98,8 @@ public class PeriodServiceImpl implements PeriodService {
                ()->new ResourceNotFoundException("Periodo con el id: " + id + " no existe.")
        );
 
-       if (coursesRespository.existsByPeriodId(id)) {
-            throw new BadRequestException("No se puede eliminar el Periodo porque tiene Cursos asignados y activos.");
+       if (evaluationsRepository.existsByPeriodId(id)) {
+            throw new BadRequestException("No se puede eliminar el Periodo porque tiene evaluaciones asignadas y activas.");
        }
 
        periodRespository.delete(periodFind);
@@ -123,6 +123,15 @@ public class PeriodServiceImpl implements PeriodService {
     @Override
     public List<PeriodSimpleResponseDto> listartoSelects() {
         List<Period> periods = periodRespository.findAll();
+
+        return periods.stream()
+                .map(per -> new PeriodSimpleResponseDto(per.getId(), per.getStartDate(), per.getEndDate()))
+                .toList();
+    }
+
+    @Override
+    public List<PeriodSimpleResponseDto> periodsByGrades(Integer gradeDetailId) {
+        List<Period> periods = periodRespository.findByGradeDetailId(gradeDetailId);
 
         return periods.stream()
                 .map(per -> new PeriodSimpleResponseDto(per.getId(), per.getStartDate(), per.getEndDate()))
@@ -159,8 +168,6 @@ public class PeriodServiceImpl implements PeriodService {
 
         //cascada de nivel 1
         evaluationsRepository.updateEvaluationStatusByPeriodId(id, newState);
-        //cascade de nivel 2
-        coursesRespository.updateCourseStatusByPeriodId(id, newState);
 
         periodFind.setStatus(newState);
         periodRespository.save(periodFind);

@@ -45,6 +45,13 @@ public class PeriodController {
         return ResponseEntity.status(HttpStatus.OK).body(periodService.listartoSelects());
     }
 
+    @GetMapping("allByGrade/{gradeDetailId}")
+    public ResponseEntity<List<PeriodSimpleResponseDto>> getAllPeriodsByGrade(
+            @PathVariable Integer gradeDetailId
+    ) {
+        return ResponseEntity.ok(periodService.periodsByGrades(gradeDetailId));
+    }
+
     @GetMapping("edit/{id}")
     public ResponseEntity<PeriodResponseEditDto> getGradeDetailEdit(@PathVariable Integer id) {
         PeriodResponseEditDto responseDTO = periodService.obtenerPeriodEdit(id);

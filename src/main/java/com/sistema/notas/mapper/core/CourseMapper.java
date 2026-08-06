@@ -8,13 +8,11 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 import com.sistema.notas.dto.catalogues.CatalogueSimpleResponseDTO;
-import com.sistema.notas.dto.catalogues.PeriodSimpleResponseDto;
 import com.sistema.notas.dto.core.course.CourseFullResponseDTO;
 import com.sistema.notas.dto.core.course.CourseRequestDTO;
 import com.sistema.notas.dto.core.course.CourseResponseDTO;
 import com.sistema.notas.dto.core.gradeDetail.GradeDetailSimpleResponseDTO;
 import com.sistema.notas.dto.core.teacher.TeacherSimpleResponseDTO;
-import com.sistema.notas.entity.catalogues.Period;
 import com.sistema.notas.entity.catalogues.Subject;
 import com.sistema.notas.entity.core.Course;
 import com.sistema.notas.entity.core.GradeDetail;
@@ -35,21 +33,18 @@ public interface  CourseMapper {
     // aca vaciamos las entidades para que vayan vacios
     @Mapping(target = "subject", ignore = true)
     @Mapping(target = "teacher", ignore = true)
-    @Mapping(target = "period", ignore = true)
     @Mapping(target = "gradeDetail", ignore = true)
     Course toEntity(CourseRequestDTO requestDTO);
 
     //DE ENTITY A REQUEST DE EDICION
     @Mapping(source = "subject.id", target = "subjectId")
     @Mapping(source = "gradeDetail.id", target = "gradeDetailId")
-    @Mapping(source = "period.id", target = "periodId")
     @Mapping(source = "teacher.id", target = "teacherId")
     CourseEditResponseDTO toEditResponseDTO(Course entity);
 
     // DE REQUEST A ENTITY
     @Mapping(target = "subject", ignore = true)
     @Mapping(target = "teacher", ignore = true)
-    @Mapping(target = "period", ignore = true)
     @Mapping(target = "gradeDetail", ignore = true)
     Course updateEntityFromDTO(CourseRequestDTO requestDTO, @MappingTarget Course course);
 
@@ -61,12 +56,6 @@ public interface  CourseMapper {
         if (subject == null)
             return null;
         return new CatalogueSimpleResponseDTO(subject.getId(), subject.getName());
-    }
-
-    default PeriodSimpleResponseDto mapPeriodToSimpleDTO(Period period) {
-        if (period == null)
-            return null;
-        return new PeriodSimpleResponseDto(period.getId(), period.getStartDate(), period.getEndDate());
     }
 
     default TeacherSimpleResponseDTO mapTeacherToSimpleDTO(Teacher teacher) {
@@ -83,6 +72,7 @@ public interface  CourseMapper {
                 gradeDetail.getId(),
                 gradeDetail.getStatus(),
                 gradeDetail.getFullName(),
+                gradeDetail.getCode(),
                 gradeDetail.getSection().getName(), 
                 gradeDetail.getDegree().getName(),
                 gradeDetail.getTutor().getfullName()

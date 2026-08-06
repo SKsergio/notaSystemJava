@@ -147,6 +147,7 @@ public class CourseServiceImpl implements CourseService {
                 .map(co -> new CourseSimpleResponseDTO(
                         co.getId(),
                         co.getName(),
+                        co.getGradeDetail().getId(),
                         co.getCode(), co.getStatus(), co.getTotalStudents(),
                         co.getGradeDetail().getYear()))
                 .toList();
